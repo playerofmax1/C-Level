@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bean:beans
+        xmlns:bean="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.springframework.org/schema/security"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/security
+                            http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <http pattern="/**/*.css" security="none"/>
+    <http pattern="/**/*.js" security="none"/>
+    <http pattern="/javax.faces.resource/**" security="none"/>
+    <http use-expressions="false">
+        <csrf request-matcher-ref="simpleCsrfRequestMatcher" />
+        <intercept-url pattern="/site/**" access="ROLE_USER,ROLE_ADMIN,ROLE_SYSTEM"/>
+        <intercept-url pattern="/system/**" access="ROLE_SYSTEM"/>
+        <form-login login-page="/signin.jsf"/>
+        <logout invalidate-session="true" delete-cookies="JSESSIONID" logout-success-url="/signin.jsf"/>
+        <access-denied-handler ref="simpleAccessDeniedHandler"/>
+        <anonymous enabled="false"/>
+        <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter"/>
+        <session-management session-authentication-strategy-ref="sas"/>
+    </http>
+
+    <authentication-manager/>
+
+    <bean:bean id="simpleAccessDeniedHandler" class="com.clevel.kudu.security.SimpleAccessDeniedHandler">
+        <bean:constructor-arg name="redirectUrl" value="/signin.jsf" />
+    </bean:bean>
+    <bean:bean id="simpleCsrfRequestMatcher" class="com.clevel.kudu.security.SimpleCsrfRequestMatcher">
+        <bean:constructor-arg name="urls" value="/signin.jsf" />
+    </bean:bean>
+
+    <bean:bean id="httpSessionSecurityContextRepository"
+               class="org.springframework.security.web.context.HttpSessionSecurityContextRepository"/>
+
+    <bean:bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+        <bean:constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
+        <bean:constructor-arg name="sessionInformationExpiredStrategy" ref="sessionExpiredStrategy"/>
+    </bean:bean>
+
+    <bean:bean id="sessionExpiredStrategy" class="org.springframework.security.web.session.SimpleRedirectSessionInformationExpiredStrategy">
+        <bean:constructor-arg name="invalidSessionUrl" value="/signin.jsf"/>
+        <bean:constructor-arg   name="redirectStrategy" ref="simpleRedirectStrategy" />
+    </bean:bean>
+    <bean:bean id="simpleRedirectStrategy" class="com.clevel.kudu.security.SimpleRedirectStrategy" />
+
+    <bean:bean id="sas"
+               class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+        <bean:constructor-arg>
+            <bean:list>
+                <bean:bean
+                        class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
+                    <bean:constructor-arg ref="sessionRegistry"/>
+                    <bean:property name="maximumSessions" value="1"/>
+                    <bean:property name="exceptionIfMaximumExceeded" value="false"/>
+                </bean:bean>
+                <bean:bean
+                        class="org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy">
+                    <bean:constructor-arg ref="sessionRegistry"/>
+                </bean:bean>
+            </bean:list>
+        </bean:constructor-arg>
+    </bean:bean>
+
+    <bean:bean id="sessionRegistry"
+               class="org.springframework.security.core.session.SessionRegistryImpl"/>
+
+</bean:beans>

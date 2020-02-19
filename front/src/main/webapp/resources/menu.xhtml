@@ -1,0 +1,24 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <div class="col-sm-3 col-md-2 sidebar">
+        <h:form>
+        <ul class="nav nav-sidebar">
+            <li id="home" class="active"><h:commandLink action="/site/welcome.jsf?faces-redirect=true" >Home</h:commandLink></li>
+            <li id="customer"><h:commandLink action="/site/customer.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0001')}">Customer</h:commandLink></li>
+            <li id="rate"><h:commandLink action="/site/rate.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0002')}">Rate</h:commandLink></li>
+            <li id="task"><h:commandLink action="/site/task.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0003')}">Task</h:commandLink></li>
+            <li id="project"><h:commandLink action="/site/project.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0004')}">Project Management</h:commandLink></li>
+            <li id="user"><h:commandLink action="/site/user.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0005')}">User Management</h:commandLink></li>
+            <li id="role"><h:commandLink action="/site/role.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0006')}">Role Management</h:commandLink></li>
+            <li id="timesheet"><h:commandLink action="/site/timesheet.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0007')}">Timesheet</h:commandLink></li>
+            <li id="holiday"><h:commandLink action="/site/holiday.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0008')}">Holiday</h:commandLink></li>
+            </ul>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </h:form>
+    </div>
+</f:view>
+

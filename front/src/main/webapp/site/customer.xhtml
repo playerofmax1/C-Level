@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:event type="preRenderView" listener="#{accessCtl.checkAccess('S0001')}"/>
+
+    <h:head>
+        <title>Customer</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
+        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
+
+        <!-- Custom styles for this template -->
+        <h:outputScript library="js" name="jquery-3.4.1.slim.min.js" target="head"/>
+        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
+
+        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <script>
+            $(document).ready(function () {
+                $(".nav").find(".active").removeClass("active");
+                $('#customer').addClass('active');
+            });
+        </script>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="sub-header">Customer</h1>
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+
+                        <p:commandButton value="New Customer" action="#{customerCtl.onPreNewCustomer}"
+                                         onsuccess="PF('customerDlg').show()" update="customerDlgForm"/>
+
+                        <p:dataTable var="customer" value="#{customerCtl.customerList}" rows="10"
+                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <p:column headerText="Code" style="width: 80px">
+                                <h:outputText value="#{customer.code}"/>
+                            </p:column>
+
+                            <p:column headerText="Name" style="width: 200px">
+                                <h:outputText value="#{customer.name}"/>
+                            </p:column>
+
+                            <p:column headerText="Description">
+                                <h:outputText value="#{customer.description}"/>
+                            </p:column>
+
+
+                            <p:column headerText="Actions"  style="width: 250px">
+                                <p:commandButton value="Edit" action="#{customerCtl.onPreUpdateCustomer}"
+                                                 update="customerDlgForm"
+                                                 onsuccess="PF('customerDlg').show();">
+                                    <f:setPropertyActionListener value="#{customer.id}"
+                                                                 target="#{customerCtl.selectedCustomerId}"/>
+                                </p:commandButton>
+
+                                <p:commandButton value="Delete" action="#{customerCtl.onPreDeleteCustomer}"
+                                                 update="deleteDlgForm"
+                                                 onsuccess="PF('deleteCustomerDlg').show();">
+                                    <f:setPropertyActionListener value="#{customer.id}"
+                                                                 target="#{customerCtl.selectedCustomerId}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog header="Add/Edit Customer" widgetVar="customerDlg" modal="true" width="50%" resizable="false">
+            <h:form id="customerDlgForm">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Code" styleClass="require"/>
+                    <p:inputText value="#{customerCtl.newCustomer.code}" styleClass="#{customerCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
+                    <h:outputLabel value="Name" styleClass="require"/>
+                    <p:inputText value="#{customerCtl.newCustomer.name}" styleClass="#{customerCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <h:outputLabel value="Description"/>
+                    <p:inputTextarea value="#{customerCtl.newCustomer.description}" style="width: 400px"
+                                     autoResize="false"/>
+                </h:panelGrid>
+                <p:separator/>
+                <div class="onRight">
+                    <p:commandButton value="Save" action="#{customerCtl.onNewCustomer}"
+                                     rendered="#{customerCtl.editMode==false}"
+                                     update="mainForm,customerDlgForm"/>
+                    <p:commandButton value="Update" action="#{customerCtl.onUpdateCustomer}"
+                                     rendered="#{customerCtl.editMode==true}"
+                                     update="mainForm,customerDlgForm"/>
+                    <p:commandButton value="Cancel" onclick="PF('customerDlg').hide()"/>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </h:form>
+        </p:dialog>
+
+        <ui:include src="/resources/deleteConfirmDlg.xhtml">
+            <ui:param name="header" value="Delete Customer"/>
+            <ui:param name="widgetVar" value="deleteCustomerDlg"/>
+            <ui:param name="msg1" value="Do you want to delete this customer?"/>
+            <ui:param name="msg2"
+                      value="(#{customerCtl.newCustomer.code}: #{customerCtl.newCustomer.name})"/>
+            <ui:param name="controller" value="#{customerCtl}"/>
+            <ui:param name="action" value="onDeleteCustomer"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+        <ui:include src="/resources/footer.xhtml"/>
+    </h:body>
+</f:view>
+</html>

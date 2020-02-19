@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+        <title>Manage Project</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
+        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
+
+        <!-- Custom styles for this template -->
+        <h:outputScript library="js" name="jquery-3.4.1.slim.min.js" target="head"/>
+        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
+
+        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <script>
+            $(document).ready(function () {
+                $(".nav").find(".active").removeClass("active");
+                $('#project').addClass('active');
+            });
+        </script>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="sub-header">Manage Project [#{managePrjCtl.project.code}:#{managePrjCtl.project.name}]</h1>
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+
+                        <h:panelGrid columns="2">
+                            <h:outputLabel value="Description:" style="width: 100px"/>
+                            <h:outputLabel value="#{managePrjCtl.project.description}"/>
+                            <h:outputLabel value="Customer:"/>
+                            <h:outputLabel value="#{managePrjCtl.project.customer.name}"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="8">
+                            <h:outputLabel value="Plan cost:" style="width: 80px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.projectCost.planCost}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="Extend cost:" style="width: 80px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.projectCost.extendCost}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="Total cost:" style="width: 80px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.projectCost.totalCost}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="Actual cost:" style="width: 80px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.projectCost.actualCost}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </h:panelGrid>
+
+                        <p:commandButton value="New Project Task" action="#{managePrjCtl.onPreAddNew}"
+                                         onsuccess="PF('projectTaskDlg').show()" update="projectTaskDlgForm"/>
+                        <p:spacer height="30"/>
+
+                        <p:dataTable var="task" value="#{managePrjCtl.projectTaskList}" rows="10" sortBy="#{task.project.id}"
+                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <p:column headerText="Task" style="width: 200px">
+                                <h:outputText value="[#{task.task.code}] #{task.task.name}"/>
+                            </p:column>
+
+                            <p:column headerText="AMD" style="width: 50px">
+                                <h:outputText value="#{(task.amdCalculation)?'Yes':'No'}"/>
+                            </p:column>
+
+                            <p:column headerText="User" style="width: 120px">
+                                <h:outputText value="#{task.user.name}"/>
+                            </p:column>
+
+                            <p:column headerText="Plan MD" style="width: 100px">
+                                <h:outputText value="#{task.planMDDuration}" converter="durationConverter"/>
+                                <h:outputText value=" (#{task.planMD})"/>
+                            </p:column>
+
+                            <p:column headerText="Extend MD" style="width: 100px">
+                                <h:outputText value="#{task.extendMDDuration}" converter="durationConverter"/>
+                                <h:outputText value=" (#{task.extendMD})"/>
+                            </p:column>
+
+                            <p:column headerText="Total MD" style="width: 100px">
+                                <h:outputText value="#{task.totalMDDuration}" converter="durationConverter"/>
+                                <h:outputText value=" (#{task.totalMD})"/>
+                            </p:column>
+
+                            <p:column headerText="Actual MD" style="width: 100px">
+                                <h:outputText value="#{task.actualMDDuration}" converter="durationConverter"/>
+                                <h:outputText value=" (#{task.actualMD})"/>
+                            </p:column>
+
+                            <p:column headerText="%AMD" style="width: 80px">
+                                <h:outputText value="#{task.percentAMD}"/>
+                                <h:outputText value="%"/>
+                            </p:column>
+
+                            <p:column headerText="Description">
+                                <h:outputText value="#{task.description}"/>
+                            </p:column>
+
+                            <p:column headerText="Actions">
+                                <p:commandButton id="editBtn" icon="ui-icon-pencil" action="#{managePrjCtl.onPreEdit(task)}"
+                                                 update="projectTaskDlgForm"
+                                                 onsuccess="PF('projectTaskDlg').show();"/>
+                                <p:tooltip for="editBtn" value="Edit" position="top"/>
+                                <p:commandButton id="extendBtn" icon="ui-icon-arrowthick-2-e-w" action="#{managePrjCtl.onPreExtend(task)}"
+                                                 update="extendMDDlgForm"
+                                                 onsuccess="PF('extendMDDlg').show();"/>
+                                <p:tooltip for="extendBtn" value="Extend MD" position="top"/>
+                                <p:commandButton id="deleteBtn" icon="ui-icon-trash" action="#{managePrjCtl.onPreDeleteProjectTask(task)}"
+                                                 update="deleteDlgForm" rendered="#{task.actualMDMinute==0}"
+                                                 onsuccess="PF('deleteProjectTaskDlg').show();"/>
+                                <p:tooltip for="deleteBtn" value="Delete" position="top"/>
+                                <p:commandButton id="lockBtn" icon="ui-icon-locked" action="#{managePrjCtl.onPreLockProjectTask(task)}"
+                                                 update="lockDlgForm" rendered="#{task.actualMDMinute!=0 and task.status=='ACTIVE'}"
+                                                 onsuccess="PF('lockProjectTaskDlg').show();"/>
+                                <p:tooltip for="lockBtn" value="Lock" position="top"/>
+                                <p:commandButton id="unlockBtn" icon="ui-icon-unlocked" action="#{managePrjCtl.onPreLockProjectTask(task)}"
+                                                 update="unlockDlgForm" rendered="#{task.actualMDMinute!=0 and task.status=='LOCK'}"
+                                                 onsuccess="PF('unlockProjectTaskDlg').show();"/>
+                                <p:tooltip for="unlockBtn" value="Unlock" position="top"/>
+
+                            </p:column>
+
+                            <p:summaryRow>
+                                <p:column colspan="3" style="text-align:right">
+                                    <h:outputText value="Total:"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{managePrjCtl.sumPlanMD} MD"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{managePrjCtl.sumExtendMD} MD"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{managePrjCtl.sumTotalMD} MD"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputText value="#{managePrjCtl.sumActualMD} MD"/>
+                                </p:column>
+                                <p:column colspan="3">
+                                </p:column>
+                            </p:summaryRow>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+
+                </div>
+            </div>
+        </div>
+
+        <p:dialog header="Add/Edit Project Task" widgetVar="projectTaskDlg" modal="true" width="60%" resizable="false">
+            <h:form id="projectTaskDlgForm">
+                <h:panelGrid columns="2">
+
+                    <h:outputLabel value="Task" styleClass="require"/>
+                    <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:400px"
+                                     disabled="#{managePrjCtl.editMode}">
+                        <f:selectItems value="#{managePrjCtl.taskList}" var="task"
+                                       itemLabel="[#{task.code}] #{task.name}"
+                                       itemValue="#{task.id}"/>
+                        <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeTask}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="User" styleClass="require"/>
+                    <p:selectOneMenu value="#{managePrjCtl.selectedUserId}" style="width:400px">
+                        <f:selectItems value="#{managePrjCtl.userList}" var="user" itemLabel="#{user.name} #{user.lastName}"
+                                       itemValue="#{user.id}"/>
+                        <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeUser}"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="plan MD (HH:mm)" styleClass="require"/>
+                    <p:inputText value="#{managePrjCtl.newProjectTask.planMDDuration}"
+                                 disabled="#{managePrjCtl.editMode}"
+                                 styleClass="ui-inputtext" converter="durationConverter"/>
+
+                    <h:outputLabel value="AMD Calculation" />
+                    <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"  />
+
+                    <h:outputLabel value="Description"/>
+                    <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}" style="width: 500px"
+                                     autoResize="false"/>
+                </h:panelGrid>
+                <p:separator/>
+                <div class="onRight">
+                    <p:commandButton value="Save" action="#{managePrjCtl.onAddNew}"
+                                     rendered="#{managePrjCtl.editMode==false}"
+                                     update="mainForm,projectTaskDlgForm"/>
+                    <p:commandButton value="Update" action="#{managePrjCtl.onUpdate(newProjectTask)}"
+                                     rendered="#{managePrjCtl.editMode==true}"
+                                     update="mainForm,projectTaskDlgForm"/>
+                    <p:commandButton value="Cancel" onclick="PF('projectTaskDlg').hide()"/>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="60%" resizable="false">
+            <h:form id="extendMDDlgForm">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Extend from task: "/>
+                    <p:outputLabel
+                            value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}"/>
+
+                    <h:outputLabel value="extend MD (HH:mm)" styleClass="require"/>
+                    <p:inputText value="#{managePrjCtl.newExtTask.extendMDDuration}" disabled="#{managePrjCtl.editMode}"
+                                 styleClass="ui-inputtext" style="width: 70px" converter="durationConverter"/>
+
+                    <h:outputLabel value="Description"/>
+                    <p:inputTextarea value="#{managePrjCtl.newExtTask.description}" style="width: 500px"
+                                     autoResize="false"/>
+
+                </h:panelGrid>
+
+                <p:dataTable var="taskExt" value="#{managePrjCtl.taskExtList}" rows="10"
+                             paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                    <f:facet name="header">
+                        Extend History
+                    </f:facet>
+
+                    <p:column headerText="Date" style="width: 150px">
+                        <h:outputText value="#{taskExt.createDate}">
+                            <f:convertDateTime pattern="E dd/MM/yyyy HH:mm" timeZone="Asia/Bangkok"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Extend MD" style="width: 100px">
+                        <h:outputText value="#{taskExt.extendMD}"/>
+                    </p:column>
+
+                    <p:column headerText="Description">
+                        <h:outputText value="#{taskExt.description}"/>
+                    </p:column>
+                </p:dataTable>
+
+                <p:separator/>
+                <div class="onRight">
+                    <p:commandButton value="Save" action="#{managePrjCtl.onExtendManDay()}"
+                                     update="mainForm,extendMDDlgForm"/>
+                    <p:commandButton value="Cancel" onclick="PF('extendMDDlg').hide()"/>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </h:form>
+        </p:dialog>
+
+        <ui:include src="/resources/deleteConfirmDlg.xhtml">
+            <ui:param name="header" value="Delete Project Task"/>
+            <ui:param name="widgetVar" value="deleteProjectTaskDlg"/>
+            <ui:param name="msg1" value="Do you want to delete this project task?"/>
+            <ui:param name="msg2"
+                      value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}: #{managePrjCtl.newProjectTask.description}"/>
+            <ui:param name="controller" value="#{managePrjCtl}"/>
+            <ui:param name="action" value="onDeleteProjectTask"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+
+        <ui:include src="/resources/confirmDlg.xhtml">
+            <ui:param name="header" value="Lock Project Task"/>
+            <ui:param name="widgetVar" value="lockProjectTaskDlg"/>
+            <ui:param name="formName" value="lockDlgForm"/>
+            <ui:param name="msg1" value="Do you want to lock this project task?"/>
+            <ui:param name="msg2"
+                      value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}: #{managePrjCtl.newProjectTask.description}"/>
+            <ui:param name="controller" value="#{managePrjCtl}"/>
+            <ui:param name="action" value="onLockProjectTask"/>
+            <ui:param name="actionButton" value="Lock"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+
+        <ui:include src="/resources/confirmDlg.xhtml">
+            <ui:param name="header" value="Unlock Project Task"/>
+            <ui:param name="widgetVar" value="unlockProjectTaskDlg"/>
+            <ui:param name="formName" value="unlockDlgForm"/>
+            <ui:param name="msg1" value="Do you want to unlock this project task?"/>
+            <ui:param name="msg2"
+                      value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}: #{managePrjCtl.newProjectTask.description}"/>
+            <ui:param name="controller" value="#{managePrjCtl}"/>
+            <ui:param name="action" value="onUnlockProjectTask"/>
+            <ui:param name="actionButton" value="Unlock"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+
+        <ui:include src="/resources/footer.xhtml"/>
+    </h:body>
+</f:view>
+</html>

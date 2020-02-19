@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <p:dialog header="#{header}" widgetVar="#{widgetVar}" modal="true" width="40%" resizable="false">
+        <h:form id="deleteDlgForm">
+            <h:panelGrid columns="1">
+                <h:outputText value="#{msg1}"/>
+                <h:outputText value="&#34;#{msg2}&#34;" style="font-weight: bold"/>
+            </h:panelGrid>
+
+            <p:separator/>
+            <div class="onRight">
+                <p:commandButton value="Delete" action="#{controller[action]}"
+                                 onsuccess="PF('#{widgetVar}').hide();"
+                                 update="#{update}"/>
+                <p:commandButton value="Cancel" onclick="PF('#{widgetVar}').hide()"/>
+            </div>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </h:form>
+    </p:dialog>
+
+</f:view>
+</html>

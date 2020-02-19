@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:event type="preRenderView" listener="#{accessCtl.checkAccess('S0003')}"/>
+
+    <h:head>
+        <title>Task</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
+        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
+
+        <!-- Custom styles for this template -->
+        <h:outputScript library="js" name="jquery-3.4.1.slim.min.js" target="head"/>
+        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
+
+        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <script>
+            $(document).ready(function () {
+                $(".nav").find(".active").removeClass("active");
+                $('#task').addClass('active');
+            });
+        </script>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+
+                        <p:commandButton value="New Task" action="#{taskCtl.onPreNewTask}"
+                                         onsuccess="PF('taskDlg').show()" update="taskDlgForm"/>
+
+                        <p:dataTable var="task" value="#{taskCtl.taskList}" rows="10"
+                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <p:column headerText="Code" style="width: 80px">
+                                <h:outputText value="#{task.code}"/>
+                            </p:column>
+
+                            <p:column headerText="Name" style="width: 180px">
+                                <h:outputText value="#{task.name}"/>
+                            </p:column>
+
+                            <p:column headerText="Type" style="width: 120px">
+                                <h:outputText value="#{task.type}"/>
+                            </p:column>
+
+                            <p:column headerText="Chargeable" style="width: 100px">
+                                <h:outputText value="#{(task.chargeable)?'Yes':'No'}"/>
+                            </p:column>
+
+                            <p:column headerText="Description">
+                                <h:outputText value="#{task.description}"/>
+                            </p:column>
+
+
+                            <p:column headerText="Actions" style="width: 200px">
+                                <p:commandButton value="Edit" action="#{taskCtl.onPreUpdateTask}"
+                                                 update="taskDlgForm"
+                                                 onsuccess="PF('taskDlg').show();">
+                                    <f:setPropertyActionListener value="#{task.id}"
+                                                                 target="#{taskCtl.selectedTaskId}"/>
+                                </p:commandButton>
+
+                                <p:commandButton value="Delete" action="#{taskCtl.onPreDeleteTask}"
+                                                 update="deleteDlgForm"
+                                                 onsuccess="PF('deleteTaskDlg').show();">
+                                    <f:setPropertyActionListener value="#{task.id}"
+                                                                 target="#{taskCtl.selectedTaskId}"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog header="Add/Edit Task" widgetVar="taskDlg" modal="true" width="75%" resizable="false">
+            <h:form id="taskDlgForm">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Code"  styleClass="require"/>
+                    <p:inputText value="#{taskCtl.newTask.code}" style="width: 250px" styleClass="#{taskCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
+                    <h:outputLabel value="Name" styleClass="require"/>
+                    <p:inputText value="#{taskCtl.newTask.name}" style="width: 250px" styleClass="#{taskCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <h:outputLabel value="Type" styleClass="require"/>
+                    <p:selectOneMenu value="#{taskCtl.newTask.type}" style="width:300px">
+                        <f:selectItem itemLabel="General" itemValue="GENERAL"/>
+                        <f:selectItem itemLabel="Leave" itemValue="LEAVE"/>
+                    </p:selectOneMenu>
+
+                    <h:outputLabel value="Chargeable"/>
+                    <p:selectBooleanButton id="value1" value="#{taskCtl.newTask.chargeable}" onLabel="Yes" offLabel="No"  />
+                    <h:outputLabel value="Description"/>
+                    <p:inputTextarea value="#{taskCtl.newTask.description}" style="width: 400px"/>
+                </h:panelGrid>
+                <p:separator/>
+                <div class="onRight">
+                    <p:commandButton value="Save" action="#{taskCtl.onNewTask}"
+                                     rendered="#{taskCtl.editMode==false}"
+                                     update="mainForm,taskDlgForm"/>
+                    <p:commandButton value="Update" action="#{taskCtl.onUpdateTask}"
+                                     rendered="#{taskCtl.editMode==true}"
+                                     update="mainForm,taskDlgForm"/>
+                    <p:commandButton value="Cancel" onclick="PF('taskDlg').hide()"/>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </h:form>
+        </p:dialog>
+
+        <ui:include src="/resources/deleteConfirmDlg.xhtml">
+            <ui:param name="header" value="Delete Task"/>
+            <ui:param name="widgetVar" value="deleteTaskDlg"/>
+            <ui:param name="msg1" value="Do you want to delete this task?"/>
+            <ui:param name="msg2"
+                      value="(#{taskCtl.newTask.code}: #{taskCtl.newTask.name})"/>
+            <ui:param name="controller" value="#{taskCtl}"/>
+            <ui:param name="action" value="onDeleteTask"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+        <ui:include src="/resources/footer.xhtml"/>
+    </h:body>
+</f:view>
+</html>

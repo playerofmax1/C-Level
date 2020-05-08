@@ -70,7 +70,7 @@ public class ProjectTaskDAO extends GenericDAO<ProjectTask, Long> {
         criteria.where(
                 cb.equal(root.get(ProjectTask_.status), RecordStatus.ACTIVE),
                 cb.equal(root.get(ProjectTask_.user), user),
-                cb.equal(projectJoin.get(Project_.STATUS),RecordStatus.ACTIVE)
+                cb.equal(projectJoin.get(Project_.status),RecordStatus.ACTIVE)
         );
 
         Query query = em.createQuery(criteria);

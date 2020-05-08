@@ -1,0 +1,65 @@
+@startuml
+
+title **KUDU PROJECT**
+
+skinparam defaultTextAlignment center
+skinparam BackgroundColor #silver
+skinparam RoundCorner 20
+
+!define FONTICON ..\..\..\GitHub\plantuml-icon-font-sprites
+!define OFFICEICON ..\..\..\GitHub\plantuml-office-icons\office2014
+
+!include FONTICON\common.puml
+!include FONTICON\font-awesome\desktop.puml
+!include FONTICON\font-awesome\laptop.puml
+!include FONTICON\font-awesome\mobile.puml
+!include FONTICON\devicons\mysql.puml
+!include FONTICON\devicons\chrome.puml
+!include FONTICON\devicons\firefox.puml
+!include FONTICON\devicons\safari.puml
+!include FONTICON\devicons\ie.puml
+!include OFFICEICON\Concepts\service_application.puml
+!include OFFICEICON\Concepts\application_android.puml
+!include OFFICEICON\Concepts\website.puml
+!include OFFICEICON\Servers\web_server.puml
+
+actor "System \nAdmin" as SystemAdmin #lightgray
+actor "User" as User #lightgray
+
+FA_DESKTOP(SBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #white
+FA_LAPTOP(FBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #white
+
+card "Front Module" {
+    OFF_SERVICE_APPLICATION(FOWSS, "FO WSS", agent, #black) #lightgray
+    OFF_WEBSITE(FOW, "Front Webapp \nand Website", agent, #black) #lightgray
+    FOWSS<-FOW
+}
+
+card "API Module" {
+    OFF_SERVICE_APPLICATION(APIWSS, "API WSS", agent, #black) #lightgray
+    OFF_SERVICE_APPLICATION(API, "API REST Service", agent, #black) #lightgray
+    OFF_WEBSITE(APIW, "API Webapp", agent, #black) #lightgray
+    APIW->API
+}
+
+card "PJT-LIB Module" {
+    OFF_SERVICE_APPLICATION(LIB, "LIB", agent, #black) #lightgray
+}
+
+DEV_MYSQL(DB, "MariaDB\n---\nDatabase", database, #black) #lightgray
+
+User-->FBrowser
+FBrowser-->FOW: HTML\nHTTP
+
+FOW-->API: REST\nHTTP
+FBrowser<--FOWSS: Message\nWSS
+
+APIWSS->FOW: Message\nWSS
+API->APIWSS
+API-down->LIB: Something
+API--->DB: SQL
+
+SBrowser-->APIW: HTML\nHTTP
+SystemAdmin-->SBrowser
+
+@enduml

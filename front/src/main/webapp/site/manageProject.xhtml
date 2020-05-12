@@ -49,7 +49,7 @@
                             <h:outputLabel value="#{managePrjCtl.project.customer.name}"/>
                         </h:panelGrid>
 
-                        <h:panelGrid columns="8">
+                        <h:panelGrid columns="8" rendered="false">
                             <h:outputLabel value="Plan cost:" style="width: 80px; horiz-align: right"/>
                             <h:outputLabel value="#{managePrjCtl.projectCost.planCost}" style="width: 120px; horiz-align: left">
                                 <f:convertNumber pattern="#,##0.00"/>

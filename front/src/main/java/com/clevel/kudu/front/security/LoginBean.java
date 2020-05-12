@@ -93,7 +93,7 @@ public final class LoginBean implements Serializable {
         userDetail.setRole("ROLE_USER");
 
         //spacial for maintenance
-        if (userDetail.getUserName().equalsIgnoreCase("thammasak")) {
+        if (userDetail.getUserName().equalsIgnoreCase("prazit")) {
             userDetail.setRole("ROLE_SYSTEM");
         }
 

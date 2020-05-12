@@ -1,5 +1,6 @@
 package com.clevel.kudu.front.controller;
 
+import com.clevel.kudu.front.system.Application;
 import com.clevel.kudu.model.CurrentUser;
 import com.clevel.kudu.model.UserDetail;
 import com.clevel.kudu.resource.APIService;
@@ -11,11 +12,16 @@ import java.io.Serializable;
 public class AbstractController implements Serializable {
     @Inject
     protected Logger log;
+
     @Inject
     protected APIService apiService;
+
     @Inject
     @CurrentUser
     protected UserDetail userDetail;
+
+    @Inject
+    protected Application application;
 
     public UserDetail getUserDetail() {
         return userDetail;
@@ -23,5 +29,9 @@ public class AbstractController implements Serializable {
 
     public void setUserDetail(UserDetail userDetail) {
         this.userDetail = userDetail;
+    }
+
+    public String getApplicationVersionString() {
+        return application.getVersionString();
     }
 }

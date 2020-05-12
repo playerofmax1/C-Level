@@ -178,7 +178,7 @@ public class UserController extends AbstractController {
     }
 
     private void loadUserInfo() {
-        log.debug("loadUserInfo. (selectedUserId: {})",selectedUserId);
+        log.debug("loadUserInfo. (selectedUserId: {})", selectedUserId);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(selectedUserId));
         request.setUserId(userDetail.getUserId());
@@ -194,7 +194,7 @@ public class UserController extends AbstractController {
     }
 
     public void onPreUpdateUser() {
-        log.debug("onPreUpdateUser. (selectedUserId: {})",selectedUserId);
+        log.debug("onPreUpdateUser. (selectedUserId: {})", selectedUserId);
 
         loadUserInfo();
         if (newUser.getRole() != null) {
@@ -309,23 +309,30 @@ public class UserController extends AbstractController {
     public void initDualList() {
         log.debug("initDualList. (selectedUserId: {})", selectedUserId);
 
-        List<UserDTO> userSource = userList;
+        List<UserDTO> userSource = new ArrayList<>(userList);
         List<UserDTO> userTarget = new ArrayList<>();
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(selectedUserId));
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getSecurityResource().getUserViewTS(request);
+
         if (response.getStatus() == 200) {
             ServiceResponse<List<UserTimeSheetDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserTimeSheetDTO>>>() {
             });
+
             List<UserTimeSheetDTO> userTSList = serviceResponse.getResult();
             for (UserTimeSheetDTO u : userTSList) {
                 userTarget.add(u.getTimeSheetUser());
                 userSource.remove(u.getTimeSheetUser());
             }
+
+            FacesUtil.setActionResult(true);
+
         } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            String message = "Wrong response status! (status: " + response.getStatus() + ")";
+            log.debug(message);
+            FacesUtil.addError(message);
+            FacesUtil.setActionResult(false);
         }
 
         userTimeSheet = new DualListModel<>(userFilter(userSource), userTarget);
@@ -352,8 +359,6 @@ public class UserController extends AbstractController {
 
     public void onTransfer(TransferEvent event) {
         log.debug("onTransfer. (selectedUserId: {} user: {})", selectedUserId, event.getItems());
-        log.debug("SRC: {}", userTimeSheet.getSource());
-        log.debug("TAR: {}", userTimeSheet.getTarget());
 
         List<UserTimeSheetDTO> tsList = new ArrayList<>();
         UserTimeSheetDTO userTS;
@@ -366,7 +371,7 @@ public class UserController extends AbstractController {
             tsList.add(userTS);
         }
 
-        UserTimeSheetRequest userTimeSheetRequest = new UserTimeSheetRequest(selectedUserId,tsList);
+        UserTimeSheetRequest userTimeSheetRequest = new UserTimeSheetRequest(selectedUserId, tsList);
         ServiceRequest<UserTimeSheetRequest> request = new ServiceRequest<>(userTimeSheetRequest);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getSecurityResource().updateUserViewTS(request);

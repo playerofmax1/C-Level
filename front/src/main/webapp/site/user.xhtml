@@ -101,9 +101,11 @@
                                 </p:commandButton>
                                 <p:tooltip for="deleteBtn" value="Delete" position="top"/>
 
-                                <p:commandButton id="viewTSBtn" value="V" action="#{userCtl.onPreViewTSUser}"
-                                                 update="viewTSDlgForm" disabled="#{!accessCtl.functionEnable('F0002')}"
-                                                 onsuccess="PF('viewTSDlg').show();">
+                                <p:commandButton id="viewTSBtn" value="V"
+                                                 disabled="#{!accessCtl.functionEnable('F0002')}"
+                                                 action="#{userCtl.onPreViewTSUser}"
+                                                 oncomplete="if(args.isActionSuccess) PF('viewTSDlg').show();"
+                                                 update="viewTSDlgForm, mainForm:msg">
                                     <f:setPropertyActionListener value="#{user.id}"
                                                                  target="#{userCtl.selectedUserId}"/>
                                 </p:commandButton>
@@ -122,20 +124,20 @@
             <h:form id="userDlgForm">
                 <h:panelGrid columns="4">
                     <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{userCtl.newUser.name}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{userCtl.newUser.name}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Lastname" styleClass="require"/>
-                    <p:inputText value="#{userCtl.newUser.lastName}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['lastName']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{userCtl.newUser.lastName}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['lastName']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Login Name" styleClass="require"/>
                     <p:inputText value="#{userCtl.newUser.loginName}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['login']==null?'ui-inputtext':'ui-state-error'}"
                                  disabled="#{userCtl.editMode==true}"/>
                     <h:outputLabel value="Email" styleClass="require"/>
-                    <p:inputText value="#{userCtl.newUser.email}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['email']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{userCtl.newUser.email}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['email']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Phone Number" styleClass="require"/>
                     <p:inputText value="#{userCtl.newUser.phoneNumber}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['phone']==null?'ui-inputtext':'ui-state-error'}"
                                  maxlength="10"/>
 
-                    <h:outputLabel value="TimeSheet start date"  styleClass="require"/>
-                    <p:datePicker id="popup" value="#{userCtl.newUser.tsStartDate}" style="width: 200px;" pattern="dd/MM/yyyy" />
+                    <h:outputLabel value="TimeSheet start date" styleClass="require"/>
+                    <p:datePicker id="popup" value="#{userCtl.newUser.tsStartDate}" style="width: 200px;" pattern="dd/MM/yyyy"/>
 
                     <h:outputLabel value="Role"/>
                     <p:selectOneMenu value="#{userCtl.selectedRoleId}" style="width:250px">
@@ -152,11 +154,11 @@
 
                     <h:outputLabel value="Password" styleClass="require" rendered="#{userCtl.editMode==false}"/>
                     <p:password value="#{userCtl.newUser.password}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                 rendered="#{userCtl.editMode==false}"/>
+                                rendered="#{userCtl.editMode==false}"/>
 
                     <h:outputLabel value="Confirm Password" styleClass="require" rendered="#{userCtl.editMode==false}"/>
                     <p:password value="#{userCtl.confirmPwd}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                 rendered="#{userCtl.editMode==false}"/>
+                                rendered="#{userCtl.editMode==false}"/>
 
                 </h:panelGrid>
                 <p:spacer height="200"/>
@@ -180,7 +182,7 @@
                 <h:panelGrid columns="1">
 
                     <h:outputText value="Reset password for user: #{userCtl.newUser.name} #{userCtl.newUser.lastName} (#{userCtl.newUser.loginName})"/>
-                    <h:outputText value="New password will be sent to email: #{userCtl.newUser.email}" />
+                    <h:outputText value="New password will be sent to email: #{userCtl.newUser.email}"/>
 
 
                 </h:panelGrid>
@@ -202,7 +204,7 @@
                             itemValue="#{user}" itemLabel=" #{user.name} #{user.lastName}" showCheckbox="true"
                             showSourceFilter="true" showTargetFilter="true"
                             filterMatchMode="contains" converter="userConverter"
-                            responsive="true" >
+                            responsive="true">
 
                     <f:facet name="sourceCaption">Available</f:facet>
                     <f:facet name="targetCaption">Viewable</f:facet>

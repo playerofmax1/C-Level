@@ -27,9 +27,10 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
 
-@Named("loginBean")
 @RequestScoped
+@Named("loginBean")
 public final class LoginBean implements Serializable {
+
     @Inject
     private Logger log;
     @Inject
@@ -40,9 +41,11 @@ public final class LoginBean implements Serializable {
 
     @Inject
     private SimpleAuthenticationManager authenticationManager;
+
     @Inject
     @SpringBean("sessionRegistry")
     private SessionRegistry sessionRegistry;
+
     @Inject
     @SpringBean("sas")
     private CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategy;
@@ -78,6 +81,8 @@ public final class LoginBean implements Serializable {
             FacesUtil.addError("account is disabled!");
             return;
         }
+
+        /*TODO: need implementation of (serviceResponse.getApiResponse() == APIResponse.FORCE_CHANGE_PWD)*/
 
         AuthenticationResult result = serviceResponse.getResult();
         log.debug("{}", result);

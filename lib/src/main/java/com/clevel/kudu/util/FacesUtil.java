@@ -9,6 +9,9 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.primefaces.context.PrimeRequestContext;
+
 import java.io.Serializable;
 
 public class FacesUtil implements Serializable {
@@ -28,6 +31,11 @@ public class FacesUtil implements Serializable {
 
     public static void addError(String clientId, String message) {
         FacesContext.getCurrentInstance().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR,"[ERROR]",message));
+    }
+
+    public static void setActionResult(boolean result){
+        PrimeRequestContext requestContext = PrimeRequestContext.getCurrentInstance();
+        requestContext.getCallbackParams().put("isActionSuccess", result);
     }
 
     public static HttpServletRequest getRequest() {

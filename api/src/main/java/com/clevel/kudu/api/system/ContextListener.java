@@ -17,12 +17,14 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        log.debug("context initializing...");
+        log.trace("context initializing...");
 
         ServletContext ctx = servletContextEvent.getServletContext();
         app.setRealPath(ctx.getRealPath("/"));
 
         app.loadConfiguration();
+
+        log.trace("contextInitialized.");
     }
 
     @Override

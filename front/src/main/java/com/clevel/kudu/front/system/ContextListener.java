@@ -16,8 +16,7 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        log.debug("context initializing...");
-
+        log.debug("contextInitialized");
     }
 
     @Override

@@ -40,8 +40,9 @@ public class Application {
         for (Config config : configList) {
             configMap.put(SystemConfig.lookup(config.getName()), config.getValue());
         }
-        log.debug("===== current configuration (size: {}) =====", configMap.size());
+        log.debug("===== current configuration set (count: {}) =====", configMap.size());
         Util.listFields(configMap);
+        log.debug("===== current configuration set (count: {}) =====", configMap.size());
     }
 
     public String getRealPath() {

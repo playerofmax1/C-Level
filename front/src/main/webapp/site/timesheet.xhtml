@@ -116,14 +116,7 @@
                             </p:column>
 
                             <p:column headerText="Description">
-                                <h:outputText id="descDetail" value="#{(timesheet.description.length()>50)?
-                                timesheet.description.substring(0,50).concat('...'):timesheet.description}"/>
-                                <p:commandButton id="detailBtn" icon="ui-icon-info" type="button" title="Detail"
-                                                 rendered="#{(timesheet.description.length()>50)}" />
-                                <p:overlayPanel id="detailPanel" for="detailBtn" showEffect="fade" showEvent="click" hideEvent="mousedown"
-                                                dismissable="true">
-                                    <p:inputTextarea value="#{timesheet.description}" rows="3" cols="50" autoResize="false" readonly="true"/>
-                                </p:overlayPanel>
+                                <h:outputText id="descDetail" value="#{timesheet.description}"/>
                             </p:column>
 
                             <p:column headerText="Actions" style="width: 100px">

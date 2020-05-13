@@ -70,6 +70,10 @@ public class ProjectManager {
         newProject.setCustomer(customerDAO.findById(projectDTO.getCustomer().getId()));
         log.debug("newProject: {}", newProject);
 
+        long billableMDMinute = projectDTO.getBillableMDDuration().toMinutes();
+        newProject.setBillableMDMinute(billableMDMinute);
+        newProject.setBillableMD(DateTimeUtil.getManDays(billableMDMinute));
+
         Date now = DateTimeUtil.now();
         newProject.setCreateDate(now);
         newProject.setCreateBy(user);
@@ -95,6 +99,10 @@ public class ProjectManager {
 
     public void updateProjectInfo(long userId, ProjectDTO projectDTO) throws RecordNotFoundException {
         log.debug("updateProjectInfo. (userId: {}, projectDTO: {})", userId, projectDTO);
+
+        long billableMDMinute = projectDTO.getBillableMDDuration().toMinutes();
+        projectDTO.setBillableMDMinute(billableMDMinute);
+        projectDTO.setBillableMD(DateTimeUtil.getManDays(billableMDMinute));
 
         // validate user
         User user = userDAO.findById(userId);

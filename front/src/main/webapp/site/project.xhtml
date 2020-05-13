@@ -81,7 +81,7 @@
                                 <h:outputText value="#{project.customer.name}"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 230px">
+                            <p:column headerText="Actions">
                                 <p:commandButton id="editBtn" value="E" action="#{projectCtl.onPreUpdateProject}"
                                                  update="projectDlgForm"
                                                  onsuccess="PF('projectDlg').show();">
@@ -125,7 +125,6 @@
         <p:dialog header="Add/Edit Project" widgetVar="projectDlg" modal="true" width="50%" resizable="false">
             <h:form id="projectDlgForm">
                 <h:panelGrid columns="2">
-
                     <h:outputLabel value="Customer"/>
                     <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" style="width:250px">
                         <f:selectItems value="#{projectCtl.customerList}" var="customer" itemLabel="[#{customer.code}] #{customer.name}"
@@ -135,13 +134,20 @@
 
                     <h:outputLabel value="Code" styleClass="require"/>
                     <p:inputText value="#{projectCtl.newProject.code}" styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
+
                     <h:outputLabel value="Name" styleClass="require"/>
                     <p:inputText value="#{projectCtl.newProject.name}" styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+
                     <h:outputLabel value="Type" styleClass="require"/>
                     <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:300px">
                         <f:selectItem itemLabel="Normal" itemValue="NORMAL"/>
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
+
+                    <h:outputLabel value="Billable MD (HH:mm)" styleClass="require"/>
+                    <p:inputText value="#{projectCtl.newProject.billableMDDuration}"
+                                 styleClass="ui-inputtext" converter="durationConverter"/>
+
                     <h:outputLabel value="Description"/>
                     <p:inputTextarea value="#{projectCtl.newProject.description}" style="width: 400px"/>
                 </h:panelGrid>

@@ -1,5 +1,6 @@
 package com.clevel.kudu.api.model.db.working;
 
+import com.clevel.kudu.api.model.converter.DurationConverter;
 import com.clevel.kudu.api.model.converter.ProjectTypeConverter;
 import com.clevel.kudu.api.model.converter.RecordStatusConverter;
 import com.clevel.kudu.api.model.db.AbstractAuditEntity;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.Duration;
 
 @Entity
 @Table(name = "wrk_project")
@@ -22,6 +24,14 @@ public class Project extends AbstractAuditEntity {
     private String description;
     @Column(name = "manDays")
     private BigDecimal manDays;
+
+    @Column(name = "billableMD")
+    private BigDecimal billableMD;
+    @Column(name = "billableMDDuration")
+    @Convert(converter = DurationConverter.class)
+    private Duration billableMDDuration;
+    @Column(name = "billableMDMinute")
+    private Long billableMDMinute;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", nullable = false)
@@ -70,6 +80,30 @@ public class Project extends AbstractAuditEntity {
         this.manDays = manDays;
     }
 
+    public BigDecimal getBillableMD() {
+        return billableMD;
+    }
+
+    public void setBillableMD(BigDecimal billableMD) {
+        this.billableMD = billableMD;
+    }
+
+    public Duration getBillableMDDuration() {
+        return billableMDDuration;
+    }
+
+    public void setBillableMDDuration(Duration billableMDDuration) {
+        this.billableMDDuration = billableMDDuration;
+    }
+
+    public Long getBillableMDMinute() {
+        return billableMDMinute;
+    }
+
+    public void setBillableMDMinute(Long billableMDMinute) {
+        this.billableMDMinute = billableMDMinute;
+    }
+
     public Customer getCustomer() {
         return customer;
     }
@@ -96,15 +130,19 @@ public class Project extends AbstractAuditEntity {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                .append("id", id)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("code", code)
                 .append("name", name)
                 .append("description", description)
                 .append("manDays", manDays)
+                .append("billableMD", billableMD)
+                .append("billableMDDuration", billableMDDuration)
+                .append("billableMDMinute", billableMDMinute)
                 .append("customer", customer)
                 .append("type", type)
                 .append("status", status)
-                .toString();
+                .append("id", id)
+                .toString()
+                .replace('=', ':');
     }
 }

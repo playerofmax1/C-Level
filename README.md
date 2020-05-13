@@ -13,7 +13,7 @@
 | Java EE                                     | Java EE8                                       | in runtime, this is provided by Wildfly<br />in devtime, this is the library named 'javax-lib' |
 | Spring Security                             | Spring Framework:<br />Spring Security v5.2.1  | SessionRegistry                                              |
 | Primefaces                                  | Primefaces 7.0                                 | bundled with<br />+ jQuery v3.3.1<br />+ jQuery UI v1.12.1   |
-| Deprecated: Unused ~~jQuery Newer Version~~ | ~~jquery-3.4.1.slim.min.js~~                   | read this : https://stackoverflow.com/questions/25508564/how-to-solve-a-conflict-with-primefaces-jquery<br /><br /><br />already test to replace jquery by this newer version (/resources/primefaces/jquery/jquery.js) it will make primefaces actions can't operate.<br />already test to remove this newer version to see what's happen in timesheet, but still work as well. |
+| Deprecated: Unused ~~jQuery Newer Version~~ | ~~jquery-3.4.1.slim.min.js~~                   | read this : https://stackoverflow.com/questions/25508564/how-to-solve-a-conflict-with-primefaces-jquery<br /><br /><br />already tested to replace jquery by this newer version (/resources/primefaces/jquery/jquery.js) it will make primefaces actions can't operate.<br />already tested to remove this newer version to see what's happen in timesheet, but still work as well. |
 | Bootstrap CSS                               | Bootstrap v3.3.7                               | [need to check for where to use this css library]            |
 
 

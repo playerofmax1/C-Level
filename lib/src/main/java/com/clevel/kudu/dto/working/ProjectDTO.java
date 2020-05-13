@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 public class ProjectDTO implements LookupList {
     private long id;
@@ -14,6 +15,18 @@ public class ProjectDTO implements LookupList {
     private String name;
     private String description;
     private BigDecimal manDays;
+
+    private BigDecimal billableMD;
+    private Duration billableMDDuration;
+    private Long billableMDMinute;
+
+    private BigDecimal totalPlanMD;
+    private Duration totalPlanMDDuration;
+    private Long totalPlanMDMinute;
+
+    private BigDecimal remainingMD;
+    private Duration remainingMDDuration;
+    private Long remainingMDMinute;
 
     private CustomerDTO customer;
     private ProjectType type;
@@ -65,6 +78,85 @@ public class ProjectDTO implements LookupList {
         this.manDays = manDays;
     }
 
+    public BigDecimal getBillableMD() {
+        return billableMD;
+    }
+
+    public void setBillableMD(BigDecimal billableMD) {
+        this.billableMD = billableMD;
+    }
+
+    public Duration getBillableMDDuration() {
+        return billableMDDuration;
+    }
+
+    public void setBillableMDDuration(Duration billableMDDuration) {
+        if (billableMDDuration == null) {
+            billableMDDuration = Duration.ZERO;
+            billableMD = BigDecimal.ZERO;
+            billableMDMinute = 0L;
+        }
+        this.billableMDDuration = billableMDDuration;
+    }
+
+    public Long getBillableMDMinute() {
+        return billableMDMinute;
+    }
+
+    public void setBillableMDMinute(Long billableMDMinute) {
+        this.billableMDMinute = billableMDMinute;
+    }
+
+    public BigDecimal getTotalPlanMD() {
+        return totalPlanMD;
+    }
+
+    public void setTotalPlanMD(BigDecimal totalPlanMD) {
+        this.totalPlanMD = totalPlanMD;
+        this.remainingMD = billableMD.subtract(this.totalPlanMD);
+        /*TODO: all totalPlanMD fields and remainingMD fields may be need value too*/
+    }
+
+    public Duration getTotalPlanMDDuration() {
+        return totalPlanMDDuration;
+    }
+
+    public void setTotalPlanMDDuration(Duration totalPlanMDDuration) {
+        this.totalPlanMDDuration = totalPlanMDDuration;
+    }
+
+    public Long getTotalPlanMDMinute() {
+        return totalPlanMDMinute;
+    }
+
+    public void setTotalPlanMDMinute(Long totalPlanMDMinute) {
+        this.totalPlanMDMinute = totalPlanMDMinute;
+    }
+
+    public BigDecimal getRemainingMD() {
+        return remainingMD;
+    }
+
+    public void setRemainingMD(BigDecimal remainingMD) {
+        this.remainingMD = remainingMD;
+    }
+
+    public Duration getRemainingMDDuration() {
+        return remainingMDDuration;
+    }
+
+    public void setRemainingMDDuration(Duration remainingMDDuration) {
+        this.remainingMDDuration = remainingMDDuration;
+    }
+
+    public Long getRemainingMDMinute() {
+        return remainingMDMinute;
+    }
+
+    public void setRemainingMDMinute(Long remainingMDMinute) {
+        this.remainingMDMinute = remainingMDMinute;
+    }
+
     public CustomerDTO getCustomer() {
         return customer;
     }
@@ -99,16 +191,26 @@ public class ProjectDTO implements LookupList {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("id", id)
                 .append("code", code)
                 .append("name", name)
                 .append("description", description)
                 .append("manDays", manDays)
+                .append("billableMD", billableMD)
+                .append("billableMDDuration", billableMDDuration)
+                .append("billableMDMinute", billableMDMinute)
+                .append("totalPlanMD", totalPlanMD)
+                .append("totalPlanMDDuration", totalPlanMDDuration)
+                .append("totalPlanMDMinute", totalPlanMDMinute)
+                .append("remainingMD", remainingMD)
+                .append("remainingMDDuration", remainingMDDuration)
+                .append("remainingMDMinute", remainingMDMinute)
                 .append("customer", customer)
                 .append("type", type)
                 .append("status", status)
                 .append("version", version)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

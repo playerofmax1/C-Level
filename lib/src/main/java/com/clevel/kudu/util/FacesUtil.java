@@ -33,9 +33,24 @@ public class FacesUtil implements Serializable {
         FacesContext.getCurrentInstance().addMessage(clientId, new FacesMessage(FacesMessage.SEVERITY_ERROR,"[ERROR]",message));
     }
 
-    public static void setActionResult(boolean result){
+    public static void actionSuccess() {
         PrimeRequestContext requestContext = PrimeRequestContext.getCurrentInstance();
-        requestContext.getCallbackParams().put("isActionSuccess", result);
+        requestContext.getCallbackParams().put("isActionSuccess", true);
+    }
+
+    public static void actionSuccess(String infoMessage) {
+        actionSuccess();
+        addInfo(infoMessage);
+    }
+
+    public static void actionFailed() {
+        PrimeRequestContext requestContext = PrimeRequestContext.getCurrentInstance();
+        requestContext.getCallbackParams().put("isActionSuccess", false);
+    }
+
+    public static void actionFailed(String errorMessage) {
+        actionFailed();
+        addError(errorMessage);
     }
 
     public static HttpServletRequest getRequest() {

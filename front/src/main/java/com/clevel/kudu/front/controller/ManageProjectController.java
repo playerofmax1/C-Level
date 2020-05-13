@@ -5,7 +5,6 @@ import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.front.validation.Validator;
-import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.util.FacesUtil;
 import org.primefaces.PrimeFaces;
 
@@ -69,7 +68,7 @@ public class ManageProjectController extends AbstractController {
     }
 
     private void loadProject() {
-        log.debug("loadProject. (projectId: {})",projectId);
+        log.debug("loadProject. (projectId: {})", projectId);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(projectId));
         request.setUserId(userDetail.getUserId());
@@ -85,7 +84,7 @@ public class ManageProjectController extends AbstractController {
     }
 
     private void loadProjectCost() {
-        log.debug("loadProjectCost. (projectId: {})",projectId);
+        /*log.debug("loadProjectCost. (projectId: {})", projectId);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(projectId));
         request.setUserId(userDetail.getUserId());
@@ -97,11 +96,11 @@ public class ManageProjectController extends AbstractController {
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
-        }
+        }*/
     }
 
     private void loadProjectTask() {
-        log.debug("loadProjectTask. (projectId: {})",projectId);
+        log.debug("loadProjectTask. (projectId: {})", projectId);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(projectId));
         request.setUserId(userDetail.getUserId());
@@ -123,16 +122,17 @@ public class ManageProjectController extends AbstractController {
         sumExtendMD = BigDecimal.ZERO;
         sumTotalMD = BigDecimal.ZERO;
         sumActualMD = BigDecimal.ZERO;
-        for (ProjectTaskDTO pt: projectTaskList) {
+        for (ProjectTaskDTO pt : projectTaskList) {
             sumPlanMD = sumPlanMD.add(pt.getPlanMD());
             sumExtendMD = sumExtendMD.add(pt.getExtendMD());
             sumTotalMD = sumTotalMD.add(pt.getTotalMD());
             sumActualMD = sumActualMD.add(pt.getActualMD());
         }
+        project.setTotalPlanMD(sumTotalMD);
     }
 
     private void loadProjectTaskExt(long projectTaskExtId) {
-        log.debug("loadProjectTaskExt. (projectTaskExtId: {})",projectTaskExtId);
+        log.debug("loadProjectTaskExt. (projectTaskExtId: {})", projectTaskExtId);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(projectTaskExtId));
         request.setUserId(userDetail.getUserId());
@@ -150,7 +150,7 @@ public class ManageProjectController extends AbstractController {
     private void loadTask() {
         log.debug("loadTask.");
 
-        TaskRequest taskRequest = new TaskRequest(true,false,false);
+        TaskRequest taskRequest = new TaskRequest(true, false, false);
         ServiceRequest<TaskRequest> request = new ServiceRequest<>(taskRequest);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getTaskService().getTaskList(request);
@@ -205,24 +205,24 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onChangeTask() {
-        log.debug("onChangeTask. (selectTaskId: {})",selectedTaskId);
+        log.debug("onChangeTask. (selectTaskId: {})", selectedTaskId);
         if (!taskList.isEmpty()) {
-            newProjectTask.setTask(getObjById(taskList,selectedTaskId));
+            newProjectTask.setTask(getObjById(taskList, selectedTaskId));
         }
     }
 
     public void onChangeUser() {
-        log.debug("onChangeUser. (selectUserId: {})",selectedUserId);
+        log.debug("onChangeUser. (selectUserId: {})", selectedUserId);
         if (!userList.isEmpty()) {
-            newProjectTask.setUser(getObjById(userList,selectedUserId));
+            newProjectTask.setUser(getObjById(userList, selectedUserId));
         }
     }
 
     public void onAddNew() {
-        log.debug("onAddNew. (newProjectTask: {})",newProjectTask);
+        log.debug("onAddNew. (newProjectTask: {})", newProjectTask);
 
         // Validate Plan-MD > 0
-        if (newProjectTask.getPlanMDDuration().compareTo(Duration.ZERO)==0) {
+        if (newProjectTask.getPlanMDDuration().compareTo(Duration.ZERO) == 0) {
             log.debug("Plan-MD is equal to 0.");
             FacesUtil.addError("Plan-MD is equal to 0!");
             return;
@@ -248,7 +248,7 @@ public class ManageProjectController extends AbstractController {
     }
 
     private void loadProjectTaskInfo(ProjectTaskDTO projectTask) {
-        log.debug("loadProjectTaskInfo. (projectTask: {})",projectTask);
+        log.debug("loadProjectTaskInfo. (projectTask: {})", projectTask);
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(projectTask.getId()));
         request.setUserId(userDetail.getUserId());
@@ -276,7 +276,7 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onUpdate(ProjectTaskDTO projectTask) {
-        log.debug("onUpdate. (projectTask: {})",projectTask);
+        log.debug("onUpdate. (projectTask: {})", projectTask);
 
         ServiceRequest<ProjectTaskDTO> request = new ServiceRequest<>(newProjectTask);
         request.setUserId(userDetail.getUserId());
@@ -307,7 +307,7 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onExtendManDay() {
-        log.debug("onExtendManDay. (newExtTask: {})",newExtTask);
+        log.debug("onExtendManDay. (newExtTask: {})", newExtTask);
 
         ProjectTaskExtRequest extRequest = new ProjectTaskExtRequest();
         extRequest.setProjectTaskDTO(newProjectTask);
@@ -332,13 +332,13 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onPreDeleteProjectTask(ProjectTaskDTO projectTask) {
-        log.debug("onPreDeleteProjectTask. (projectTask: {})",projectTask);
+        log.debug("onPreDeleteProjectTask. (projectTask: {})", projectTask);
 
         loadProjectTaskInfo(projectTask);
     }
 
     public void onDeleteProjectTask() {
-        log.debug("onDeleteProjectTask. (projectTask: {})",newProjectTask);
+        log.debug("onDeleteProjectTask. (projectTask: {})", newProjectTask);
 
         ServiceRequest<ProjectTaskDTO> request = new ServiceRequest<>(newProjectTask);
         request.setUserId(userDetail.getUserId());
@@ -367,12 +367,12 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onPreLockProjectTask(ProjectTaskDTO projectTask) {
-        log.debug("onPreLockProjectTask. (projectTask: {})",projectTask);
+        log.debug("onPreLockProjectTask. (projectTask: {})", projectTask);
         newProjectTask = projectTask;
     }
 
     public void onLockProjectTask() {
-        log.debug("onLockProjectTask. (projectTask: {})",newProjectTask);
+        log.debug("onLockProjectTask. (projectTask: {})", newProjectTask);
 
         ServiceRequest<ProjectTaskDTO> request = new ServiceRequest<>(newProjectTask);
         request.setUserId(userDetail.getUserId());
@@ -400,12 +400,12 @@ public class ManageProjectController extends AbstractController {
     }
 
     public void onPreUnlockProjectTask(ProjectTaskDTO projectTask) {
-        log.debug("onPreUnlockProjectTask. (projectTask: {})",projectTask);
+        log.debug("onPreUnlockProjectTask. (projectTask: {})", projectTask);
         newProjectTask = projectTask;
     }
 
     public void onUnlockProjectTask() {
-        log.debug("onUnlockProjectTask. (projectTask: {})",newProjectTask);
+        log.debug("onUnlockProjectTask. (projectTask: {})", newProjectTask);
 
         ServiceRequest<ProjectTaskDTO> request = new ServiceRequest<>(newProjectTask);
         request.setUserId(userDetail.getUserId());

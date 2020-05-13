@@ -15,6 +15,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.time.Duration;
 import java.util.List;
 
 import static com.clevel.kudu.util.LookupUtil.getObjById;
@@ -123,7 +124,14 @@ public class ProjectController extends AbstractController {
         validator.mustNotBlank("name",newProject.getName(),"Name can not be empty");
 
         if (validator.isFailed()) {
-            FacesUtil.addError(validator.getMessage());
+            FacesUtil.actionFailed(validator.getMessage());
+            return;
+        }
+
+        if (newProject.getBillableMDDuration().compareTo(Duration.ZERO)==0) {
+            String message = "Billable-MD must greater than 0.";
+            log.debug(message);
+            FacesUtil.actionFailed(message);
             return;
         }
 
@@ -190,8 +198,15 @@ public class ProjectController extends AbstractController {
         validator.mustNotBlank("name",newProject.getName(),"Name can not be empty");
 
         if (validator.isFailed()) {
-            FacesUtil.addError(validator.getMessage());
+            FacesUtil.actionFailed(validator.getMessage());
             loadProjectList();
+            return;
+        }
+
+        if (newProject.getBillableMDDuration().compareTo(Duration.ZERO)==0) {
+            String message = "Billable-MD must greater than 0.";
+            log.debug(message);
+            FacesUtil.actionFailed(message);
             return;
         }
 

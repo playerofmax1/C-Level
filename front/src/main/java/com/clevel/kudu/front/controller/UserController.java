@@ -325,14 +325,12 @@ public class UserController extends AbstractController {
                 userTarget.add(u.getTimeSheetUser());
                 userSource.remove(u.getTimeSheetUser());
             }
-
-            FacesUtil.setActionResult(true);
+            FacesUtil.actionSuccess();
 
         } else {
             String message = "Wrong response status! (status: " + response.getStatus() + ")";
             log.debug(message);
-            FacesUtil.addError(message);
-            FacesUtil.setActionResult(false);
+            FacesUtil.actionFailed(message);
         }
 
         userTimeSheet = new DualListModel<>(userFilter(userSource), userTarget);

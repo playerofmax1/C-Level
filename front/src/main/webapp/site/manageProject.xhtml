@@ -68,6 +68,23 @@
                             </h:outputLabel>
                         </h:panelGrid>
 
+                        <h:panelGrid columns="8">
+                            <h:outputLabel value="Billable MD:" style="width: 120px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.project.billableMD}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="Total Plan MD:" style="width: 120px; horiz-align: right"/>
+                            <h:outputLabel value="#{managePrjCtl.project.totalPlanMD}" style="width: 120px; horiz-align: left">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="Remaining MD:" style="width: 120px; horiz-align: right" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'warning':''}"/>
+                            <h:outputLabel value="#{managePrjCtl.project.remainingMD}" style="width: 120px; horiz-align: left" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'warning':''}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </h:panelGrid>
+
+                        <hr/>
+
                         <p:commandButton value="New Project Task" action="#{managePrjCtl.onPreAddNew}"
                                          onsuccess="PF('projectTaskDlg').show()" update="projectTaskDlgForm"/>
                         <p:spacer height="30"/>

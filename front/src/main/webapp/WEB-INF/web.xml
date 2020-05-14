@@ -66,6 +66,15 @@
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
 
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>aristo</param-value>
+    </context-param>
+
     <!--<session-config>-->
     <!--<session-timeout>1</session-timeout>-->
     <!--<cookie-config>-->

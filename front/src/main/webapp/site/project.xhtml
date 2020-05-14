@@ -49,7 +49,7 @@
                         <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
                                          update="mainForm"/>
 
-                        <div class="onRight">
+                        <div class="alignRight">
                             <p:commandButton value="New Project" action="#{projectCtl.onPreNewProject}"
                                              onsuccess="PF('projectDlg').show()" update="projectDlgForm"/>
                         </div>
@@ -152,7 +152,7 @@
                     <p:inputTextarea value="#{projectCtl.newProject.description}" style="width: 400px"/>
                 </h:panelGrid>
                 <p:separator/>
-                <div class="onRight">
+                <div class="alignRight">
                     <p:commandButton value="Save" action="#{projectCtl.onNewProject}"
                                      rendered="#{projectCtl.editMode==false}"
                                      update="mainForm,projectDlgForm"/>

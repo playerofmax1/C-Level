@@ -43,6 +43,7 @@ public class TimeSheetController extends AbstractController {
     private List<TimeSheetDTO> pjtSummary;
 
     private Date currentMonth;
+    private boolean currentMonthLock;
     private boolean previousEnable;
     private boolean nextEnable;
     private Date tsStartDate;
@@ -57,6 +58,7 @@ public class TimeSheetController extends AbstractController {
         log.debug("onCreation.");
 
         currentMonth = DateTimeUtil.now();
+        currentMonthLock = false;
         nextEnable = false;
         previousEnable = true;
         timeSheetUserId = userDetail.getUserId();
@@ -624,6 +626,14 @@ public class TimeSheetController extends AbstractController {
 
     public void setCurrentMonth(Date currentMonth) {
         this.currentMonth = currentMonth;
+    }
+
+    public boolean isCurrentMonthLock() {
+        return currentMonthLock;
+    }
+
+    public void setCurrentMonthLock(boolean currentMonthLock) {
+        this.currentMonthLock = currentMonthLock;
     }
 
     public boolean isPreviousEnable() {

@@ -56,14 +56,25 @@
                                 <p:ajax event="change" listener="#{timeSheetCtl.onChangeUser()}" update="monthForm"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:separator rendered="#{accessCtl.functionEnable('F0002')}"></p:separator>
+
+                        <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
+
+                        <p:outputPanel id="lockedWarningMessage" class="warning ui-round-all ui-border"
+                                       style="padding:5px"
+                                       rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}">
+                            <p:spacer width="10"/>
+                            <p:outputLabel styleClass="fa fa-exclamation-triangle" value=""/>
+                            <p:spacer width="10"/>
+                            <p:outputLabel value="View only."/>
+                        </p:outputPanel>
+                        <p:spacer width="5" rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}"/>
 
                         <p:dataTable id="ts" var="timesheet" value="#{timeSheetCtl.timeSheetList}" rowIndexVar="idx"
                                      style="font-size: 12px" rowStyleClass="#{timesheet.holiday?'holiday':'normal'}">
 
                             <f:facet name="header">
                                 <div class="ui-g" style="background-color: transparent">
-                                    <div class="ui-g-3 onLeft">
+                                    <div class="ui-g-3 alignLeft">
                                         <p:commandButton id="xls"
                                                          icon="fa fa-file-excel-o"
                                                          value="Excel(xls)"
@@ -72,7 +83,7 @@
                                             <p:dataExporter type="xls" target="ts" fileName="#{timeSheetCtl.userDetail.userName}-timesheet-#{timeSheetCtl.currentMonth}"/>
                                         </p:commandButton>
                                     </div>
-                                    <div class="ui-g-6 onCenter">
+                                    <div class="ui-g-6 alignCenter alignMiddle">
                                         <p:commandButton value="Previous Month" disabled="#{!timeSheetCtl.previousEnable}"
                                                          action="#{timeSheetCtl.onPrevious}"
                                                          update="monthForm,mainForm">
@@ -85,8 +96,13 @@
                                                          update="monthForm,mainForm">
                                         </p:commandButton>
                                     </div>
-                                    <div class="ui-g-3 onRight">
-                                        <h:outputText value="Utilization: #{timeSheetCtl.utilization.utilization} %"/>
+                                    <div class="ui-g-3 alignRight">
+                                        <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.utilization} %" styleClass="alignMiddle"/>
+                                        <p:inputSwitch value="#{timeSheetCtl.currentMonthLock}"
+                                                       rendered="#{accessCtl.functionEnable('F0004')}"
+                                                       onLabel="View Only"
+                                                       offLabel="Editable">
+                                        </p:inputSwitch>
                                     </div>
                                 </div>
                             </f:facet>
@@ -311,6 +327,7 @@
             </h:form>
         </p:dialog>
 
+        <br/>
         <ui:include src="/resources/footer.xhtml">
             <ui:param name="controller" value="#{timeSheetCtl}"/>
         </ui:include>

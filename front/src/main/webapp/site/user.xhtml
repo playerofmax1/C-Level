@@ -164,7 +164,7 @@
                 <p:spacer height="200"/>
 
                 <p:separator/>
-                <div class="onRight">
+                <div class="alignRight">
                     <p:commandButton value="Save" action="#{userCtl.onNewUser}"
                                      rendered="#{userCtl.editMode==false}"
                                      update="mainForm,userDlgForm"/>
@@ -187,7 +187,7 @@
 
                 </h:panelGrid>
                 <p:separator/>
-                <div class="onRight">
+                <div class="alignRight">
                     <p:commandButton value="Reset" action="#{userCtl.onResetPassword}"
                                      onsuccess="PF('resetDlg').hide();"
                                      update="mainForm,resetDlgForm"/>
@@ -215,7 +215,7 @@
                 </p:pickList>
 
                 <p:separator/>
-                <div class="onRight">
+                <div class="alignRight">
                     <p:commandButton value="Close" onclick="PF('viewTSDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

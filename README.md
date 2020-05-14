@@ -30,7 +30,7 @@
 | --------------------- | ------------------------------------------------------------ | ----------------------- | ----------------------- | ----------------------- | ----------- | ----------------------- | ----------------------- |
 | api-lib               | from Handover api.war                                        | :ballot_box_with_check: | :ballot_box_with_check: |                         |             | :ballot_box_with_check: |                         |
 | common-lib            | from Handover api.war<br />(pjt-lib.jar need to put in this group) | :ballot_box_with_check: | :ballot_box_with_check: | :ballot_box_with_check: |             | :ballot_box_with_check: | :ballot_box_with_check: |
-| front-lib             | from Handover front.war                                      | :ballot_box_with_check: |                         | :ballot_box_with_check: |             |                         | :ballot_box_with_check: |
+| front-lib             | from Handover front.war<br />(poi and math for Export to Excel)<br />(theme for all alternate free primefaces themes) | :ballot_box_with_check: |                         | :ballot_box_with_check: |             |                         | :ballot_box_with_check: |
 | javax-lib             | from JavaEE 8 come with glassfish5                           | :ballot_box_with_check: | :ballot_box_with_check: | :ballot_box_with_check: |             |                         |                         |
 | jboss-lib             | from Jboss Wildfly 18.0.1                                    | :ballot_box_with_check: |                         | :ballot_box_with_check: |             |                         |                         |
 | resteasy-lib          | from Jboss Wildfly 18.0.1                                    | :ballot_box_with_check: |                         |                         |             |                         |                         |
@@ -66,7 +66,7 @@
 
 
 
-### Wildfly Standalone.bat
+### Wildfly Standalone.conf
 
 >   Required: resteasy.preferJacksonOverJsonB=false
 >
@@ -77,13 +77,16 @@
 >   Refer: [RESTFul Web Services with Jboss EAP (RESTeasy)](https://docs.jboss.org/resteasy/docs/3.9.1.Final/userguide/html_single/index.html)
 
 ```c
-
-rem pz.Fix JSONB DateFormat error, pls find text after rem below
-set "JAVA_OPTS= -Duser.timezone=GMT+7 -Duser.language=en -Duser.region=EN -Duser.country=US -Djava.net.preferIPv4Stack=true -Dresteasy.preferJacksonOverJsonB=false %JAVA_OPTS%"
-
-rem Setup JBoss specific properties
-set "JAVA_OPTS=-Dprogram.name=%PROGNAME% %JAVA_OPTS%"
-
+#
+# Specify options to pass to the Java VM.
+#
+if [ "x$JAVA_OPTS" = "x" ]; then
+   JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true"
+   JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true"
+   JAVA_OPTS="$JAVA_OPTS -Dresteasy.preferJacksonOverJsonB=false"
+else
+   echo "JAVA_OPTS already set in environment; overriding default settings with values: $JAVA_OPTS"
+fi
 ```
 
 
@@ -128,13 +131,45 @@ After this steps when you build project the date will be stamped into version.pr
 The version.property is used in the front-end to show full version text on the bottom of screen.
 
 >   Remark: When you want to change number of the version you can modify it directly or use Ant Targets defined in the Ant Window.
->   File: /lib/src/main/resources/version.property
+>   File: /front/src/main/resources/version.property
 
 
 
 ### KUDU Software Architecture
 
 ![Software_Architecture](assets/Software_Architecture.svg)
+
+
+
+### C-LEVEL VPN
+
+>   The C-LEVEL VPN is required in order to use the information from this table.
+>
+>   Last updated: 2020.05.14
+
+| Env. | Name                                                         | IP / URL                                     | User         | Password |
+| ---- | ------------------------------------------------------------ | -------------------------------------------- | ------------ | -------- |
+| DEV  | Cent OS 8<br />(SFTP Home Path: /Root/)<br />(SSH Home Path: ) | 192.168.88.19                                | root         | P@$$w0rd |
+| DEV  | MariaDB 10.3.17                                              | 192.168.88.19:3360                           | root         | P@$$w0rd |
+| DEV  | Wildfly 19.0.0 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(HomePath: /opt/wildfly/)<br />(AutoDeployPath: /opt/wildfly/) | http://192.168.88.19:9990/console/index.html | wildflyadmin | P@$$w0rd |
+
+
+
+#### Often Used Shell Commands
+
+>   For DEV Environment.
+
+| Command | Description                                                  |
+| ------- | ------------------------------------------------------------ |
+|         | stop Wildfly service<br />(stop then start for the restart operation) |
+|         | start Wildfly service                                        |
+|         | stop MariaDB service                                         |
+|         | start MariaDB service                                        |
+|         |                                                              |
+
+
+
+
 
 ----
 

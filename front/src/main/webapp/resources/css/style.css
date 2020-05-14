@@ -29,16 +29,28 @@
     background: #f5f5f5;
 }
 
-.onLeft {
+.alignLeft {
     text-align: left;
 }
 
-.onRight {
+.alignRight {
     text-align: right;
 }
 
-.onCenter {
+.alignCenter {
     text-align: center;
+}
+
+.alignTop {
+    vertical-align: top;
+}
+
+.alignMiddle {
+    vertical-align: middle;
+}
+
+.alignBottom {
+    vertical-align: bottom;
 }
 
 .onBottomLeft {
@@ -81,6 +93,22 @@ footer {
     font-family: Courier, serif;
     font-size: 14px;
     color: #ff0a08;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: darkolivegreen;
+}
+
+.blue {
+    background-color: cornflowerblue;
 }
 
 .summary {
@@ -168,6 +196,18 @@ label.require:after {
 .ui-radiobutton-icon {
     margin-left: 0px !important;
     margin-top: -1px !important;
+}
+
+.ui-inputswitch {
+    vertical-align: bottom;
+}
+
+.ui-border {
+    border: 1px solid #a8a8a8;
+}
+
+.ui-widget {
+    margin: 0.2em;
 }
 
 .holiday{

@@ -25,6 +25,7 @@ import static com.clevel.kudu.util.LookupUtil.getObjById;
 @ViewScoped
 @Named("timeSheetCtl")
 public class TimeSheetController extends AbstractController {
+    private List<TimeSheetDTO> timeSheetSummaryList;
     private List<TimeSheetDTO> timeSheetList;
     private long selectedTimeSheetId;
 
@@ -257,6 +258,7 @@ public class TimeSheetController extends AbstractController {
             timeSheetList = result.getTimeSheetList();
             sortList(timeSheetList);
 
+            timeSheetSummaryList = sumHoursOfProject(timeSheetList);
             utilization.setUtilization(result.getUtilization());
 
             checkNavigationButtonEnable();
@@ -356,6 +358,97 @@ public class TimeSheetController extends AbstractController {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
         }
+    }
+
+
+    private List<TimeSheetDTO> sumHoursOfProject(List<TimeSheetDTO> timeSheetList) {
+        /*HashMap<"ProjectCode.TaskCode", TimeSheetDTO>*/
+        HashMap<String, TimeSheetDTO> summaryMap = new HashMap<>();
+        TimeSheetDTO currentSummaryTimeSheetDTO;
+        ProjectTaskDTO currentProjectTask;
+        Duration chargeDuration;
+        String mapKey;
+
+        for (TimeSheetDTO timeSheetDTO : timeSheetList) {
+            currentProjectTask = timeSheetDTO.getProjectTask();
+            if (currentProjectTask == null) {
+                continue;
+            }
+            //log.debug("currentProjectTask = {}", currentProjectTask);
+
+            mapKey = currentProjectTask.getProject().getCode();
+            currentSummaryTimeSheetDTO = summaryMap.get(mapKey);
+            if (currentSummaryTimeSheetDTO == null) {
+                currentSummaryTimeSheetDTO = new TimeSheetDTO();
+
+                /*may be need to clone Project and Task to another object*/
+                currentSummaryTimeSheetDTO.setProjectTask(currentProjectTask);
+                currentSummaryTimeSheetDTO.setProject(timeSheetDTO.getProject());
+                currentSummaryTimeSheetDTO.setChargeDuration(timeSheetDTO.getChargeDuration());
+
+                summaryMap.put(mapKey, currentSummaryTimeSheetDTO);
+
+            } else {
+                chargeDuration = currentSummaryTimeSheetDTO.getChargeDuration();
+                chargeDuration = chargeDuration.plusMinutes(timeSheetDTO.getChargeDuration().toMinutes());
+                currentSummaryTimeSheetDTO.setChargeDuration(chargeDuration);
+            }
+        }
+
+        ArrayList<TimeSheetDTO> summaryList = new ArrayList<>(summaryMap.values());
+        summaryList.sort((o1, o2) -> {
+            return o1.getProject().getCode().compareTo(o2.getProject().getCode());
+        });
+
+        return summaryList;
+    }
+
+    private List<TimeSheetDTO> sumHoursOfProjectTask(List<TimeSheetDTO> timeSheetList) {
+        /*HashMap<"ProjectCode.TaskCode", TimeSheetDTO>*/
+        HashMap<String, TimeSheetDTO> summaryMap = new HashMap<>();
+        TimeSheetDTO currentSummaryTimeSheetDTO;
+        ProjectTaskDTO currentProjectTask;
+        Duration chargeDuration;
+        String mapKey;
+
+        for (TimeSheetDTO timeSheetDTO : timeSheetList) {
+            currentProjectTask = timeSheetDTO.getProjectTask();
+            if (currentProjectTask == null) {
+                continue;
+            }
+            //log.debug("currentProjectTask = {}", currentProjectTask);
+
+            mapKey = currentProjectTask.getProject().getCode() + "." + currentProjectTask.getTask().getCode();
+            currentSummaryTimeSheetDTO = summaryMap.get(mapKey);
+            if (currentSummaryTimeSheetDTO == null) {
+                currentSummaryTimeSheetDTO = new TimeSheetDTO();
+
+                /*may be need to clone Project and Task to another object*/
+                currentSummaryTimeSheetDTO.setProjectTask(currentProjectTask);
+                currentSummaryTimeSheetDTO.setProject(timeSheetDTO.getProject());
+                currentSummaryTimeSheetDTO.setChargeDuration(timeSheetDTO.getChargeDuration());
+
+                summaryMap.put(mapKey, currentSummaryTimeSheetDTO);
+
+            } else {
+                chargeDuration = currentSummaryTimeSheetDTO.getChargeDuration();
+                chargeDuration = chargeDuration.plusMinutes(timeSheetDTO.getChargeDuration().toMinutes());
+                currentSummaryTimeSheetDTO.setChargeDuration(chargeDuration);
+            }
+        }
+
+        ArrayList<TimeSheetDTO> summaryList = new ArrayList<>(summaryMap.values());
+        summaryList.sort((o1, o2) -> {
+            int zero = o1.getProject().getCustomer().getName().compareTo(o2.getProject().getCustomer().getName());
+            if (zero != 0) return zero;
+
+            zero = o1.getProject().getCode().compareTo(o2.getProject().getCode());
+            if (zero != 0) return zero;
+
+            return o1.getProjectTask().getTask().getCode().compareTo(o2.getProjectTask().getTask().getCode());
+        });
+
+        return summaryList;
     }
 
     public void onUpdateTimeInOut() {
@@ -624,6 +717,14 @@ public class TimeSheetController extends AbstractController {
 
     public void setTimeSheetList(List<TimeSheetDTO> timeSheetList) {
         this.timeSheetList = timeSheetList;
+    }
+
+    public List<TimeSheetDTO> getTimeSheetSummaryList() {
+        return timeSheetSummaryList;
+    }
+
+    public void setTimeSheetSummaryList(List<TimeSheetDTO> timeSheetSummaryList) {
+        this.timeSheetSummaryList = timeSheetSummaryList;
     }
 
     public List<ProjectDTO> getProjectList() {

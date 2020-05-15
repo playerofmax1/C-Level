@@ -61,13 +61,13 @@
 
                         <p:outputPanel id="lockedWarningMessage" class="warning ui-round-all ui-border"
                                        style="padding:5px"
-                                       rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}">
+                                       rendered="#{timeSheetCtl.viewOnly and accessCtl.functionEnable('F0004')}">
                             <p:spacer width="10"/>
                             <p:outputLabel styleClass="fa fa-exclamation-triangle" value=""/>
                             <p:spacer width="10"/>
                             <p:outputLabel value="View only."/>
                         </p:outputPanel>
-                        <p:spacer width="5" rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}"/>
+                        <p:spacer width="5" rendered="#{timeSheetCtl.viewOnly and accessCtl.functionEnable('F0004')}"/>
 
                         <p:dataTable id="ts" var="timesheet" value="#{timeSheetCtl.timeSheetList}" rowIndexVar="idx"
                                      style="font-size: 12px" rowStyleClass="#{timesheet.holiday?'holiday':'normal'}">
@@ -98,10 +98,11 @@
                                     </div>
                                     <div class="ui-g-3 alignRight">
                                         <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.utilization} %" styleClass="alignMiddle"/>
-                                        <p:inputSwitch value="#{timeSheetCtl.currentMonthLock}"
+                                        <p:inputSwitch value="#{timeSheetCtl.viewOnly}"
                                                        rendered="#{accessCtl.functionEnable('F0004')}"
                                                        onLabel="View Only"
                                                        offLabel="Editable">
+                                            <p:ajax event="change" update="monthForm" listener="#{timeSheetCtl.onChangeViewOnlyFlag()}"/>
                                         </p:inputSwitch>
                                     </div>
                                 </div>

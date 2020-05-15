@@ -4,17 +4,11 @@ import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.model.db.working.*;
-import com.clevel.kudu.api.rest.mapper.ProjectMapper;
-import com.clevel.kudu.api.rest.mapper.ProjectTaskMapper;
-import com.clevel.kudu.api.rest.mapper.TaskMapper;
-import com.clevel.kudu.api.rest.mapper.TimeSheetMapper;
+import com.clevel.kudu.api.rest.mapper.*;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.MDUtil;
 import com.clevel.kudu.dto.SimpleDTO;
-import com.clevel.kudu.dto.working.ProjectDTO;
-import com.clevel.kudu.dto.working.TaskDTO;
-import com.clevel.kudu.dto.working.TimeSheetDTO;
-import com.clevel.kudu.dto.working.UtilizationResult;
+import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.util.DateTimeUtil;
@@ -38,6 +32,8 @@ public class TimeSheetManager {
     @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
+    private TimeSheetLockDAO timeSheetLockDAO;
+    @Inject
     private ProjectDAO projectDAO;
     @Inject
     private ProjectTaskDAO projectTaskDAO;
@@ -47,6 +43,8 @@ public class TimeSheetManager {
     private HolidayDAO holidayDAO;
     @Inject
     private TimeSheetMapper timeSheetMapper;
+    @Inject
+    private TimeSheetLockMapper timeSheetLockMapper;
     @Inject
     private ProjectTaskMapper projectTaskMapper;
     @Inject
@@ -111,6 +109,15 @@ public class TimeSheetManager {
         }
 
         return timeSheetMapper.toDTO(timeSheets.stream());
+    }
+
+    public List<TimeSheetLockDTO> getTimeSheetLock(long timeSheetUserId, Date date) throws RecordNotFoundException {
+        log.debug("getTimeSheetLock. (timeSheetUserId: {}, date: {})", timeSheetUserId, date);
+
+        User tsUser = userDAO.findById(timeSheetUserId);
+        List<TimeSheetLock> timeSheetLockList = timeSheetLockDAO.findByDate(tsUser, date);
+
+        return timeSheetLockMapper.toDTO(timeSheetLockList.stream());
     }
 
     public void applyHoliday(TimeSheetDTO timeSheetDTO) {
@@ -416,5 +423,32 @@ public class TimeSheetManager {
 
         timeSheetDAO.persist(timeSheetList);
         log.debug("migrateWorkHour. (finish)");
+    }
+
+    public TimeSheetLockDTO lockTimeSheet(long timeSheetUserId, Date date) throws RecordNotFoundException {
+        User user = userDAO.findById(timeSheetUserId);
+        Date now = DateTimeUtil.now();
+
+        TimeSheetLock timeSheetLock = new TimeSheetLock();
+        timeSheetLock.setUser(user);
+        timeSheetLock.setStartDate(DateTimeUtil.getFirstDateOfMonth(date));
+        timeSheetLock.setEndDate(DateTimeUtil.getLastDateOfMonth(date));
+
+        timeSheetLock.setCreateBy(user);
+        timeSheetLock.setCreateDate(now);
+        timeSheetLock.setModifyBy(user);
+        timeSheetLock.setModifyDate(now);
+
+        return timeSheetLockMapper.toDTO(timeSheetLockDAO.persist(timeSheetLock));
+    }
+
+
+    public void unlockTimeSheet(long timeSheetUserId, Date date) throws RecordNotFoundException {
+        log.debug("getTimeSheetLock. (timeSheetUserId: {}, date: {})", timeSheetUserId, date);
+
+        User tsUser = userDAO.findById(timeSheetUserId);
+        List<TimeSheetLock> timeSheetLockList = timeSheetLockDAO.findByDate(tsUser, date);
+
+        timeSheetLockDAO.delete(timeSheetLockList);
     }
 }

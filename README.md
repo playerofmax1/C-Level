@@ -143,6 +143,16 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
+### TERMINOLOGY
+
+| Term         | Description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| Project      | The Project is main Product sell to customer refer by PID.   |
+| Project Task | The Project Task is sub task of the Product sold to customer refer by PID and Task ID.<br />Somebody know as chargeable tasks. |
+| Task         | The stand alone task without project.<br />Somebody know as no charge tasks. |
+
+
+
 ### C-LEVEL VPN
 
 >   The C-LEVEL VPN is required in order to use the information from this table.

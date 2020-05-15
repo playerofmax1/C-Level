@@ -38,3 +38,6 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+.ui-button {
+  margin: 0.2em 0px !important;
+}

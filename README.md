@@ -122,11 +122,13 @@ fi
 
 >    Assume you stand in the IntelliJ IDEA and current project is KUDU.
 
-1.  Right Click on version_control.xml and select 'Add as Ant Build File' you will see 'Ant Window'.
+1.  Right Click on version_control.xml and select 'Add as Ant Build File' you will see 'Ant Window' and all available targets.
 2.  The artifact of 'PJT-LIB' need to enable 'Run Ant Target' and point to 'stamp build-date' (in the Pre-processing tab).
 3.  The artifact of 'PJT-LIB' need to enable 'Include in project build'.
 
-After this steps when you build project the date will be stamped into version.property file and distributed to all modules before build artifact for the pjt-lib.jar immediately. 
+
+
+After this steps completed, when you build project the date will be stamped into version.property file and distributed to all modules before build artifact for the pjt-lib.jar immediately. 
 
 The version.property is used in the front-end to show full version text on the bottom of screen.
 
@@ -155,7 +157,7 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
-### Deployments
+### Deployment Notes
 
 | Env. | Description                                                  |
 | ---- | ------------------------------------------------------------ |
@@ -165,7 +167,7 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
-#### Often Used Shell Commands
+#### Often Uses Shell Commands
 
 >   For DEV Environment.
 
@@ -174,8 +176,6 @@ The version.property is used in the front-end to show full version text on the b
 | systemctl status wildfly     | **Check wildfly service status**:<br /><br />[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   **Active: active (running) since Tue 2020-05-12 11:58:49 EDT; 1 day 16h ago**<br/> Main PID: 6910 (launch.sh)<br/>    Tasks: 68 (limit: 23984)<br/>   Memory: 359.8M<br/>   CGroup: /system.slice/wildfly.service<br/>           ├─6910 /bin/bash /opt/wildfly/bin/launch.sh standalone standalone.xml 0.0.0.0<br/>           ├─6912 /bin/sh /opt/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement=0.0.0.0<br/>           └─7005 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true><br/>May 12 11:58:49 localhost.localdomain systemd[1]: Started The WildFly Application Server.<br/>lines 1-12/12 (END) |
 | sudo systemctl stop wildfly  | **stop Wildfly service**:<br /><br />[root@localhost ~]# sudo systemctl stop wildfly<br/>[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   **Active: inactive (dead) since Thu 2020-05-14 04:50:14 EDT; 3s ago**<br/>  Process: 6910 ExecStart=/opt/wildfly/bin/launch.sh $WILDFLY_MODE $WILDFLY_CONFIG $WILDFLY_BIND (code=killed, signal=TERM)<br/> Main PID: 6910 (code=killed, signal=TERM)<br/><br/>May 12 11:58:49 localhost.localdomain systemd[1]: Started The WildFly Application Server.<br/>May 14 04:50:13 localhost.localdomain systemd[1]: Stopping The WildFly Application Server...<br/>May 14 04:50:14 localhost.localdomain systemd[1]: Stopped The WildFly Application Server. |
 | sudo systemctl start wildfly | **start Wildfly service**:<br /><br />[root@localhost ~]# sudo systemctl start wildfly<br/>[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   Active: active (running) since Thu 2020-05-14 04:51:41 EDT; 4min 17s ago<br/> Main PID: 17789 (launch.sh)<br/>    Tasks: 66 (limit: 23984)<br/>   Memory: 343.9M<br/>   CGroup: /system.slice/wildfly.service<br/>           ├─17789 /bin/bash /opt/wildfly/bin/launch.sh standalone standalone.xml 0.0.0.0<br/>           ├─17790 /bin/sh /opt/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement=0.0.0.0<br/>           └─17886 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=tru><br/>May 14 04:51:41 localhost.localdomain systemd[1]: Started The WildFly Application Server. |
-|                              | stop MariaDB service                                         |
-|                              | start MariaDB service                                        |
 
 
 

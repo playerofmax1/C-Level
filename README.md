@@ -122,11 +122,13 @@ fi
 
 >    Assume you stand in the IntelliJ IDEA and current project is KUDU.
 
-1.  Right Click on version_control.xml and select 'Add as Ant Build File' you will see 'Ant Window'.
+1.  Right Click on version_control.xml and select 'Add as Ant Build File' you will see 'Ant Window' and all available targets.
 2.  The artifact of 'PJT-LIB' need to enable 'Run Ant Target' and point to 'stamp build-date' (in the Pre-processing tab).
 3.  The artifact of 'PJT-LIB' need to enable 'Include in project build'.
 
-After this steps when you build project the date will be stamped into version.property file and distributed to all modules before build artifact for the pjt-lib.jar immediately. 
+
+
+After this steps completed, when you build project the date will be stamped into version.property file and distributed to all modules before build artifact for the pjt-lib.jar immediately. 
 
 The version.property is used in the front-end to show full version text on the bottom of screen.
 
@@ -141,6 +143,16 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
+### TERMINOLOGY
+
+| Term         | Description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| Project      | The Project is main Product sell to customer refer by PID.   |
+| Project Task | The Project Task is sub task of the Product sold to customer refer by PID and Task ID.<br />Somebody know as chargeable tasks. |
+| Task         | The stand alone task without project.<br />Somebody know as no charge tasks. |
+
+
+
 ### C-LEVEL VPN
 
 >   The C-LEVEL VPN is required in order to use the information from this table.
@@ -151,21 +163,29 @@ The version.property is used in the front-end to show full version text on the b
 | ---- | ------------------------------------------------------------ | -------------------------------------------- | ------------ | -------- |
 | DEV  | Cent OS 8<br />(SFTP Home Path: /Root/)<br />(SSH Home Path: ) | 192.168.88.19                                | root         | P@$$w0rd |
 | DEV  | MariaDB 10.3.17                                              | 192.168.88.19:3360                           | root         | P@$$w0rd |
-| DEV  | Wildfly 19.0.0 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(HomePath: /opt/wildfly/)<br />(AutoDeployPath: /opt/wildfly/) | http://192.168.88.19:9990/console/index.html | wildflyadmin | P@$$w0rd |
+| DEV  | Wildfly 19.0.0 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(Home Path: /opt/wildfly/)<br />(Deployment Path: /opt/wildfly/standalone/deployments/) | http://192.168.88.19:9990/console/index.html | wildflyadmin | P@$$w0rd |
 
 
 
-#### Often Used Shell Commands
+### Deployment Notes
+
+| Env. | Description                                                  |
+| ---- | ------------------------------------------------------------ |
+| DEV  | **Know Issues**: Deploy using Web Console will got some exception about class not found, not work!<br />**Recommended**: Copy war file to this path '/opt/wildfly/standalone/deployments' and wait for file-name.isDeployed is appeared and then check server.log<br />(The api.war need to deploy first follow by the front.war if it's successful without error) |
+| DEV  | **C-Level 2020 VPN is Required**:<br />Front-end URL: http://192.168.88.19:8080/signin.jsf<br />API URL: http://192.168.88.19:8080/api/rest/resteasy/registry |
+| DEV  | **Public URL Here (no VPN)**:<br />Front-end URL: http://6f3907e3bcf0.sn.mynetname.net:8888/signin.jsf<br />API URL: http://6f3907e3bcf0.sn.mynetname.net:8888/api/rest/resteasy/registry |
+
+
+
+#### Often Uses Shell Commands
 
 >   For DEV Environment.
 
-| Command | Description                                                  |
-| ------- | ------------------------------------------------------------ |
-|         | stop Wildfly service<br />(stop then start for the restart operation) |
-|         | start Wildfly service                                        |
-|         | stop MariaDB service                                         |
-|         | start MariaDB service                                        |
-|         |                                                              |
+| Command                      | Description                                                  |
+| ---------------------------- | ------------------------------------------------------------ |
+| systemctl status wildfly     | **Check wildfly service status**:<br /><br />[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   **Active: active (running) since Tue 2020-05-12 11:58:49 EDT; 1 day 16h ago**<br/> Main PID: 6910 (launch.sh)<br/>    Tasks: 68 (limit: 23984)<br/>   Memory: 359.8M<br/>   CGroup: /system.slice/wildfly.service<br/>           ├─6910 /bin/bash /opt/wildfly/bin/launch.sh standalone standalone.xml 0.0.0.0<br/>           ├─6912 /bin/sh /opt/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement=0.0.0.0<br/>           └─7005 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true><br/>May 12 11:58:49 localhost.localdomain systemd[1]: Started The WildFly Application Server.<br/>lines 1-12/12 (END) |
+| sudo systemctl stop wildfly  | **stop Wildfly service**:<br /><br />[root@localhost ~]# sudo systemctl stop wildfly<br/>[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   **Active: inactive (dead) since Thu 2020-05-14 04:50:14 EDT; 3s ago**<br/>  Process: 6910 ExecStart=/opt/wildfly/bin/launch.sh $WILDFLY_MODE $WILDFLY_CONFIG $WILDFLY_BIND (code=killed, signal=TERM)<br/> Main PID: 6910 (code=killed, signal=TERM)<br/><br/>May 12 11:58:49 localhost.localdomain systemd[1]: Started The WildFly Application Server.<br/>May 14 04:50:13 localhost.localdomain systemd[1]: Stopping The WildFly Application Server...<br/>May 14 04:50:14 localhost.localdomain systemd[1]: Stopped The WildFly Application Server. |
+| sudo systemctl start wildfly | **start Wildfly service**:<br /><br />[root@localhost ~]# sudo systemctl start wildfly<br/>[root@localhost ~]# systemctl status wildfly<br/>● wildfly.service - The WildFly Application Server<br/>   Loaded: loaded (/etc/systemd/system/wildfly.service; enabled; vendor preset: disabled)<br/>   Active: active (running) since Thu 2020-05-14 04:51:41 EDT; 4min 17s ago<br/> Main PID: 17789 (launch.sh)<br/>    Tasks: 66 (limit: 23984)<br/>   Memory: 343.9M<br/>   CGroup: /system.slice/wildfly.service<br/>           ├─17789 /bin/bash /opt/wildfly/bin/launch.sh standalone standalone.xml 0.0.0.0<br/>           ├─17790 /bin/sh /opt/wildfly/bin/standalone.sh -c standalone.xml -b 0.0.0.0 -bmanagement=0.0.0.0<br/>           └─17886 java -D[Standalone] -server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=tru><br/>May 14 04:51:41 localhost.localdomain systemd[1]: Started The WildFly Application Server. |
 
 
 

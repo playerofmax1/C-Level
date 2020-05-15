@@ -59,22 +59,13 @@
 
                         <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
 
-                        <p:outputPanel id="lockedWarningMessage" class="warning ui-round-all ui-border"
-                                       style="padding:5px"
-                                       rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}">
-                            <p:spacer width="10"/>
-                            <p:outputLabel styleClass="fa fa-exclamation-triangle" value=""/>
-                            <p:spacer width="10"/>
-                            <p:outputLabel value="View only."/>
-                        </p:outputPanel>
-                        <p:spacer width="5" rendered="#{timeSheetCtl.currentMonthLock and accessCtl.functionEnable('F0004')}"/>
-
                         <p:dataTable id="ts" var="timesheet" value="#{timeSheetCtl.timeSheetList}" rowIndexVar="idx"
                                      style="font-size: 12px" rowStyleClass="#{timesheet.holiday?'holiday':'normal'}">
 
                             <f:facet name="header">
                                 <div class="ui-g" style="background-color: transparent">
                                     <div class="ui-g-3 alignLeft">
+                                        <br/>
                                         <p:commandButton id="xls"
                                                          icon="fa fa-file-excel-o"
                                                          value="Excel(xls)"
@@ -84,25 +75,36 @@
                                         </p:commandButton>
                                     </div>
                                     <div class="ui-g-6 alignCenter alignMiddle">
+                                        <p:outputLabel value="#{timeSheetCtl.currentMonth}">
+                                            <f:convertDateTime pattern=" MMMM yyyy " timeZone="Asia/Bangkok"/>
+                                        </p:outputLabel>
+                                        <br/>
                                         <p:commandButton value="Previous Month" disabled="#{!timeSheetCtl.previousEnable}"
                                                          action="#{timeSheetCtl.onPrevious}"
                                                          update="monthForm,mainForm">
                                         </p:commandButton>
-                                        <h:outputText value="#{timeSheetCtl.currentMonth}">
-                                            <f:convertDateTime pattern=" MMMM yyyy " timeZone="Asia/Bangkok"/>
-                                        </h:outputText>
                                         <p:commandButton value="Next Month" disabled="#{!timeSheetCtl.nextEnable}"
                                                          action="#{timeSheetCtl.onNext}"
                                                          update="monthForm,mainForm">
                                         </p:commandButton>
                                     </div>
                                     <div class="ui-g-3 alignRight">
-                                        <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.utilization} %" styleClass="alignMiddle"/>
-                                        <p:inputSwitch value="#{timeSheetCtl.currentMonthLock}"
-                                                       rendered="#{accessCtl.functionEnable('F0004')}"
+                                        <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.utilization} %"/>
+                                        <br/>
+                                        <p:inputSwitch value="#{timeSheetCtl.viewOnly}"
+                                                       disabled="#{!accessCtl.functionEnable('F0004')}"
                                                        onLabel="View Only"
                                                        offLabel="Editable">
+                                            <p:ajax event="change" update="monthForm" listener="#{timeSheetCtl.onChangeViewOnlyFlag()}"/>
                                         </p:inputSwitch>
+                                        <br/>
+                                        <p:dataList value="#{timeSheetCtl.timeSheetSummaryList}"
+                                                    rendered="#{timeSheetCtl.timeSheetSummaryList.size() > 0}"
+                                                    styleClass="ui-noborder"
+                                                    var="projectSummary"
+                                                    type="definition">
+                                            <sub>#{projectSummary.project.code} <h:outputText value="#{projectSummary.chargeDuration}" converter="durationConverter"/> [#{projectSummary.chargeDuration.toMinutes()/60}] (#{projectSummary.chargeDuration.toMinutes()/480})</sub>
+                                        </p:dataList>
                                     </div>
                                 </div>
                             </f:facet>

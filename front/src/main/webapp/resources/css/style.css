@@ -202,6 +202,15 @@ label.require:after {
     vertical-align: bottom;
 }
 
+.ui-datalist > div {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.ui-datalist-data {
+    margin-bottom: 0px !important;
+}
+
 .ui-border {
     border: 1px solid #a8a8a8;
 }

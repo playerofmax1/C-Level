@@ -3,7 +3,7 @@
 title **KUDU PROJECT**
 
 skinparam defaultTextAlignment center
-skinparam BackgroundColor #silver
+skinparam BackgroundColor #lightgreen
 skinparam RoundCorner 20
 
 !define FONTICON ..\..\..\GitHub\plantuml-icon-font-sprites
@@ -26,24 +26,26 @@ skinparam RoundCorner 20
 actor "System \nAdmin" as SystemAdmin #lightgray
 actor "User" as User #lightgray
 
-FA_DESKTOP(SBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #white
-FA_LAPTOP(FBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #white
+FA_DESKTOP(SBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #silver
+FA_LAPTOP(FBrowser, "Computer\n\n---\n<$chrome><$firefox><$safari><$ie>\nWeb Browser", agent, #black) #silver
 
 card "Front Module" {
-    OFF_SERVICE_APPLICATION(FOWSS, "FO WSS", agent, #black) #lightgray
-    OFF_WEBSITE(FOW, "Front Webapp \nand Website", agent, #black) #lightgray
+    OFF_SERVICE_APPLICATION(FOWSS, "FO WSS", agent, #black) #white
+    OFF_WEBSITE(FOW, "Front Webapp \nand Website", agent, #black) #white
     FOWSS<-FOW
 }
 
 card "API Module" {
-    OFF_SERVICE_APPLICATION(APIWSS, "API WSS", agent, #black) #lightgray
-    OFF_SERVICE_APPLICATION(API, "API REST Service", agent, #black) #lightgray
-    OFF_WEBSITE(APIW, "API Webapp", agent, #black) #lightgray
+    OFF_SERVICE_APPLICATION(APIWSS, "API WSS", agent, #black) #white
+    OFF_SERVICE_APPLICATION(API, "API REST Service", agent, #black) #white
+    OFF_WEBSITE(APIW, "API Webapp", agent, #black) #white
     APIW->API
 }
 
-card "PJT-LIB Module" {
-    OFF_SERVICE_APPLICATION(LIB, "LIB", agent, #black) #lightgray
+card "PJT-LIB Module" as LIB {
+    OFF_SERVICE_APPLICATION(DBMODEL, "DB Table Model", agent, #black) #white
+    OFF_SERVICE_APPLICATION(APIINT, "API Service Interface", agent, #black) #white
+    OFF_SERVICE_APPLICATION(UTIL, "Utilities Classes", agent, #black) #white
 }
 
 DEV_MYSQL(DB, "MariaDB\n---\nDatabase", database, #black) #lightgray
@@ -51,15 +53,18 @@ DEV_MYSQL(DB, "MariaDB\n---\nDatabase", database, #black) #lightgray
 User-->FBrowser
 FBrowser-->FOW: HTML\nHTTP
 
-FOW-->API: REST\nHTTP
+FOW-down->API: REST\nHTTP
 FBrowser<--FOWSS: Message\nWSS
 
 APIWSS->FOW: Message\nWSS
 API->APIWSS
-API-down->LIB: Something
+API-down--->LIB: Something
 API--->DB: SQL
 
 SBrowser-->APIW: HTML\nHTTP
 SystemAdmin-->SBrowser
+
+LIB<--up---FOW
+
 
 @enduml

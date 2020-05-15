@@ -90,4 +90,18 @@ public interface TimeSheetService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response migrateWorkHour(ServiceRequest<SimpleDTO> request);
 
+    @POST
+    @Path("/lock")
+    @Operation(summary = "lock timeSheet for month n", description = "lock timeSheet for month n")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response lockTimeSheet(@Parameter(description = "request: TimeSheetRequest, result: TimeSheetResult", required = true)
+                                  ServiceRequest<TimeSheetRequest> request);
+
+    @POST
+    @Path("/unlock")
+    @Operation(summary = "unlock timeSheet for month n", description = "unlock timeSheet for month n")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response unlockTimeSheet(@Parameter(description = "request: TimeSheetRequest, result: TimeSheetResult", required = true)
+                                  ServiceRequest<TimeSheetRequest> request);
+
 }

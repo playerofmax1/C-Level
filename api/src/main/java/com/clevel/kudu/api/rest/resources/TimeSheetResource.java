@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,11 +41,12 @@ public class TimeSheetResource implements TimeSheetService {
     Cookie cookie;
 
     @Override
+    @SuppressWarnings("DuplicatedCode")
     public Response getTimeSheet(ServiceRequest<TimeSheetRequest> request) {
         log.debug("getTimeSheet. (request: {})", request);
 
-        systemManager.audit(httpServletRequest.getRequestURL().toString(),httpServletRequest.getRemoteAddr()+":"+httpServletRequest.getRemotePort(),
-                httpServletRequest.getHeader("User-Agent"),httpServletRequest.getHeader("Referer"),(cookie==null)?"null":cookie.toString(),
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
                 request.toString());
 
         TimeSheetResult timeSheetResult = new TimeSheetResult();
@@ -52,19 +54,22 @@ public class TimeSheetResource implements TimeSheetService {
 
         try {
             List<TimeSheetDTO> timeSheetDTOList = timeSheetManager.getTimeSheet(request.getUserId(),
-                    request.getRequest().getTimeSheetUserId(),request.getRequest().getMonth());
+                    request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
 
             // apply holiday
-            timeSheetManager.applyHolidays(timeSheetDTOList,request.getRequest().getMonth());
+            timeSheetManager.applyHolidays(timeSheetDTOList, request.getRequest().getMonth());
             timeSheetResult.setTimeSheetList(timeSheetDTOList);
 
             UtilizationResult result = timeSheetManager.getUtilization(request.getUserId(),
-                    request.getRequest().getTimeSheetUserId(),request.getRequest().getMonth());
+                    request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
             timeSheetResult.setUtilization(result.getUtilization());
 
             timeSheetResult.setCutoffEnable(Util.isTrue(app.getConfig(SystemConfig.TS_CUTOFF_DATE_ENABLE)));
             timeSheetResult.setCutoffDate(Integer.parseInt(app.getConfig(SystemConfig.TS_CUTOFF_DATE)));
-            log.debug("cutoff enable: {}, cutoff Date: {}",timeSheetResult.isCutoffEnable(),timeSheetResult.getCutoffDate());
+            log.debug("cutoff enable: {}, cutoff Date: {}", timeSheetResult.isCutoffEnable(), timeSheetResult.getCutoffDate());
+
+            List<TimeSheetLockDTO> timeSheetLockDTOList = timeSheetManager.getTimeSheetLock(request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+            timeSheetResult.setTimeSheetLockList(timeSheetLockDTOList);
 
             response.setResult(timeSheetResult);
             response.setApiResponse(APIResponse.SUCCESS);
@@ -87,7 +92,7 @@ public class TimeSheetResource implements TimeSheetService {
         ServiceResponse<TimeSheetDTO> response = new ServiceResponse<>();
 
         try {
-            timeSheetDTO = timeSheetManager.getTimeSheetInfo(request.getUserId(),request.getRequest().getId());
+            timeSheetDTO = timeSheetManager.getTimeSheetInfo(request.getUserId(), request.getRequest().getId());
             timeSheetManager.applyHoliday(timeSheetDTO);
             response.setResult(timeSheetDTO);
             response.setApiResponse(APIResponse.SUCCESS);
@@ -154,7 +159,7 @@ public class TimeSheetResource implements TimeSheetService {
 
         try {
             before = timeSheetManager.getTimeSheetInfo(request.getUserId(), request.getRequest().getId());
-            after = timeSheetManager.saveTimeSheet(before,request.getUserId(), request.getRequest());
+            after = timeSheetManager.saveTimeSheet(before, request.getUserId(), request.getRequest());
             response.setResult(after);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException | ValidationException e1) {
@@ -176,7 +181,7 @@ public class TimeSheetResource implements TimeSheetService {
         ServiceResponse<List<ProjectDTO>> response = new ServiceResponse<>();
 
         try {
-            projectDTOList = timeSheetManager.getProjectByUser(request.getUserId(),request.getRequest().getId());
+            projectDTOList = timeSheetManager.getProjectByUser(request.getUserId(), request.getRequest().getId());
             response.setResult(projectDTOList);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -199,7 +204,7 @@ public class TimeSheetResource implements TimeSheetService {
 
         try {
             taskDTOList = timeSheetManager.getTaskByProject(request.getUserId(),
-                    request.getRequest().getUserId(),request.getRequest().getProjectId());
+                    request.getRequest().getUserId(), request.getRequest().getProjectId());
             response.setResult(taskDTOList);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -222,7 +227,7 @@ public class TimeSheetResource implements TimeSheetService {
 
         try {
             utilizationResult = timeSheetManager.getUtilization(request.getUserId(),
-                    request.getRequest().getRequestUserId(),request.getRequest().getMonth());
+                    request.getRequest().getRequestUserId(), request.getRequest().getMonth());
             response.setResult(utilizationResult);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -267,6 +272,65 @@ public class TimeSheetResource implements TimeSheetService {
         try {
             timeSheetManager.migrateWorkHour();
             response.setApiResponse(APIResponse.SUCCESS);
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    @SuppressWarnings("DuplicatedCode")
+    public Response lockTimeSheet(ServiceRequest<TimeSheetRequest> request) {
+        log.debug("lockTimeSheet. (request: {})", request);
+
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
+                request.toString());
+
+        TimeSheetResult timeSheetResult = new TimeSheetResult();
+        ServiceResponse<TimeSheetResult> response = new ServiceResponse<>();
+
+        try {
+            TimeSheetLockDTO timeSheetLockDTO = timeSheetManager.lockTimeSheet(request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+            List<TimeSheetLockDTO> timeSheetLockDTOList = new ArrayList<>();
+            timeSheetLockDTOList.add(timeSheetLockDTO);
+            timeSheetResult.setTimeSheetLockList(timeSheetLockDTOList);
+
+            response.setResult(timeSheetResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    @SuppressWarnings("DuplicatedCode")
+    public Response unlockTimeSheet(ServiceRequest<TimeSheetRequest> request) {
+        log.debug("unlockTimeSheet. (request: {})", request);
+
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
+                request.toString());
+
+        TimeSheetResult timeSheetResult = new TimeSheetResult();
+        ServiceResponse<TimeSheetResult> response = new ServiceResponse<>();
+
+        try {
+            timeSheetManager.unlockTimeSheet(request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+
+            response.setResult(timeSheetResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
         } catch (Exception e) {
             log.error("", e);
             response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());

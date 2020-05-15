@@ -8,6 +8,7 @@ import java.util.List;
 
 public class TimeSheetResult {
     private List<TimeSheetDTO> timeSheetList;
+    private List<TimeSheetLockDTO> timeSheetLockList;
     private BigDecimal utilization;
     private boolean cutoffEnable;
     private int cutoffDate;
@@ -21,6 +22,14 @@ public class TimeSheetResult {
 
     public void setTimeSheetList(List<TimeSheetDTO> timeSheetList) {
         this.timeSheetList = timeSheetList;
+    }
+
+    public List<TimeSheetLockDTO> getTimeSheetLockList() {
+        return timeSheetLockList;
+    }
+
+    public void setTimeSheetLockList(List<TimeSheetLockDTO> timeSheetLockList) {
+        this.timeSheetLockList = timeSheetLockList;
     }
 
     public BigDecimal getUtilization() {
@@ -51,6 +60,7 @@ public class TimeSheetResult {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("timeSheetList", timeSheetList)
+                .append("timeSheetLockList", timeSheetLockList)
                 .append("utilization", utilization)
                 .append("cutoffEnable", cutoffEnable)
                 .append("cutoffDate", cutoffDate)

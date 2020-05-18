@@ -103,7 +103,7 @@
                                                     styleClass="ui-noborder"
                                                     var="projectSummary"
                                                     type="definition">
-                                            <sub>#{projectSummary.project.code} <h:outputText value="#{projectSummary.chargeDuration}" converter="durationConverter"/> [#{projectSummary.chargeDuration.toMinutes()/60}] (#{projectSummary.chargeDuration.toMinutes()/480})</sub>
+                                            <sub>#{projectSummary.project.code} <h:outputText value="#{projectSummary.chargeDuration}" converter="durationConverter"/> [#{projectSummary.chargeHours}] (#{projectSummary.chargeDays})</sub>
                                         </p:dataList>
                                     </div>
                                 </div>

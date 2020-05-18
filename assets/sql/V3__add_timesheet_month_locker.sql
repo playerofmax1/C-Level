@@ -1,8 +1,8 @@
 --
--- Table structure for table `wrk_timesheet_lock_month_lock`
+-- Table structure for table `wrk_timesheet_lock`
 --
 
-DROP TABLE IF EXISTS `wrk_timesheet_lock_month_lock`;
+DROP TABLE IF EXISTS `wrk_timesheet_lock`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `wrk_timesheet_lock`
@@ -30,5 +30,3 @@ CREATE TABLE `wrk_timesheet_lock`
 --
 -- Dumping data for table `wrk_timesheet_lock`
 --
-INSERT INTO wrk_timesheet_lock (id, userId, startDate, endDate, createDate, modifyDate, version, createBy, modifyBy)
-VALUES (1, 15, '2020-02-01 00:00:00.000000', '2020-02-29 00:00:00.000000', '2020-02-15 00:00:00.000000', '2020-02-15 00:00:00.000000', 1, 15, 15);

@@ -1,5 +1,6 @@
 package com.clevel.kudu.util;
 
+import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.context.PrimeRequestContext;
+import javax.faces.context.FacesContext;
 
 import java.io.Serializable;
 
@@ -34,7 +35,7 @@ public class FacesUtil implements Serializable {
     }
 
     public static void actionSuccess() {
-        PrimeRequestContext requestContext = PrimeRequestContext.getCurrentInstance();
+        RequestContext requestContext = RequestContext.getCurrentInstance();
         requestContext.getCallbackParams().put("isActionSuccess", true);
     }
 
@@ -44,7 +45,7 @@ public class FacesUtil implements Serializable {
     }
 
     public static void actionFailed() {
-        PrimeRequestContext requestContext = PrimeRequestContext.getCurrentInstance();
+        RequestContext requestContext = RequestContext.getCurrentInstance();
         requestContext.getCallbackParams().put("isActionSuccess", false);
     }
 

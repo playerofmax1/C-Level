@@ -94,7 +94,7 @@
             <h:form id="holidayDlgForm">
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Date" styleClass="require"/>
-                    <p:datePicker id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
+                    <p:calendar id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
                                   pattern="dd/MM/yyyy" />
                     <h:outputLabel value="Description" styleClass="require" />
                     <p:inputText value="#{holidayCtl.newHoliday.description}" style="width: 500px;"/>

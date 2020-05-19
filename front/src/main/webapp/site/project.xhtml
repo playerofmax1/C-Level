@@ -144,9 +144,27 @@
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="Billable MD (HH:mm)" styleClass="require"/>
-                    <p:inputText value="#{projectCtl.newProject.billableMDDuration}"
-                                 styleClass="ui-inputtext" converter="durationConverter"/>
+                    <h:outputLabel value="Billable MD" styleClass="require"/>
+                    <p:outputPanel id="billableMD">
+                        <p:calendar rendered="#{!projectCtl.newProject.moreThan99Hours}"
+                                    value="#{projectCtl.newProject.billableMDDuration}"
+                                    converter="durationConverter"
+                                    pattern="HH:mm"
+                                    timeOnly="true"
+                                    maxHour="99">
+                            <p:ajax event="dateSelect" update="billableMD"/>
+                        </p:calendar>
+                        <p:inputText rendered="#{projectCtl.newProject.moreThan99Hours}"
+                                     value="#{projectCtl.newProject.billableMDDuration}"
+                                     converter="durationConverter"
+                                     styleClass="ui-inputtext">
+                            <p:ajax event="change" update="billableMD"/>
+                        </p:inputText>
+                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
+                        <p:commandButton value="100+" action="#{projectCtl.onHundredPlusClicked()}"
+                                         rendered="#{!projectCtl.newProject.moreThan99Hours}"
+                                         update="billableMD"/>
+                    </p:outputPanel>
 
                     <h:outputLabel value="Description"/>
                     <p:inputTextarea value="#{projectCtl.newProject.description}" style="width: 400px"/>
@@ -189,6 +207,7 @@
             <ui:param name="update" value="mainForm"/>
         </ui:include>
 
+        <br/>
         <ui:include src="/resources/footer.xhtml">
             <ui:param name="controller" value="#{projectCtl}"/>
         </ui:include>

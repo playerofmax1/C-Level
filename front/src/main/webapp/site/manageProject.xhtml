@@ -206,10 +206,29 @@
                         <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeUser}"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="plan MD (HH:mm)" styleClass="require"/>
-                    <p:inputText value="#{managePrjCtl.newProjectTask.planMDDuration}"
-                                 disabled="#{managePrjCtl.editMode}"
-                                 styleClass="ui-inputtext" converter="durationConverter"/>
+                    <h:outputLabel value="plan MD" styleClass="require"/>
+                    <p:outputPanel id="planMD">
+                        <p:calendar rendered="#{!managePrjCtl.newProjectTask.moreThan99Hours}"
+                                    disabled="#{managePrjCtl.editMode}"
+                                    value="#{managePrjCtl.newProjectTask.planMDDuration}"
+                                    converter="durationConverter"
+                                    pattern="HH:mm"
+                                    timeOnly="true"
+                                    maxHour="99">
+                            <p:ajax event="dateSelect" update="planMD"/>
+                        </p:calendar>
+                        <p:inputText rendered="#{managePrjCtl.newProjectTask.moreThan99Hours}"
+                                     disabled="#{managePrjCtl.editMode}"
+                                     value="#{managePrjCtl.newProjectTask.planMDDuration}"
+                                     converter="durationConverter"
+                                     styleClass="ui-inputtext">
+                            <p:ajax event="change" update="planMD"/>
+                        </p:inputText>
+                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
+                        <p:commandButton value="100+" action="#{managePrjCtl.onHundredPlusClicked()}"
+                                         rendered="#{!managePrjCtl.editMode and !managePrjCtl.newProjectTask.moreThan99Hours}"
+                                         update="planMD"/>
+                    </p:outputPanel>
 
                     <h:outputLabel value="AMD Calculation" />
                     <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"  />
@@ -318,6 +337,7 @@
             <ui:param name="update" value="mainForm"/>
         </ui:include>
 
+        <br/>
         <ui:include src="/resources/footer.xhtml">
             <ui:param name="controller" value="#{managePrjCtl}"/>
         </ui:include>

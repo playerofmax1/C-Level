@@ -10,6 +10,7 @@ import com.clevel.kudu.model.TaskType;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
 import org.primefaces.PrimeFaces;
+import org.primefaces.component.export.ExcelOptions;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -44,12 +45,16 @@ public class TimeSheetController extends AbstractController {
 
     private List<TimeSheetDTO> pjtSummary;
 
+    private ExcelOptions exportExcelOptions;
+
     private Date currentMonth;
     private boolean previousEnable;
     private boolean nextEnable;
     private Date tsStartDate;
 
     private UtilizationResult utilization;
+
+    private String chargeDurationButton;
 
     @Inject
     PageAccessControl accessControl;
@@ -490,6 +495,18 @@ public class TimeSheetController extends AbstractController {
         detail.setTask(getObjById(taskList, selectedTaskId));
     }
 
+    public void onChangeDuration() {
+        log.trace("onChangeDuration.");
+        chargeDurationButton = DateTimeUtil.durationToString(detail.getChargeDuration());
+        log.debug("chargeDurationButton = {}", chargeDurationButton);
+    }
+
+    public void onChargeButtonClicked() {
+        log.trace("onChargeButtonClicked.");
+        detail.setChargeDuration(DateTimeUtil.stringToDuration(chargeDurationButton));
+        log.debug("detail.chargeDuration = {}", detail.getChargeDuration());
+    }
+
     private boolean isLeaveTask(TimeSheetDTO detail) {
         if (detail.getTask() == null) {
             return false;
@@ -846,4 +863,69 @@ public class TimeSheetController extends AbstractController {
     public void setUtilization(UtilizationResult utilization) {
         this.utilization = utilization;
     }
+
+    public String getChargeDurationButton() {
+        return chargeDurationButton;
+    }
+
+    public void setChargeDurationButton(String chargeDurationButton) {
+        this.chargeDurationButton = chargeDurationButton;
+    }
+
+    public ExcelOptions getExportExcelOptions() {
+        if (exportExcelOptions == null) {
+            exportExcelOptions = new ExcelOptions("BOLD", "#FFFFFF", "#6666FF", "10", "", "#000000", "11");
+        }
+        return exportExcelOptions;
+    }
+
+    public void setExportExcelOptions(ExcelOptions exportExcelOptions) {
+        this.exportExcelOptions = exportExcelOptions;
+    }
+
+    public String dataExportFileName() {
+        String userName = null;
+        if (userList != null) {
+            for (UserDTO userDTO : userList) {
+                if (userDTO.getId() == timeSheetUserId) {
+                    userName = userDTO.getLoginName();
+                    log.debug("dataExportFileName() = UserName({})", userName);
+                }
+            }
+        }
+
+        if (userName == null) {
+            userName = userDetail.getUserName();
+            log.debug("dataExportFileName() = CurrentLoggedInUser({})", userName);
+        }
+
+        String currentMonthString = DateTimeUtil.getDateStr(currentMonth, "MMM");
+        return userName + "-timesheet-" + currentMonthString;
+    }
+
+    public String exportProject(TimeSheetDTO timeSheetDTO) {
+        ProjectDTO project = timeSheetDTO.getProject();
+        if (project == null) {
+            return "-- No Project --";
+        }
+
+        return project.getCode() + " - " + project.getName();
+    }
+
+    public String exportTask(TimeSheetDTO timeSheetDTO) {
+        TaskDTO task;
+
+        ProjectTaskDTO projectTaskDTO = timeSheetDTO.getProjectTask();
+        if (projectTaskDTO != null) {
+            task = projectTaskDTO.getTask();
+        } else {
+            task = timeSheetDTO.getTask();
+            if (task == null) {
+                return "-- No Task --";
+            }
+        }
+
+        return task.getCode() + " - " + task.getName();
+    }
+
 }

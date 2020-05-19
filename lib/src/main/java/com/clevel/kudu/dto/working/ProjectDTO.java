@@ -99,6 +99,14 @@ public class ProjectDTO implements LookupList {
         this.billableMDDuration = billableMDDuration;
     }
 
+    public boolean isMoreThan99Hours(){
+        if (billableMDDuration == null) {
+            return false;
+        }
+
+        return billableMDDuration.toHours() > 99;
+    }
+
     public Long getBillableMDMinute() {
         return billableMDMinute;
     }

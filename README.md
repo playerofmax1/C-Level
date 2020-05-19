@@ -12,9 +12,14 @@
 | JDK                                         | JDK 11<br />(tested on JDK 13 is working well) | deal with LocalDate.ofInstant by K.Thammasak                 |
 | Java EE                                     | Java EE8                                       | in runtime, this is provided by Wildfly<br />in devtime, this is the library named 'javax-lib' |
 | Spring Security                             | Spring Framework:<br />Spring Security v5.2.1  | SessionRegistry                                              |
-| Primefaces                                  | Primefaces 7.0                                 | bundled with<br />+ jQuery v3.3.1<br />+ jQuery UI v1.12.1   |
+| ~~Primefaces~~                              | ~~Primefaces 8.0~~                             | Primefaces 8.0 fix many issues about DatePicker and Calendar include security (XSS Attack)<br />but has many changes need to test before, this is not a time to test, no new features is required for this project. |
+| ~~Primefaces~~                              | ~~Primefaces 7.0~~                             | Primefaces 7.0 has TimeOnly Issues in DatePicker and Calendar.<br /><br />bundled with<br />+ jQuery v3.3.1<br />+ jQuery UI v1.12.1 |
+| Primefaces                                  | Primefaces 6.2                                 | Downgraded by New issues in Calendar when TimeOnly = True and no features of 7.0 is needed by this project.<br />Other projects that already Upgraded to 7.0 : need Upload UTF-8 file (AR) and it's already fixed in this version (speaker: Art Spider).<br />bundled with<br />+ jQuery v3.2.1<br />+ jQuery UI v1.12.1 |
+| Apache POI                                  | Apache POI 3.17                                | as Dependencies of Primefaces 7.0 DataExporter (Excel) and some issues are fixed (know as Final Version of 3.1)<br />+ 10 dependency libraries are required by POI |
+| ~~Apache POI~~                              | ~~Apache POI 3.13~~                            | as Dependencies of Primefaces 6.2 DataExporter (Excel).      |
+| ~~Primefaces Extension~~                    | ~~Primefaces Extension 7.0.2~~                 | This extension already has Timepicker and Selenium ready but<br />this extension is not compatible with Bootstrap CSS (tested: Timesheet -> View/Enable will not operate).<br /><br />(tested on primefaces-extensions-7.0.2.jar) |
 | Deprecated: Unused ~~jQuery Newer Version~~ | ~~jquery-3.4.1.slim.min.js~~                   | read this : https://stackoverflow.com/questions/25508564/how-to-solve-a-conflict-with-primefaces-jquery<br /><br /><br />already tested to replace jquery by this newer version (/resources/primefaces/jquery/jquery.js) it will make primefaces actions can't operate.<br />already tested to remove this newer version to see what's happen in timesheet, but still work as well. |
-| Bootstrap CSS                               | Bootstrap v3.3.7                               | [need to check for where to use this css library]            |
+| Bootstrap CSS                               | Bootstrap v3.3.7                               | deal with the top-menu, side-menu and some UI states by K.Thammasak. |
 
 
 

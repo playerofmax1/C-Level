@@ -95,7 +95,8 @@
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Date" styleClass="require"/>
                     <p:calendar id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
-                                  pattern="dd/MM/yyyy" />
+                                pattern="dd/MM/yyyy"
+                                mask="true"/>
                     <h:outputLabel value="Description" styleClass="require" />
                     <p:inputText value="#{holidayCtl.newHoliday.description}" style="width: 500px;"/>
                 </h:panelGrid>

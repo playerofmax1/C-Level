@@ -119,7 +119,7 @@ fi
 | develop    | Development<br />(no version number lets use git revision number instead) | New Featured and Fix Bug | Developer               | Localhost (notebook) | All branches that prefix by 'dev' are included in this state.<br />This state has many branches without Integration Testing (Unit Test Result may be required at this step). |
 | alpha      | Alpha Version                                                | VIT/SIT                  | QA                      | DEV                  | Know as Vendor Integration Testing, after developer-leader already merge some develop branches into this branch with the version name is Alpha still need to test by Leader or QA before confirm to release to UAT. |
 | beta       | Beta Version                                                 | UAT                      | User Acceptance Testing | UAT                  | Know as User Acceptance Testing, after QA confirm to release to UAT the developer-leader need to merge that alpha version into this branch and change the version name to Beta. |
-| master     | Final Version                                                | Go Live                  | Sales / Users           | PROD                 | Know as Stable Version, after UAT process is completed, leader need to merge from beta branch into master branch and change the version name to Final before pack and sent to Sales or Deployment Team. |
+| final      | Final Version                                                | Go Live                  | Sales / Users           | PROD                 | Know as Stable Version, after UAT process is completed, leader need to merge from beta branch into master branch and change the version name to Final before pack and sent to Sales or Deployment Team. |
 
 
 
@@ -152,9 +152,15 @@ The version.property is used in the front-end to show full version text on the b
 
 | Term         | Description                                                  |
 | ------------ | ------------------------------------------------------------ |
-| Project      | The Project is main Product sell to customer refer by PID.   |
-| Project Task | The Project Task is sub task of the Product sold to customer refer by PID and Task ID.<br />Somebody know as chargeable tasks. |
-| Task         | The stand alone task without project.<br />Somebody know as no charge tasks. |
+| Customer     | Partnership with the C-Level Co., Ltd.                       |
+| User         | Employee of the C-Level Co., Ltd.                            |
+| Rate         | (Not use for now) The Price of One Manday for Project.       |
+| Project      | The Project is any Product sell to customer refer by PID.    |
+| Project Task | The Project Task is sub task of the Product sold to customer refer by PID and Task ID.<br />Somebody know as chargeable tasks assigned to a user. |
+| Task         | Template for Project Task.                                   |
+| Holiday      | Specified day marked as a holiday for User and not count as working day of a year in %CU chapter. |
+| Screen       | Web pages that already listed in the Left Side Menu to show for a user filtered by Screen Permission (Role-Screen) |
+| Function     | Specific Function defined in a Function(.java) class and used in many screens that refer to the function description (Role-Function) |
 
 
 
@@ -179,10 +185,12 @@ The version.property is used in the front-end to show full version text on the b
 | DEV  | **Know Issues**: Deploy using Web Console will got some exception about class not found, not work!<br />**Recommended**: Copy war file to this path '/opt/wildfly/standalone/deployments' and wait for file-name.isDeployed is appeared and then check server.log<br />(The api.war need to deploy first follow by the front.war if it's successful without error) |
 | DEV  | **C-Level 2020 VPN is Required**:<br />Front-end URL: http://192.168.88.19:8080/signin.jsf<br />API URL: http://192.168.88.19:8080/api/rest/resteasy/registry |
 | DEV  | **Public URL Here (no VPN)**:<br />Front-end URL: http://6f3907e3bcf0.sn.mynetname.net:8888/signin.jsf<br />API URL: http://6f3907e3bcf0.sn.mynetname.net:8888/api/rest/resteasy/registry |
+| PROD | Know Issues: @2020.05.16 Application Server use 8087 as internal port, so the front-end configuration need to change from 8080 to 8087 (see web.xml::param-name=rest.api.url)<br />Recommended: Pack war files and put to SFTP of DEV env and notify to Deployment Team (Tech Team)  and wait for response. |
+| PROD | **Public URL Here (no VPN)**:<br />Front-end URL: https://kudu.the-c-level.com/signin.jsf<br />API URL: https://kudu.the-c-level.com/api/rest/resteasy/registry |
 
 
 
-#### Often Uses Shell Commands
+#### Often Use Shell Commands
 
 >   For DEV Environment.
 

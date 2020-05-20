@@ -214,7 +214,8 @@
                                     converter="durationConverter"
                                     pattern="HH:mm"
                                     timeOnly="true"
-                                    maxHour="99">
+                                    maxHour="99"
+                                    mask="true">
                             <p:ajax event="dateSelect" update="planMD"/>
                         </p:calendar>
                         <p:inputText rendered="#{managePrjCtl.newProjectTask.moreThan99Hours}"

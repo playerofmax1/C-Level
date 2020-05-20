@@ -261,7 +261,8 @@ hr.ui-separator {
 
 .ui-timepicker-div .ui-widget-header,
 .ui-timepicker-div .ui_tpicker_time_label,
-.ui-timepicker-div .ui_tpicker_time {
+.ui-timepicker-div .ui_tpicker_time,
+.ui-datepicker-close {
     display: none;
 }
 

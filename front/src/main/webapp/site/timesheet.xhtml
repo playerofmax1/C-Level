@@ -30,7 +30,9 @@
                 display: inline-block;
                 width: 80px !important;
             }
-
+            .ui-timepicker-div .ui_tpicker_time {
+                display: inline !important;
+            }
             .ui-calendar input {
                 width: 100%;
             }
@@ -227,7 +229,9 @@
                                     value="#{timeSheetCtl.detail.timeIn}"
                                     rendered="#{timeSheetCtl.detail.sortOrder==1}"
                                     pattern="HH:mm"
-                                    timeOnly="true">
+                                    timeOnly="true"
+                                    mask="true"
+                                    showButtonPanel="true">
                         </p:calendar>
                         <h:outputText value="(HH:mm)" rendered="#{timeSheetCtl.detail.sortOrder==1}" style="padding: 0 10px 0 10px"/>
                         <p:focus for="timeIn" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
@@ -241,7 +245,9 @@
                                     value="#{timeSheetCtl.detail.timeOut}"
                                     rendered="#{timeSheetCtl.detail.sortOrder==1}"
                                     pattern="HH:mm"
-                                    timeOnly="true">
+                                    timeOnly="true"
+                                    mask="true"
+                                    showButtonPanel="true">
                         </p:calendar>
                         <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
                     </div>
@@ -298,7 +304,8 @@
                                         converter="durationConverter"
                                         pattern="HH:mm"
                                         timeOnly="true"
-                                        maxHour="8">
+                                        maxHour="8"
+                                        mask="true">
                                 <p:ajax event="change" listener="#{timeSheetCtl.onChangeDuration()}" update="timeSheetDlgForm:chargeButton"/>
                             </p:calendar>
                             <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>

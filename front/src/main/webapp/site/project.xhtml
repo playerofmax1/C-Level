@@ -43,40 +43,69 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:outputText value="Project Code"/>
-                        <p:inputText value="#{projectCtl.searchRequest.code}"/>
-                        <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
-                                         update="mainForm"/>
+                        <h:panelGrid columns="7">
+                            <h:outputText value="Project Code:"/>
+                            <p:inputText value="#{projectCtl.searchRequest.code}"/>
 
-                        <div class="alignRight">
-                            <p:commandButton value="New Project" action="#{projectCtl.onPreNewProject}"
-                                             onsuccess="PF('projectDlg').show()" update="projectDlgForm"/>
-                        </div>
+                            <p:spacer width="10" />
+                            <h:outputText value="Status:"/>
+                            <p:selectOneMenu value="#{projectCtl.searchRequest.status}">
+                                <f:selectItem itemLabel="ALL" itemValue="INACTIVE"/>
+                                <f:selectItem itemLabel="ACTIVE" itemValue="ACTIVE"/>
+                                <f:selectItem itemLabel="CLOSE" itemValue="CLOSE"/>
+                            </p:selectOneMenu>
 
-                        <p:dataTable var="project" value="#{projectCtl.projectList}" rows="10"
-                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+                            <p:spacer width="10" />
+                            <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
+                                             update="mainForm"/>
+                        </h:panelGrid>
 
-                            <p:column headerText="Code" style="width: 80px">
+                        <p:separator/>
+
+                        <p:dataTable var="project"
+                                     widgetVar="project"
+                                     value="#{projectCtl.projectList}"
+                                     rows="10"
+                                     sortBy="#{project.code}"
+                                     paginator="true"
+                                     paginatorPosition="bottom"
+                                     style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newProject" value="New Project"
+                                                             action="#{projectCtl.onPreNewProject}"
+                                                             onsuccess="PF('projectDlg').show()"
+                                                             update="projectDlgForm"/>
+                                            <p:tooltip position="right" value="Create new project with BillableMD." for="newProject"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Code" sortBy="#{project.code}" style="width: 80px">
                                 <h:outputText value="#{project.code}"/>
                             </p:column>
 
-                            <p:column headerText="Name" style="width: 180px">
+                            <p:column headerText="Name" sortBy="#{project.name}" style="width: 180px">
                                 <h:outputText value="#{project.name}"/>
                             </p:column>
 
-                            <p:column headerText="Type" style="width: 110px">
+                            <p:column headerText="Type" sortBy="#{project.type}" style="width: 110px">
                                 <h:outputText value="#{project.type}"/>
                             </p:column>
 
-                            <p:column headerText="Status" style="width: 70px">
+                            <p:column headerText="Status" sortBy="#{project.status}" style="width: 70px">
                                 <h:outputText value="#{project.status}"/>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{project.description}">
                                 <h:outputText value="#{project.description}"/>
                             </p:column>
 
-                            <p:column headerText="Customer" style="width: 100px">
+                            <p:column headerText="Customer" sortBy="#{project.customer.name}" style="width: 100px">
                                 <h:outputText value="#{project.customer.name}"/>
                             </p:column>
 
@@ -132,10 +161,10 @@
                     </p:selectOneMenu>
 
                     <h:outputLabel value="Code" styleClass="require"/>
-                    <p:inputText value="#{projectCtl.newProject.code}" styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{projectCtl.newProject.code}" styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"/>
 
                     <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{projectCtl.newProject.name}" styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{projectCtl.newProject.name}" styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
 
                     <h:outputLabel value="Type" styleClass="require"/>
                     <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:300px">

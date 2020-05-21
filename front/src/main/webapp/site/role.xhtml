@@ -30,6 +30,11 @@
                 $('#role').addClass('active');
             });
         </script>
+        <style>
+            .ui-picklist-buttons-cell {
+                margin-right: 6px !important;
+            }
+        </style>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -38,30 +43,50 @@
             <div class="row">
                 <ui:include src="../resources/menu.xhtml"/>
 
-                <h:form id="mainForm">
-                    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                        <h1 class="sub-header">Role Management</h1>
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="sub-header">Role Management</h1>
+                    <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New Role" action="#{roleCtl.onPreNewRole}"
-                                         onsuccess="PF('roleDlg').show()"
-                                         update="mainForm,roleDlgForm"/>
+                        <h:panelGrid columns="2">
+                            <h:outputText value="Role:"/>
+                            <p:selectOneMenu value="#{roleCtl.selectedRoleId}" style="width:250px">
+                                <f:selectItems value="#{roleCtl.roleList}" var="role" itemLabel="#{role.name}"
+                                               itemValue="#{role.id}"/>
+                                <p:ajax event="change" update="mainForm" listener="#{roleCtl.onChangeRole}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
 
-                        <p:panel>
+                        <p:separator/>
+
+                        <p:panel style="font-size: 12px">
                             <f:facet name="header">
-                                <h:outputText value="Role "/>
-                                <p:selectOneMenu value="#{roleCtl.selectedRoleId}" style="width:250px">
-                                    <f:selectItems value="#{roleCtl.roleList}" var="role" itemLabel="#{role.name}"
-                                                   itemValue="#{role.id}"/>
-                                    <p:ajax event="change" update="mainForm" listener="#{roleCtl.onChangeRole}"/>
-                                </p:selectOneMenu>
-                                <p:commandButton value="Edit Role" action="#{roleCtl.onPreUpdateRole}"
-                                                 onsuccess="PF('roleDlg').show()" disabled="#{roleCtl.selectedRoleId==0}"
-                                                 update="roleDlgForm"/>
-                                <p:commandButton value="Delete Role" action="#{roleCtl.onPreDeleteRole}"
-                                                 onsuccess="PF('deleteRoleDlg').show();"
-                                                 update="deleteDlgForm" disabled="#{roleCtl.selectedRoleId==0}"/>
+                                <div class="ui-g">
+                                    <div class="ui-g-12 ui-lg-6 ui-sm-12 alignLeft">
+                                        <p:commandButton id="newRole"
+                                                         value="New Role"
+                                                         action="#{roleCtl.onPreNewRole}"
+                                                         onsuccess="PF('roleDlg').show()"
+                                                         update="mainForm,roleDlgForm"/>
+                                        <p:commandButton id="editRole"
+                                                         value="Edit Role"
+                                                         action="#{roleCtl.onPreUpdateRole}"
+                                                         onsuccess="PF('roleDlg').show()"
+                                                         disabled="#{roleCtl.selectedRoleId==0}"
+                                                         update="roleDlgForm"/>
+                                        <p:commandButton id="deleteRole"
+                                                         value="Delete Role"
+                                                         action="#{roleCtl.onPreDeleteRole}"
+                                                         onsuccess="PF('deleteRoleDlg').show();"
+                                                         update="deleteDlgForm"
+                                                         disabled="#{roleCtl.selectedRoleId==0}"/>
+                                        <p:tooltip position="top" value="Create new role." for="newRole"/>
+                                        <p:tooltip position="top" value="Edit this role." for="editRole"/>
+                                        <p:tooltip position="top" value="Delete this role." for="deleteRole"/>
+                                    </div>
+                                </div>
                             </f:facet>
+
                             <p:tabView id="tab">
                                 <p:tab id="screenTab" title="Screen" disabled="#{roleCtl.selectedRoleId==0}">
                                     <p:pickList id="screenList" value="#{roleCtl.screenList}" var="screen"
@@ -97,9 +122,9 @@
                                 </p:tab>
                             </p:tabView>
                         </p:panel>
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </h:form>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+                </div>
 
             </div>
         </div>
@@ -108,7 +133,7 @@
             <h:form id="roleDlgForm">
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{roleCtl.newRole.name}" styleClass="#{roleCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{roleCtl.newRole.name}" styleClass="#{roleCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Description "/>
                     <p:inputTextarea value="#{roleCtl.newRole.description}" style="width: 400px"/>
                 </h:panelGrid>
@@ -118,7 +143,7 @@
                                      rendered="#{roleCtl.editMode==false}"
                                      update="mainForm,roleDlgForm"/>
                     <p:commandButton value="Update" action="#{roleCtl.onUpdateRole}"
-                                     rendered="#{roleCtl.editMode==true}" />
+                                     rendered="#{roleCtl.editMode==true}"/>
                     <p:commandButton value="Cancel" onclick="PF('roleDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

@@ -30,6 +30,13 @@ public class CustomerDTO implements LookupList {
         return code;
     }
 
+    public long getCodeAsNumber() {
+        if (code == null) {
+            return 0L;
+        }
+        return Long.parseLong(code);
+    }
+
     public void setCode(String code) {
         this.code = code;
     }

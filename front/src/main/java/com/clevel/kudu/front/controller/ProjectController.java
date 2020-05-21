@@ -7,6 +7,7 @@ import com.clevel.kudu.dto.working.CustomerDTO;
 import com.clevel.kudu.dto.working.ProjectDTO;
 import com.clevel.kudu.dto.working.SearchRequest;
 import com.clevel.kudu.front.validation.Validator;
+import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.util.FacesUtil;
 import org.primefaces.PrimeFaces;
 
@@ -91,6 +92,10 @@ public class ProjectController extends AbstractController {
 
     public void onSearchProject() {
         log.debug("onSearchProject. (searchRequest: {})",searchRequest);
+
+        if (RecordStatus.INACTIVE.equals(searchRequest.getStatus())) {
+            searchRequest.setStatus(null);
+        }
 
         ServiceRequest<SearchRequest> request = new ServiceRequest<>(searchRequest);
         request.setUserId(userDetail.getUserId());

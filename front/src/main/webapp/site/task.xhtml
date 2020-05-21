@@ -39,32 +39,45 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="sub-header">Task</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New Task" action="#{taskCtl.onPreNewTask}"
-                                         onsuccess="PF('taskDlg').show()" update="taskDlgForm"/>
-
-                        <p:dataTable var="task" value="#{taskCtl.taskList}" rows="10"
+                        <p:dataTable var="task" value="#{taskCtl.taskList}" rows="10" sortBy="#{task.code}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
-                            <p:column headerText="Code" style="width: 80px">
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newTask" 
+                                                             value="New Task" 
+                                                             action="#{taskCtl.onPreNewTask}"
+                                                             onsuccess="PF('taskDlg').show()" 
+                                                             update="taskDlgForm"/>
+                                            <p:tooltip position="right" value="Create new task for dropdown list in Project Task Dialog." for="newTask"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Code" sortBy="#{task.code}" style="width: 80px">
                                 <h:outputText value="#{task.code}"/>
                             </p:column>
 
-                            <p:column headerText="Name" style="width: 180px">
+                            <p:column headerText="Name" sortBy="#{task.name}" style="width: 180px">
                                 <h:outputText value="#{task.name}"/>
                             </p:column>
 
-                            <p:column headerText="Type" style="width: 120px">
+                            <p:column headerText="Type" sortBy="#{task.type}" style="width: 120px">
                                 <h:outputText value="#{task.type}"/>
                             </p:column>
 
-                            <p:column headerText="Chargeable" style="width: 100px">
+                            <p:column headerText="Chargeable" sortBy="#{task.chargeable}" style="width: 100px">
                                 <h:outputText value="#{(task.chargeable)?'Yes':'No'}"/>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{task.description}">
                                 <h:outputText value="#{task.description}"/>
                             </p:column>
 

@@ -60,7 +60,7 @@ public class ProjectDAO extends GenericDAO<Project, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Project> searchProject(String code, String name) {
+    public List<Project> searchProject(String code, String name, RecordStatus status) {
         log.debug("searchProject. ( code: {}, name: {})", code, name);
         CriteriaQuery<Project> criteria = createCriteriaQuery();
 
@@ -72,6 +72,10 @@ public class ProjectDAO extends GenericDAO<Project, Long> {
 
         if (name != null && !name.isEmpty()) {
             predicates.add(cb.like(root.get(Project_.name), name + "%"));
+        }
+
+        if (status != null) {
+            predicates.add(cb.equal(root.get(Project_.status),status.code()));
         }
 
 

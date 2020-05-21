@@ -43,33 +43,45 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New User" action="#{userCtl.onPreNewUser}"
-                                         onsuccess="PF('userDlg').show()" update="userDlgForm"/>
-
-                        <p:dataTable var="user" value="#{userCtl.userList}" rows="10"
+                        <p:dataTable var="user" value="#{userCtl.userList}" rows="10" sortBy="#{user.name}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
-                            <p:column headerText="Name" style="width: 160px">
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newUser"
+                                                             value="New User"
+                                                             action="#{userCtl.onPreNewUser}"
+                                                             onsuccess="PF('userDlg').show()"
+                                                             update="userDlgForm"/>
+                                            <p:tooltip position="right" value="Create new user/employee." for="newUser"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Name" sortBy="#{user.name}" style="width: 160px">
                                 <h:outputText value="#{user.name} #{user.lastName}"/>
                             </p:column>
 
-                            <p:column headerText="Login Name" style="width: 100px">
+                            <p:column headerText="Login Name" sortBy="#{user.loginName}" style="width: 100px">
                                 <h:outputText value="#{user.loginName}"/>
                             </p:column>
 
-                            <p:column headerText="Rate" style="width: 150px">
+                            <p:column headerText="Rate" sortBy="#{user.rate.name}" style="width: 150px">
                                 <h:outputText value="#{user.rate.name}"/>
                             </p:column>
 
-                            <p:column headerText="Role" style="width: 120px">
+                            <p:column headerText="Role" sortBy="#{user.role.name}" style="width: 120px">
                                 <h:outputText value="#{user.role.name}"/>
                             </p:column>
 
-                            <p:column headerText="Email" style="width: 200px">
+                            <p:column headerText="Email" sortBy="#{user.email}" style="width: 200px">
                                 <h:outputText value="#{user.email}"/>
                             </p:column>
 
-                            <p:column headerText="Last Login" style="width: 140px">
+                            <p:column headerText="Last Login" sortBy="#{user.lastLoginDate}" style="width: 140px">
                                 <h:outputText value="#{user.lastLoginDate}">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="Asia/Bangkok"/>
                                 </h:outputText>

@@ -43,11 +43,22 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New Holiday" action="#{holidayCtl.onPreNewHoliday}"
-                                         onsuccess="PF('holidayDlg').show()" update="holidayDlgForm"/>
-
-                        <p:dataTable var="holiday" value="#{holidayCtl.holidayList}" rows="10"
+                        <p:dataTable var="holiday" value="#{holidayCtl.holidayList}" rows="10" sortBy="#{holiday.holidayDate}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newHoliday" value="New Holiday"
+                                                             action="#{holidayCtl.onPreNewHoliday}"
+                                                             onsuccess="PF('holidayDlg').show()"
+                                                             update="holidayDlgForm"/>
+                                            <p:tooltip position="right" value="Add new holiday." for="newHoliday"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
 
                             <p:column headerText="Day" style="width: 80px">
                                 <h:outputText value="#{holiday.holidayDate}">
@@ -55,13 +66,13 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Date" style="width: 80px">
+                            <p:column headerText="Date" sortBy="#{holiday.holidayDate}" style="width: 80px">
                                 <h:outputText value="#{holiday.holidayDate}">
                                     <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{holiday.description}">
                                 <h:outputText value="#{holiday.description}"/>
                             </p:column>
 

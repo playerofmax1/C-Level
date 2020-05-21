@@ -43,26 +43,38 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New Customer" action="#{customerCtl.onPreNewCustomer}"
-                                         onsuccess="PF('customerDlg').show()" update="customerDlgForm"/>
-
-                        <p:dataTable var="customer" value="#{customerCtl.customerList}" rows="10"
+                        <p:dataTable var="customer" value="#{customerCtl.customerList}" rows="10" sortBy="#{customer.codeAsNumber}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
-                            <p:column headerText="Code" style="width: 80px">
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newCustomer"
+                                                    value="New Customer"
+                                                             action="#{customerCtl.onPreNewCustomer}"
+                                                             onsuccess="PF('customerDlg').show()"
+                                                             update="customerDlgForm"/>
+                                            <p:tooltip position="right" value="Create new customer." for="newCustomer"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Code" sortBy="#{customer.codeAsNumber}" style="width: 80px">
                                 <h:outputText value="#{customer.code}"/>
                             </p:column>
 
-                            <p:column headerText="Name" style="width: 200px">
+                            <p:column headerText="Name" sortBy="#{customer.name}" style="width: 200px">
                                 <h:outputText value="#{customer.name}"/>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{customer.description}">
                                 <h:outputText value="#{customer.description}"/>
                             </p:column>
 
 
-                            <p:column headerText="Actions"  style="width: 250px">
+                            <p:column headerText="Actions" style="width: 250px">
                                 <p:commandButton value="Edit" action="#{customerCtl.onPreUpdateCustomer}"
                                                  update="customerDlgForm"
                                                  onsuccess="PF('customerDlg').show();">

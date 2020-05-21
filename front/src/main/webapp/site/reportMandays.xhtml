@@ -64,6 +64,7 @@
                         <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
 
                         <p:dataTable id="md" var="mandays" value="#{rptMandaysCtl.userMandaysDTOList}" rowIndexVar="idx"
+                                     sortBy="#{mandays.project.code}"
                                      style="font-size: 12px">
 
                             <f:facet name="header">
@@ -141,35 +142,35 @@
 
                             </f:facet>
 
-                            <p:column headerText="Project" footerText="TOTAL(exclude gray)" styleClass="alignCenter">
+                            <p:column headerText="Project" footerText="TOTAL(exclude gray)" sortBy="#{mandays.project.code}" styleClass="alignCenter">
                                 <h:outputText value="#{(mandays.project == null)?'-- no project --':mandays.project.code}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="Actual Hours" footerText="#{rptMandaysCtl.totalUserMandays.chargeHours}" styleClass="alignRight">
+                            <p:column headerText="Actual Hours" footerText="#{rptMandaysCtl.totalUserMandays.chargeHours}" sortBy="#{mandays.chargeHours}" styleClass="alignRight">
                                 <h:outputText value="#{mandays.chargeHours}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="Actual MD" footerText="#{rptMandaysCtl.totalUserMandays.chargeDays}" styleClass="alignRight">
+                            <p:column headerText="Actual MD" footerText="#{rptMandaysCtl.totalUserMandays.chargeDays}" sortBy="#{mandays.chargeDays}" styleClass="alignRight">
                                 <h:outputText value="#{mandays.chargeDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" styleClass="alignRight">
+                            <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" sortBy="#{mandays.workDays}" styleClass="alignRight">
                                 <h:outputText value="#{mandays.workDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="First Day" styleClass="alignCenter">
+                            <p:column headerText="First Day" sortBy="#{mandays.firstChargeDate}"  styleClass="alignCenter">
                                 <h:outputText value="#{mandays.firstChargeDate}" styleClass="#{(mandays.project == null)?'blurLabel':''}">
                                     <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Last Day" styleClass="alignCenter">
+                            <p:column headerText="Last Day" sortBy="#{mandays.lastChargeDate}" styleClass="alignCenter">
                                 <h:outputText value="#{mandays.lastChargeDate}" styleClass="#{(mandays.project == null)?'blurLabel':''}">
                                     <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="First To Last" styleClass="alignRight">
+                            <p:column headerText="First To Last" sortBy="#{mandays.firstToLastDays}" styleClass="alignRight">
                                 <h:outputText value="#{mandays.firstToLastDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 

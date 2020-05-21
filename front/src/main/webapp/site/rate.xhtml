@@ -43,25 +43,37 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:commandButton value="New Rate" action="#{rateCtl.onPreNewRate}"
-                                         onsuccess="PF('rateDlg').show()" update="rateDlgForm"/>
-
-                        <p:dataTable var="rate" value="#{rateCtl.rateList}" rows="10"
+                        <p:dataTable var="rate" value="#{rateCtl.rateList}" rows="10" sortBy="#{rate.code}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
-                            <p:column headerText="Code" style="width: 80px">
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newRate"
+                                                             value="New Rate"
+                                                             action="#{rateCtl.onPreNewRate}"
+                                                             onsuccess="PF('rateDlg').show()"
+                                                             update="rateDlgForm"/>
+                                            <p:tooltip position="right" value="Create new rate." for="newRate"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Code" sortBy="#{rate.code}" style="width: 80px">
                                 <h:outputText value="#{rate.code}"/>
                             </p:column>
 
-                            <p:column headerText="Name" style="width: 180px">
+                            <p:column headerText="Name" sortBy="#{rate.name}" style="width: 180px">
                                 <h:outputText value="#{rate.name}"/>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{rate.description}">
                                 <h:outputText value="#{rate.description}"/>
                             </p:column>
 
-                            <p:column headerText="Cost" style="width: 100px">
+                            <p:column headerText="Cost" sortBy="#{rate.cost}" style="width: 100px">
                                 <h:outputText value="#{rate.cost}"/>
                             </p:column>
 

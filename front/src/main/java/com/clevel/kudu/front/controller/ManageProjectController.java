@@ -433,6 +433,10 @@ public class ManageProjectController extends AbstractController {
         }
     }
 
+    public void onHundredPlusClicked() {
+        newProjectTask.setPlanMDDuration(Duration.ofHours(100));
+    }
+
     public long getProjectId() {
         return projectId;
     }

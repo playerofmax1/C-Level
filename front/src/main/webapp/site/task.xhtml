@@ -27,7 +27,6 @@
         <h:outputStylesheet library="css" name="style.css" target="head"/>
         <script>
             $(document).ready(function () {
-                $(".nav").find(".active").removeClass("active");
                 $('#task').addClass('active');
             });
         </script>
@@ -137,6 +136,7 @@
             <ui:param name="update" value="mainForm"/>
         </ui:include>
 
+        <br/>
         <ui:include src="/resources/footer.xhtml">
             <ui:param name="controller" value="#{taskCtl}"/>
         </ui:include>

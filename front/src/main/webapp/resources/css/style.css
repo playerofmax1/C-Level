@@ -1,14 +1,14 @@
 /*.ui-widget, .ui-widget .ui-widget {*/
-    /*font-size: 90% !important;*/
+/*font-size: 90% !important;*/
 /*}*/
 .ui-growl {
-    z-index:9999 !important;
+    z-index: 9999 !important;
 }
 
-@media(min-width: 300px) {
+@media (min-width: 300px) {
     .my-dialog-class {
         width: 80% !important;
-        z-index:9000 !important;
+        z-index: 9000 !important;
     }
 }
 
@@ -53,18 +53,49 @@
     vertical-align: bottom;
 }
 
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.onTopLeft {
+    position: absolute;
+    text-align: left;
+    left: 10px;
+    top: 10px;
+}
+
 .onBottomLeft {
     text-align: left;
     position: absolute;
-    left: 15px;
+    left: 10px;
     bottom: 10px;
 }
 
 .onBottomRight {
     text-align: right;
     position: absolute;
-    right: 15px;
+    right: 10px;
     bottom: 10px;
+}
+
+.transparent {
+    background-color: transparent !important;
+}
+
+.no-border {
+    border-width: 0 0 0 0 !important;
+}
+
+.no-padding {
+    padding: 0 0 0 0 !important;
+}
+
+.gridInputRow {
+    height: 42px;
 }
 
 footer {
@@ -130,7 +161,8 @@ footer {
 }
 
 label {
-    font-weight: unset; !important;
+    font-weight: unset;
+!important;
 }
 
 label.require:after {
@@ -146,7 +178,7 @@ label.require:after {
     height: 34px !important;
     outline: none !important;
     background: transparent !important;
-    margin: 0 0 8px !important;
+    margin: 0 0 0 0 !important;
     padding: 0 !important;
     border: 1px solid #c4c4c4;
     border-radius: 3px !important;
@@ -160,15 +192,14 @@ label.require:after {
 .ui-inputfield,
 .ui-inputtext {
     outline: none !important;
-    font-weight: normal; !important;
+    font-weight: normal !important;
     margin: 0 0 0px !important;
     padding: 5px 5px !important;
     border-radius: 3px !important;
     box-shadow: inset 1px 1px 4px #cccccc !important;
 }
 
-.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error
-{
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
     border: 1px solid #e20034 !important;
     background: #ffffff !important;
 }
@@ -215,36 +246,61 @@ label.require:after {
     border: 1px solid #a8a8a8;
 }
 
+hr.ui-separator {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+}
+
 .ui-widget {
     margin: 0.2em;
 }
 
-.holiday{
-    background-color:steelblue;
-    color: white;
-    background-image:none;
+.ui-datepicker {
+    margin: 0;
 }
 
-.normal{
-    background-color:white;
-    background-image:none;
+.ui-timepicker-div .ui-widget-header,
+.ui-timepicker-div .ui_tpicker_time_label,
+.ui-timepicker-div .ui_tpicker_time,
+.ui-datepicker-close {
+    display: none;
 }
+
+.ui-widget.no-padding .ui-widget-content {
+    padding: 0 0 0 0 !important;
+}
+
+.ui-widget.no-padding:parent {
+    padding: 0 0 0 0 !important;
+}
+
+.holiday {
+    background-color: steelblue;
+    color: white;
+    background-image: none;
+}
+
+.normal {
+    background-color: white;
+    background-image: none;
+}
+
 /*.ui-column-title {*/
-    /*font-size: 10px;*/
+/*font-size: 10px;*/
 /*}*/
 /*.ui-paginator {*/
-    /*font-size: 10px;*/
-    /*color: #2b542c;*/
+/*font-size: 10px;*/
+/*color: #2b542c;*/
 /*}*/
 
 /*.ui-datatable-header {*/
-    /*font-size: 10px;*/
+/*font-size: 10px;*/
 /*}*/
 
 /*.ui-datatable-data {*/
-    /*font-size: 10px;*/
+/*font-size: 10px;*/
 /*}*/
 
 /*.ui-datatable-footer {*/
-    /*font-size: 10px;*/
+/*font-size: 10px;*/
 /*}*/

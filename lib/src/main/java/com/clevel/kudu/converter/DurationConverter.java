@@ -12,6 +12,9 @@ import java.time.Duration;
 public class DurationConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
+        if (s == null) {
+            return Duration.ZERO;
+        }
         return DateTimeUtil.stringToDuration(s);
     }
 

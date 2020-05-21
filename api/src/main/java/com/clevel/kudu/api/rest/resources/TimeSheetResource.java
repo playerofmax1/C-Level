@@ -108,6 +108,47 @@ public class TimeSheetResource implements TimeSheetService {
     }
 
     @Override
+    public Response getMandays(ServiceRequest<MandaysRequest> request) {
+        log.debug("getMandays. (request: {})", request);
+
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
+                request.toString());
+
+        MandaysResult mandaysResult = new MandaysResult();
+        ServiceResponse<MandaysResult> response = new ServiceResponse<>();
+
+        try {
+            MandaysRequest mandaysRequest = request.getRequest();
+            int year = mandaysRequest.getYear();
+            if (year == 0) {
+                year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
+                log.debug("{} = {}",SystemConfig.PF_YEAR.name(), year);
+            }
+
+            List<UserMandaysDTO> userMandaysDTOList = timeSheetManager.getUserMandays(mandaysRequest.getUserId(), year);
+            mandaysResult.setUserMandaysDTOList(userMandaysDTOList);
+
+            UserMandaysDTO totalMandaysDTO = timeSheetManager.getTotalMandays(userMandaysDTOList);
+            mandaysResult.setTotalMandaysDTO(totalMandaysDTO);
+
+            UtilizationDTO utilization = timeSheetManager.getUtilization(year, totalMandaysDTO);
+            mandaysResult.setUtilization(utilization);
+
+            response.setResult(mandaysResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
     public Response newRecord(ServiceRequest<TimeSheetDTO> request) {
         log.debug("newTask. (request: {})", request);
 

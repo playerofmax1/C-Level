@@ -90,6 +90,13 @@ public class ProjectTaskDTO implements LookupList {
         this.planMDDuration = planMDDuration;
     }
 
+    public boolean isMoreThan99Hours() {
+        if (planMDDuration == null) {
+            return false;
+        }
+        return planMDDuration.toHours() > 99;
+    }
+
     public Long getPlanMDMinute() {
         return planMDMinute;
     }

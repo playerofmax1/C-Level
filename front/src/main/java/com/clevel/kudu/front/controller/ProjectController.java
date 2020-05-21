@@ -281,6 +281,10 @@ public class ProjectController extends AbstractController {
         FacesUtil.redirect("/site/manageProject.jsf");
     }
 
+    public void onHundredPlusClicked() {
+        newProject.setBillableMDDuration(Duration.ofHours(100));
+    }
+
     public List<ProjectDTO> getProjectList() {
         return projectList;
     }

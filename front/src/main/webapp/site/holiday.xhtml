@@ -27,7 +27,6 @@
         <h:outputStylesheet library="css" name="style.css" target="head"/>
         <script>
             $(document).ready(function () {
-                $(".nav").find(".active").removeClass("active");
                 $('#holiday').addClass('active');
             });
         </script>
@@ -94,8 +93,9 @@
             <h:form id="holidayDlgForm">
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Date" styleClass="require"/>
-                    <p:datePicker id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
-                                  pattern="dd/MM/yyyy" />
+                    <p:calendar id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
+                                pattern="dd/MM/yyyy"
+                                mask="true"/>
                     <h:outputLabel value="Description" styleClass="require" />
                     <p:inputText value="#{holidayCtl.newHoliday.description}" style="width: 500px;"/>
                 </h:panelGrid>

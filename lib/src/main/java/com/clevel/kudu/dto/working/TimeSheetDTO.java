@@ -2,11 +2,14 @@ package com.clevel.kudu.dto.working;
 
 import com.clevel.kudu.model.LookupList;
 import com.clevel.kudu.model.RecordStatus;
+import com.clevel.kudu.util.DateTimeUtil;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.Date;
 
@@ -132,6 +135,14 @@ public class TimeSheetDTO implements LookupList {
 
     public void setStatus(RecordStatus status) {
         this.status = status;
+    }
+
+    public BigDecimal getChargeHours() {
+        return new BigDecimal(chargeDuration.toMinutes() / 60).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getChargeDays() {
+        return new BigDecimal(chargeDuration.toMinutes() / 480).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     @Override

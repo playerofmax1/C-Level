@@ -27,7 +27,6 @@
         <h:outputStylesheet library="css" name="style.css" target="head"/>
         <script>
             $(document).ready(function () {
-                $(".nav").find(".active").removeClass("active");
                 $('#user').addClass('active');
             });
         </script>
@@ -137,7 +136,11 @@
                                  maxlength="10"/>
 
                     <h:outputLabel value="TimeSheet start date" styleClass="require"/>
-                    <p:datePicker id="popup" value="#{userCtl.newUser.tsStartDate}" style="width: 200px;" pattern="dd/MM/yyyy"/>
+                    <p:calendar id="popup"
+                                value="#{userCtl.newUser.tsStartDate}"
+                                style="width: 200px;"
+                                pattern="dd/MM/yyyy"
+                                mask="true"/>
 
                     <h:outputLabel value="Role"/>
                     <p:selectOneMenu value="#{userCtl.selectedRoleId}" style="width:250px">
@@ -233,6 +236,7 @@
             <ui:param name="update" value="mainForm"/>
         </ui:include>
 
+        <br/>
         <ui:include src="/resources/footer.xhtml">
             <ui:param name="controller" value="#{userCtl}"/>
         </ui:include>

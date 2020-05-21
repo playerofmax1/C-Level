@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:event type="preRenderView" listener="#{accessCtl.checkAccess('S0009')}"/>
+
+    <h:head>
+        <title>Mandays</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Bootstrap core CSS -->
+        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
+        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
+
+        <!-- Custom styles for this template -->
+        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
+        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <style>
+            .blurLabel {
+                color: silver;
+            }
+
+            .overlayValue,
+            .overlayLabel {
+                width: 12em;
+            }
+
+            .fa-chevron-circle-down {
+                cursor: pointer;
+                width: 2em;
+                height: 1em;
+                text-align: center;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $('#mandays').addClass('active');
+            });
+        </script>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1 class="sub-header">Timesheet Summary</h1>
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+                    </h:form>
+
+                    <h:form id="yearForm">
+
+                        <h:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}">
+                            <h:outputText value="User: "/>
+                            <p:selectOneMenu value="#{rptMandaysCtl.selectedUserId}" style="width:300px">
+                                <f:selectItems value="#{rptMandaysCtl.userList}" var="user"
+                                               itemLabel="#{user.name} #{user.lastName}"
+                                               itemValue="#{user.id}"/>
+                                <p:ajax event="change" listener="#{rptMandaysCtl.onChangeUser()}" update="yearForm"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+
+                        <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
+
+                        <p:dataTable id="md" var="mandays" value="#{rptMandaysCtl.userMandaysDTOList}" rowIndexVar="idx"
+                                     style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel id="mdHeader" styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="xlsx"
+                                                             icon="fa fa-file-excel-o"
+                                                             value="Excel(xlsx)"
+                                                             ajax="false">
+                                                <p:dataExporter target="md"
+                                                                fileName="#{rptMandaysCtl.dataExportFileName()}"
+                                                                type="xlsx"
+                                                                options="#{rptMandaysCtl.exportExcelOptions}"/>
+                                            </p:commandButton>
+                                            <p:tooltip position="right" value="Download as Excel(xlsx)" for="xlsx"/>
+                                        </div>
+                                        <div class="ui-g-6 alignCenter alignBottom">
+                                            <p:commandButton id="previousYear" icon="fa fa-chevron-left" disabled="#{!rptMandaysCtl.previousEnable}"
+                                                             action="#{rptMandaysCtl.onPrevious}"
+                                                             update="yearForm,mainForm">
+                                            </p:commandButton>
+                                            <p:spacer width="5px"/>
+                                            <p:outputLabel value="#{rptMandaysCtl.currentYear}"/>
+                                            <p:spacer width="5px"/>
+                                            <p:commandButton id="nextYear" icon="fa fa-chevron-right" disabled="#{!rptMandaysCtl.nextEnable}"
+                                                             action="#{rptMandaysCtl.onNext}"
+                                                             update="yearForm,mainForm">
+                                            </p:commandButton>
+                                            <p:tooltip for="previousYear" value="Previous Year" position="left"/>
+                                            <p:tooltip for="nextYear" value="Next Year" position="right"/>
+                                        </div>
+                                        <div class="ui-g-3 alignRight">
+                                            <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/>
+                                            <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
+
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" hideEffect="fade">
+                                                <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="Year Start:" style="width:20em"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearStartDate}" style="width:12em">
+                                                        <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                                    </p:outputLabel>
+
+                                                    <p:outputLabel value="Year End:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearEndDate}">
+                                                        <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                                    </p:outputLabel>
+
+                                                    <p:outputLabel value="Year Days:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearDays}"/>
+
+                                                    <p:outputLabel value="Workdays:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.daysInYearExcludeWeekends}"/>
+
+                                                    <p:outputLabel value="Holidays:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.holidaysInYear}"/>
+
+                                                    <p:outputLabel value="Net Workdays:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.netWorkingDays}"/>
+
+                                                    <p:outputLabel value="Charged Mandays:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.chargedDays}"/>
+                                                </p:panelGrid>
+                                                <p:separator/>
+                                                <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="Utilization ="/>
+                                                    <p:outputLabel value="Net Workdays / Charged Mandays x 100"/>
+
+                                                    <p:outputLabel value="Recheck by Minutes:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.percentCUByMinutes}"/>
+
+                                                    <p:outputLabel value="Recheck by Days:"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.percentCUByDays}"/>
+                                                </p:panelGrid>
+                                            </p:overlayPanel>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+
+                                <p:blockUI block="mdHeader" trigger="md:previousYear,md:nextYear">
+                                    <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
+                                </p:blockUI>
+
+                            </f:facet>
+
+                            <p:column headerText="Project" styleClass="alignCenter">
+                                <h:outputText value="#{(mandays.project == null)?'-- no project --':mandays.project.code}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="Actual Hours" footerText="#{rptMandaysCtl.totalUserMandays.chargeHours}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.chargeHours}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="Actual MD" footerText="#{rptMandaysCtl.totalUserMandays.chargeDays}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.chargeDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.workDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="First Day" styleClass="alignCenter">
+                                <h:outputText value="#{mandays.firstChargeDate}" styleClass="#{(mandays.project == null)?'blurLabel':''}">
+                                    <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Last Day" styleClass="alignCenter">
+                                <h:outputText value="#{mandays.lastChargeDate}" styleClass="#{(mandays.project == null)?'blurLabel':''}">
+                                    <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="First To Last" styleClass="alignRight">
+                                <h:outputText value="#{mandays.firstToLastDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+
+                </div>
+            </div>
+        </div>
+
+        <br/>
+        <ui:include src="/resources/footer.xhtml">
+            <ui:param name="controller" value="#{rptMandaysCtl}"/>
+        </ui:include>
+    </h:body>
+</f:view>
+</html>

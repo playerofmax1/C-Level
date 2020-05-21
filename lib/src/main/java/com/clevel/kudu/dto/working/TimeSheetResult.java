@@ -3,13 +3,12 @@ package com.clevel.kudu.dto.working;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class TimeSheetResult {
     private List<TimeSheetDTO> timeSheetList;
     private List<TimeSheetLockDTO> timeSheetLockList;
-    private BigDecimal utilization;
+    private UtilizationDTO utilization;
     private boolean cutoffEnable;
     private int cutoffDate;
 
@@ -32,11 +31,11 @@ public class TimeSheetResult {
         this.timeSheetLockList = timeSheetLockList;
     }
 
-    public BigDecimal getUtilization() {
+    public UtilizationDTO getUtilization() {
         return utilization;
     }
 
-    public void setUtilization(BigDecimal utilization) {
+    public void setUtilization(UtilizationDTO utilization) {
         this.utilization = utilization;
     }
 
@@ -58,12 +57,13 @@ public class TimeSheetResult {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("timeSheetList", timeSheetList)
                 .append("timeSheetLockList", timeSheetLockList)
                 .append("utilization", utilization)
                 .append("cutoffEnable", cutoffEnable)
                 .append("cutoffDate", cutoffDate)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

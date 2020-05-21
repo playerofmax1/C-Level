@@ -29,18 +29,6 @@
             .blurLabel {
                 color: silver;
             }
-
-            .overlayValue,
-            .overlayLabel {
-                width: 12em;
-            }
-
-            .fa-chevron-circle-down {
-                cursor: pointer;
-                width: 2em;
-                height: 1em;
-                text-align: center;
-            }
         </style>
         <script>
             $(document).ready(function () {
@@ -99,7 +87,7 @@
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
                                             <p:spacer width="5px"/>
-                                            <p:outputLabel value="#{rptMandaysCtl.currentYear}"/>
+                                            <p:outputLabel value="Year #{rptMandaysCtl.currentYear}"/>
                                             <p:spacer width="5px"/>
                                             <p:commandButton id="nextYear" icon="fa fa-chevron-right" disabled="#{!rptMandaysCtl.nextEnable}"
                                                              action="#{rptMandaysCtl.onNext}"
@@ -111,21 +99,20 @@
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-
                                             <p:overlayPanel id="percentCUPanel" for="percentCU" hideEffect="fade">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Year Start:" style="width:20em"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearStartDate}" style="width:12em">
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.startDate}" style="width:12em">
                                                         <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                                     </p:outputLabel>
 
                                                     <p:outputLabel value="Year End:"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearEndDate}">
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.endDate}">
                                                         <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                                     </p:outputLabel>
 
                                                     <p:outputLabel value="Year Days:"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.yearDays}"/>
+                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.days}"/>
 
                                                     <p:outputLabel value="Workdays:"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.daysInYearExcludeWeekends}"/>
@@ -140,15 +127,8 @@
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.chargedDays}"/>
                                                 </p:panelGrid>
                                                 <p:separator/>
-                                                <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
-                                                    <p:outputLabel value="Utilization ="/>
-                                                    <p:outputLabel value="Net Workdays / Charged Mandays x 100"/>
-
-                                                    <p:outputLabel value="Recheck by Minutes:"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.percentCUByMinutes}"/>
-
-                                                    <p:outputLabel value="Recheck by Days:"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.percentCUByDays}"/>
+                                                <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="Utilization = Charged Mandays &#247; Net Workdays x 100" escape="false"/>
                                                 </p:panelGrid>
                                             </p:overlayPanel>
                                         </div>
@@ -161,7 +141,7 @@
 
                             </f:facet>
 
-                            <p:column headerText="Project" styleClass="alignCenter">
+                            <p:column headerText="Project" footerText="TOTAL(exclude gray)" styleClass="alignCenter">
                                 <h:outputText value="#{(mandays.project == null)?'-- no project --':mandays.project.code}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 

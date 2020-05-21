@@ -5,6 +5,7 @@ import com.clevel.kudu.api.business.TimeSheetManager;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.system.SystemManager;
 import com.clevel.kudu.dto.ServiceRequest;
@@ -12,6 +13,7 @@ import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
+import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.Util;
 import org.slf4j.Logger;
 
@@ -22,6 +24,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class TimeSheetResource implements TimeSheetService {
@@ -53,22 +56,25 @@ public class TimeSheetResource implements TimeSheetService {
         ServiceResponse<TimeSheetResult> response = new ServiceResponse<>();
 
         try {
+            Date monthDate = request.getRequest().getMonth();
             List<TimeSheetDTO> timeSheetDTOList = timeSheetManager.getTimeSheet(request.getUserId(),
-                    request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+                    request.getRequest().getTimeSheetUserId(), monthDate);
 
-            // apply holiday
-            timeSheetManager.applyHolidays(timeSheetDTOList, request.getRequest().getMonth());
+            // mark as holiday
+            timeSheetManager.markAsHolidays(timeSheetDTOList, monthDate);
             timeSheetResult.setTimeSheetList(timeSheetDTOList);
 
-            UtilizationResult result = timeSheetManager.getUtilization(request.getUserId(),
-                    request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
-            timeSheetResult.setUtilization(result.getUtilization());
+            long totalChargedMinutes = timeSheetManager.getTotalChargedMinutes(timeSheetDTOList);
+            Date monthStartDate = DateTimeUtil.getFirstDateOfMonth(monthDate);
+            Date monthEndDate = DateTimeUtil.getLastDateOfMonth(monthDate);
+            UtilizationDTO utilization = timeSheetManager.getUtilization(monthStartDate, monthEndDate, totalChargedMinutes);
+            timeSheetResult.setUtilization(utilization);
 
             timeSheetResult.setCutoffEnable(Util.isTrue(app.getConfig(SystemConfig.TS_CUTOFF_DATE_ENABLE)));
             timeSheetResult.setCutoffDate(Integer.parseInt(app.getConfig(SystemConfig.TS_CUTOFF_DATE)));
             log.debug("cutoff enable: {}, cutoff Date: {}", timeSheetResult.isCutoffEnable(), timeSheetResult.getCutoffDate());
 
-            List<TimeSheetLockDTO> timeSheetLockDTOList = timeSheetManager.getTimeSheetLock(request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+            List<TimeSheetLockDTO> timeSheetLockDTOList = timeSheetManager.getTimeSheetLock(request.getRequest().getTimeSheetUserId(), monthDate);
             timeSheetResult.setTimeSheetLockList(timeSheetLockDTOList);
 
             response.setResult(timeSheetResult);
@@ -93,7 +99,7 @@ public class TimeSheetResource implements TimeSheetService {
 
         try {
             timeSheetDTO = timeSheetManager.getTimeSheetInfo(request.getUserId(), request.getRequest().getId());
-            timeSheetManager.applyHoliday(timeSheetDTO);
+            timeSheetManager.markAsHoliday(timeSheetDTO);
             response.setResult(timeSheetDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -132,7 +138,9 @@ public class TimeSheetResource implements TimeSheetService {
             UserMandaysDTO totalMandaysDTO = timeSheetManager.getTotalMandays(userMandaysDTOList);
             mandaysResult.setTotalMandaysDTO(totalMandaysDTO);
 
-            UtilizationDTO utilization = timeSheetManager.getUtilization(year, totalMandaysDTO);
+            PerformanceYear performanceYear = timeSheetManager.getPerformanceYear(year);
+            UtilizationDTO utilization = timeSheetManager.getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), totalMandaysDTO.getChargeMinutes());
+            utilization.setYear(year);
             mandaysResult.setUtilization(utilization);
 
             response.setResult(mandaysResult);
@@ -263,17 +271,19 @@ public class TimeSheetResource implements TimeSheetService {
     public Response getUtilization(ServiceRequest<UtilizationRequest> request) {
         log.debug("getUtilization. (request: {})", request);
 
-        UtilizationResult utilizationResult;
         ServiceResponse<UtilizationResult> response = new ServiceResponse<>();
-
         try {
-            utilizationResult = timeSheetManager.getUtilization(request.getUserId(),
-                    request.getRequest().getRequestUserId(), request.getRequest().getMonth());
+            UtilizationRequest utilizationRequest = request.getRequest();
+            long totalChargedMinutes = utilizationRequest.getTotalChargedMinutes();
+            Date monthDate = utilizationRequest.getMonth();
+
+            Date monthStartDate = DateTimeUtil.getFirstDateOfMonth(monthDate);
+            Date monthEndDate = DateTimeUtil.getLastDateOfMonth(monthDate);
+            UtilizationDTO utilization = timeSheetManager.getUtilization(monthStartDate, monthEndDate, totalChargedMinutes);
+
+            UtilizationResult utilizationResult = new UtilizationResult(utilization);
             response.setResult(utilizationResult);
             response.setApiResponse(APIResponse.SUCCESS);
-        } catch (RecordNotFoundException e1) {
-            log.debug("", e1);
-            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
         } catch (Exception e) {
             log.error("", e);
             response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());

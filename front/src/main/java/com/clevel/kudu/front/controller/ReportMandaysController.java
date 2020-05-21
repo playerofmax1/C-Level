@@ -129,7 +129,8 @@ public class ReportMandaysController extends AbstractController {
             return;
         }
 
-        ServiceResponse<MandaysResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<MandaysResult>>() {});
+        ServiceResponse<MandaysResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<MandaysResult>>() {
+        });
         log.debug("serviceResponse = {}", serviceResponse);
         if (serviceResponse.getApiResponse() != APIResponse.SUCCESS) {
             String message = "loadMandays is failed! " + serviceResponse.getMessage();
@@ -144,7 +145,11 @@ public class ReportMandaysController extends AbstractController {
         utilization = mandaysResult.getUtilization();
         currentYear = (int) utilization.getYear();
 
-        /*TODO: sortList(userMandaysDTOList);*/
+        userMandaysDTOList.sort((o1, o2) -> {
+            String code1 = (o1.getProject() == null) ? "" : o1.getProject().getCode();
+            String code2 = (o2.getProject() == null) ? "" : o2.getProject().getCode();
+            return code1.compareTo(code2);
+        });
 
         normalize(totalUserMandays, userMandaysDTOList);
 

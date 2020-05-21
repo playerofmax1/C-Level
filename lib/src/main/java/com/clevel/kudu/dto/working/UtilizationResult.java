@@ -3,23 +3,21 @@ package com.clevel.kudu.dto.working;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import java.math.BigDecimal;
-
 public class UtilizationResult {
-    BigDecimal utilization;
+    UtilizationDTO utilization;
 
     public UtilizationResult() {
     }
 
-    public UtilizationResult(BigDecimal utilization) {
+    public UtilizationResult(UtilizationDTO utilization) {
         this.utilization = utilization;
     }
 
-    public BigDecimal getUtilization() {
+    public UtilizationDTO getUtilization() {
         return utilization;
     }
 
-    public void setUtilization(BigDecimal utilization) {
+    public void setUtilization(UtilizationDTO utilization) {
         this.utilization = utilization;
     }
 

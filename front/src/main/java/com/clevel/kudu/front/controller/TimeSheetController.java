@@ -28,7 +28,6 @@ import static com.clevel.kudu.util.LookupUtil.getObjById;
 public class TimeSheetController extends AbstractController {
     private List<TimeSheetDTO> timeSheetSummaryList;
     private List<TimeSheetDTO> timeSheetList;
-    private long selectedTimeSheetId;
 
     private List<UserDTO> userList;
     private long timeSheetUserId;
@@ -43,8 +42,6 @@ public class TimeSheetController extends AbstractController {
     private List<TaskDTO> taskList;
     private long selectedTaskId;
 
-    private List<TimeSheetDTO> pjtSummary;
-
     private ExcelOptions exportExcelOptions;
 
     private Date currentMonth;
@@ -52,7 +49,7 @@ public class TimeSheetController extends AbstractController {
     private boolean nextEnable;
     private Date tsStartDate;
 
-    private UtilizationResult utilization;
+    private UtilizationDTO utilization;
 
     private String chargeDurationButton;
 
@@ -70,7 +67,7 @@ public class TimeSheetController extends AbstractController {
         nextEnable = false;
         previousEnable = true;
         timeSheetUserId = userDetail.getUserId();
-        utilization = new UtilizationResult();
+        utilization = new UtilizationDTO();
 
         loadUserInfo();
         loadTask();
@@ -166,7 +163,7 @@ public class TimeSheetController extends AbstractController {
         FacesUtil.addInfo(message);
     }
 
-    public void checkNavigationButtonEnable() {
+    private void checkNavigationButtonEnable() {
         Date lastDate = DateTimeUtil.getLastDateOfMonth(DateTimeUtil.now());
 
         // check next
@@ -266,7 +263,7 @@ public class TimeSheetController extends AbstractController {
             sortList(timeSheetList);
 
             timeSheetSummaryList = sumHoursOfProject(timeSheetList);
-            utilization.setUtilization(result.getUtilization());
+            utilization = result.getUtilization();
 
             checkNavigationButtonEnable();
             checkViewOnly(result);
@@ -297,8 +294,11 @@ public class TimeSheetController extends AbstractController {
 
     private void loadUtilization() {
         log.debug("loadUtilization. (timeSheetUserId: {}, currentMonth: {})", timeSheetUserId, currentMonth);
+        timeSheetSummaryList = sumHoursOfProject(timeSheetList);
 
         UtilizationRequest utilizationRequest = new UtilizationRequest(timeSheetUserId, currentMonth);
+        utilizationRequest.setTotalChargedMinutes(getTotalChargedMinutes(timeSheetSummaryList));
+
         ServiceRequest<UtilizationRequest> request = new ServiceRequest<>(utilizationRequest);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getTimeSheetResource().getUtilization(request);
@@ -306,12 +306,33 @@ public class TimeSheetController extends AbstractController {
             ServiceResponse<UtilizationResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<UtilizationResult>>() {
             });
 
-            utilization = serviceResponse.getResult();
+            utilization = serviceResponse.getResult().getUtilization();
             log.debug("utilization: {}", utilization);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
         }
+    }
+
+    /**
+     * This function is copied from TimesheetController.getTotalChargedMinutes.
+     */
+    private long getTotalChargedMinutes(List<TimeSheetDTO> timeSheetDTOList) {
+        long chargedMinutes = 0;
+        for (TimeSheetDTO timeSheet : timeSheetDTOList) {
+            if (timeSheet.getProject() == null) {
+                /*total is for chargeable items only, chargeable item must have PID.*/
+                continue;
+            }
+            if (!timeSheet.getProjectTask().getTask().isChargeable()) {
+                log.warn("This case is timesheet with projectTask.chargeable = false, this is impossible case @2020.05.21 by the original technique from Thammasak " +
+                        "(chargeable=false will switch to use task-colume and leave null for project-column and project-task-column)" +
+                        "(chargeable=true will switch to use project-column and project-task-column and leave null for task-column) {}", timeSheet);
+                continue;
+            }
+            chargedMinutes += timeSheet.getChargeDuration().toMinutes();
+        }
+        return chargedMinutes;
     }
 
     private void loadProject() {
@@ -367,30 +388,28 @@ public class TimeSheetController extends AbstractController {
         }
     }
 
-
     private List<TimeSheetDTO> sumHoursOfProject(List<TimeSheetDTO> timeSheetList) {
         /*HashMap<"ProjectCode.TaskCode", TimeSheetDTO>*/
         HashMap<String, TimeSheetDTO> summaryMap = new HashMap<>();
         TimeSheetDTO currentSummaryTimeSheetDTO;
-        ProjectTaskDTO currentProjectTask;
+        ProjectDTO project;
         Duration chargeDuration;
         String mapKey;
 
         for (TimeSheetDTO timeSheetDTO : timeSheetList) {
-            currentProjectTask = timeSheetDTO.getProjectTask();
-            if (currentProjectTask == null) {
+            project = timeSheetDTO.getProject();
+            if (project == null) {
                 continue;
             }
-            //log.debug("currentProjectTask = {}", currentProjectTask);
 
-            mapKey = currentProjectTask.getProject().getCode();
+            mapKey = project.getCode();
             currentSummaryTimeSheetDTO = summaryMap.get(mapKey);
             if (currentSummaryTimeSheetDTO == null) {
                 currentSummaryTimeSheetDTO = new TimeSheetDTO();
 
                 /*may be need to clone Project and Task to another object*/
-                currentSummaryTimeSheetDTO.setProjectTask(currentProjectTask);
-                currentSummaryTimeSheetDTO.setProject(timeSheetDTO.getProject());
+                currentSummaryTimeSheetDTO.setProjectTask(timeSheetDTO.getProjectTask());
+                currentSummaryTimeSheetDTO.setProject(project);
                 currentSummaryTimeSheetDTO.setChargeDuration(timeSheetDTO.getChargeDuration());
 
                 summaryMap.put(mapKey, currentSummaryTimeSheetDTO);
@@ -408,69 +427,6 @@ public class TimeSheetController extends AbstractController {
         });
 
         return summaryList;
-    }
-
-    private List<TimeSheetDTO> sumHoursOfProjectTask(List<TimeSheetDTO> timeSheetList) {
-        /*HashMap<"ProjectCode.TaskCode", TimeSheetDTO>*/
-        HashMap<String, TimeSheetDTO> summaryMap = new HashMap<>();
-        TimeSheetDTO currentSummaryTimeSheetDTO;
-        ProjectTaskDTO currentProjectTask;
-        Duration chargeDuration;
-        String mapKey;
-
-        for (TimeSheetDTO timeSheetDTO : timeSheetList) {
-            currentProjectTask = timeSheetDTO.getProjectTask();
-            if (currentProjectTask == null) {
-                continue;
-            }
-            //log.debug("currentProjectTask = {}", currentProjectTask);
-
-            mapKey = currentProjectTask.getProject().getCode() + "." + currentProjectTask.getTask().getCode();
-            currentSummaryTimeSheetDTO = summaryMap.get(mapKey);
-            if (currentSummaryTimeSheetDTO == null) {
-                currentSummaryTimeSheetDTO = new TimeSheetDTO();
-
-                /*may be need to clone Project and Task to another object*/
-                currentSummaryTimeSheetDTO.setProjectTask(currentProjectTask);
-                currentSummaryTimeSheetDTO.setProject(timeSheetDTO.getProject());
-                currentSummaryTimeSheetDTO.setChargeDuration(timeSheetDTO.getChargeDuration());
-
-                summaryMap.put(mapKey, currentSummaryTimeSheetDTO);
-
-            } else {
-                chargeDuration = currentSummaryTimeSheetDTO.getChargeDuration();
-                chargeDuration = chargeDuration.plusMinutes(timeSheetDTO.getChargeDuration().toMinutes());
-                currentSummaryTimeSheetDTO.setChargeDuration(chargeDuration);
-            }
-        }
-
-        ArrayList<TimeSheetDTO> summaryList = new ArrayList<>(summaryMap.values());
-        summaryList.sort((o1, o2) -> {
-            int zero = o1.getProject().getCustomer().getName().compareTo(o2.getProject().getCustomer().getName());
-            if (zero != 0) return zero;
-
-            zero = o1.getProject().getCode().compareTo(o2.getProject().getCode());
-            if (zero != 0) return zero;
-
-            return o1.getProjectTask().getTask().getCode().compareTo(o2.getProjectTask().getTask().getCode());
-        });
-
-        return summaryList;
-    }
-
-    public void onUpdateTimeInOut() {
-        log.debug("onUpdateTimeInOut. (detail: {})", detail);
-    }
-
-    public void onChangeProject(TimeSheetDTO timeSheet) {
-        log.debug("onChangeProject. (selectedProjectId: {})", selectedProjectId);
-
-        timeSheet.setProject(getObjById(projectList, selectedProjectId));
-        timeSheet.setTask(null);
-        timeSheet.setChargeDuration(Duration.ZERO);
-        timeSheet.setDescription("");
-        log.debug("timeSheet: {}", timeSheet);
-        onSave(timeSheet);
     }
 
     public void onChangeProjectInDetail() {
@@ -606,11 +562,6 @@ public class TimeSheetController extends AbstractController {
         }
     }
 
-    public void onChangeTask(TimeSheetDTO timeSheet) {
-        log.debug("onChangeTask. (selectedTaskId: {})", selectedProjectTaskId);
-        timeSheet.setProjectTask(getObjById(projectTaskList, selectedProjectTaskId));
-    }
-
     public void onAddRecord(TimeSheetDTO timeSheet) {
         log.debug("onAddRecord. (timeSheet: {})", timeSheet);
 
@@ -668,8 +619,6 @@ public class TimeSheetController extends AbstractController {
         loadProject();
         if (detail.getProject() != null) {
             selectedProjectId = detail.getProject().getId();
-        } else {
-            pjtSummary = Collections.emptyList();
         }
 
         loadProjectTask();
@@ -720,14 +669,6 @@ public class TimeSheetController extends AbstractController {
         timeSheetList.remove(t);
         timeSheetList.add(timeSheet);
         sortList(timeSheetList);
-    }
-
-    public long getSelectedTimeSheetId() {
-        return selectedTimeSheetId;
-    }
-
-    public void setSelectedTimeSheetId(long selectedTimeSheetId) {
-        this.selectedTimeSheetId = selectedTimeSheetId;
     }
 
     public List<TimeSheetDTO> getTimeSheetList() {
@@ -826,14 +767,6 @@ public class TimeSheetController extends AbstractController {
         this.detail = detail;
     }
 
-    public List<TimeSheetDTO> getPjtSummary() {
-        return pjtSummary;
-    }
-
-    public void setPjtSummary(List<TimeSheetDTO> pjtSummary) {
-        this.pjtSummary = pjtSummary;
-    }
-
     public List<UserDTO> getUserList() {
         return userList;
     }
@@ -858,11 +791,11 @@ public class TimeSheetController extends AbstractController {
         this.viewOnly = viewOnly;
     }
 
-    public UtilizationResult getUtilization() {
+    public UtilizationDTO getUtilization() {
         return utilization;
     }
 
-    public void setUtilization(UtilizationResult utilization) {
+    public void setUtilization(UtilizationDTO utilization) {
         this.utilization = utilization;
     }
 

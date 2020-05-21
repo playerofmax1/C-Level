@@ -285,22 +285,14 @@ hr.ui-separator {
     background-image: none;
 }
 
-/*.ui-column-title {*/
-/*font-size: 10px;*/
-/*}*/
-/*.ui-paginator {*/
-/*font-size: 10px;*/
-/*color: #2b542c;*/
-/*}*/
+.overlayValue,
+.overlayLabel {
+    width: 12em;
+}
 
-/*.ui-datatable-header {*/
-/*font-size: 10px;*/
-/*}*/
-
-/*.ui-datatable-data {*/
-/*font-size: 10px;*/
-/*}*/
-
-/*.ui-datatable-footer {*/
-/*font-size: 10px;*/
-/*}*/
+.fa-chevron-circle-down {
+    cursor: pointer;
+    width: 2em;
+    height: 1em;
+    text-align: center;
+}

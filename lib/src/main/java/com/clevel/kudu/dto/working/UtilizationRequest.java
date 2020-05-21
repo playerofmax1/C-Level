@@ -8,6 +8,7 @@ import java.util.Date;
 public class UtilizationRequest {
     private long requestUserId;
     private Date month;
+    private long totalChargedMinutes;
 
     public UtilizationRequest() {
     }
@@ -33,11 +34,21 @@ public class UtilizationRequest {
         this.month = month;
     }
 
+    public long getTotalChargedMinutes() {
+        return totalChargedMinutes;
+    }
+
+    public void setTotalChargedMinutes(long totalChargedMinutes) {
+        this.totalChargedMinutes = totalChargedMinutes;
+    }
+
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("requestUserId", requestUserId)
                 .append("month", month)
-                .toString();
+                .append("totalChargedMinutes", totalChargedMinutes)
+                .toString()
+                .replace('=', ':');
     }
 }

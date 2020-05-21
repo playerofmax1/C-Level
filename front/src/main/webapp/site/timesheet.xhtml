@@ -77,7 +77,6 @@
                                 <p:outputPanel id="tsHeader" styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
-                                            <br/>
                                             <p:commandButton id="xlsx"
                                                              icon="fa fa-file-excel-o"
                                                              value="Excel(xlsx)"
@@ -90,7 +89,6 @@
                                             <p:tooltip position="right" value="Download as Excel(xlsx)" for="xlsx"/>
                                         </div>
                                         <div class="ui-g-6 alignCenter alignBottom">
-                                            <br/>
                                             <p:commandButton id="previousMonth" icon="fa fa-chevron-left" disabled="#{!timeSheetCtl.previousEnable}"
                                                              action="#{timeSheetCtl.onPrevious}"
                                                              update="monthForm,mainForm">
@@ -108,7 +106,40 @@
                                             <p:tooltip for="nextMonth" value="Next Month" position="right"/>
                                         </div>
                                         <div class="ui-g-3 alignRight">
-                                            <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.utilization} %"/>
+                                            <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.percentCU} %"/>
+                                            <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" hideEffect="fade">
+                                                <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="Start:" style="width:20em"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.startDate}" style="width:12em">
+                                                        <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                                    </p:outputLabel>
+
+                                                    <p:outputLabel value="End:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.endDate}">
+                                                        <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
+                                                    </p:outputLabel>
+
+                                                    <p:outputLabel value="Days:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.days}"/>
+
+                                                    <p:outputLabel value="Workdays:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.daysInYearExcludeWeekends}"/>
+
+                                                    <p:outputLabel value="Holidays:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.holidaysInYear}"/>
+
+                                                    <p:outputLabel value="Net Workdays:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.netWorkingDays}"/>
+
+                                                    <p:outputLabel value="Charged Mandays:"/>
+                                                    <p:outputLabel value="#{timeSheetCtl.utilization.chargedDays}"/>
+                                                </p:panelGrid>
+                                                <p:separator/>
+                                                <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="Utilization = Charged Mandays &#247; Net Workdays x 100" escape="false"/>
+                                                </p:panelGrid>
+                                            </p:overlayPanel>
                                             <br/>
                                             <p:inputSwitch id="viewOnlySwitch"
                                                            value="#{timeSheetCtl.viewOnly}"

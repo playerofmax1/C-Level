@@ -165,6 +165,14 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
+### Table Notes
+
+| Table Name    | Notes                                                        |
+| ------------- | ------------------------------------------------------------ |
+| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me) but not worry because of it's already work. |
+
+
+
 ### C-LEVEL VPN
 
 >   The C-LEVEL VPN is required in order to use the information from this table.

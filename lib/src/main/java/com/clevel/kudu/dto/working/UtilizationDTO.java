@@ -11,8 +11,8 @@ import java.util.Date;
 public class UtilizationDTO {
 
     private long year;
-    private Date yearStartDate;
-    private Date yearEndDate;
+    private Date startDate;
+    private Date endDate;
 
     private long daysInYearExcludeWeekends;
     private long holidaysInYear;
@@ -29,24 +29,24 @@ public class UtilizationDTO {
         this.year = year;
     }
 
-    public Date getYearStartDate() {
-        return yearStartDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setYearStartDate(Date yearStartDate) {
-        this.yearStartDate = yearStartDate;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getYearEndDate() {
-        return yearEndDate;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setYearEndDate(Date yearEndDate) {
-        this.yearEndDate = yearEndDate;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public long getYearDays() {
-        return DateTimeUtil.countDay(yearStartDate, yearEndDate);
+    public long getDays() {
+        return DateTimeUtil.countDay(startDate, endDate);
     }
 
     public long getDaysInYearExcludeWeekends() {
@@ -118,8 +118,8 @@ public class UtilizationDTO {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("year", year)
-                .append("yearStartDate", yearStartDate)
-                .append("yearEndDate", yearEndDate)
+                .append("startDate", startDate)
+                .append("endDate", endDate)
                 .append("daysInYearExcludeWeekends", daysInYearExcludeWeekends)
                 .append("holidaysInYear", holidaysInYear)
                 .append("netWorkingDays", netWorkingDays)

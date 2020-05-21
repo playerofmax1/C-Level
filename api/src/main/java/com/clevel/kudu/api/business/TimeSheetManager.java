@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.*;
 
@@ -125,7 +124,7 @@ public class TimeSheetManager {
         return timeSheetLockMapper.toDTO(timeSheetLockList.stream());
     }
 
-    public void applyHoliday(TimeSheetDTO timeSheetDTO) {
+    public void markAsHoliday(TimeSheetDTO timeSheetDTO) {
         log.debug("applyHoliday. (timeSheetDTO: {})", timeSheetDTO);
 
         List<Holiday> holidays = holidayDAO.findByMonth(timeSheetDTO.getWorkDate());
@@ -140,7 +139,7 @@ public class TimeSheetManager {
         }
     }
 
-    public void applyHolidays(List<TimeSheetDTO> source, Date month) {
+    public void markAsHolidays(List<TimeSheetDTO> source, Date month) {
         log.debug("applyHolidays.");
         List<Holiday> holidays = holidayDAO.findByMonth(month);
         Map<Date, Date> holidayMap = new HashMap<>();
@@ -386,31 +385,6 @@ public class TimeSheetManager {
         return taskMapper.toDTO(tasks.stream());
     }
 
-    public UtilizationResult getUtilization(long userId, long requestUserId, Date month) throws RecordNotFoundException {
-        log.debug("getUtilization. (userId: {}, requestUserId: {}, month: {})", userId, requestUserId, month);
-        /**
-         * utilizationInPercent = sumActualChargeInMinute x 100 / [totalWorkingInMinute]
-         * totalWorkingInMinute = [totalWorkingInDay] x 8(hrs) x 60(minutes)
-         * totalWorkingInDay = [workingInDay] - [holidayInDay]
-         **/
-
-        userDAO.findById(userId);
-
-        User user = userDAO.findById(requestUserId);
-
-        long totalWorkingDays = holidayManager.getTotalWorkingDays(userId, month);
-        BigDecimal totalWorkingMinute = new BigDecimal(totalWorkingDays).multiply(DateTimeUtil.MANDAYS_HOUR).multiply(DateTimeUtil.MANDAYS_MINUTE);
-        log.debug("totalWorkingDays: {}, {} minutes.", totalWorkingDays, totalWorkingMinute);
-
-        BigDecimal actualChargeMinute = new BigDecimal(timeSheetDAO.sumChargeMinute(user, month));
-        log.debug("actualChargeMinute: {}", actualChargeMinute);
-
-        BigDecimal utilization = actualChargeMinute.multiply(BD_100).divide(totalWorkingMinute, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-        log.debug("utilization: {}", utilization);
-
-        return new UtilizationResult(utilization);
-    }
-
     // special method for migrate date
     public void migrateWorkHour() {
         log.debug("migrateWorkHour. (start)");
@@ -468,6 +442,28 @@ public class TimeSheetManager {
         return userMandaysMapper.toDTO(userMandaysList.stream());
     }
 
+    /**
+     * This function has duplicated in TimesheetController.getTotalChargedMinutes.
+     * When you modified this function may be need to modify them too.
+     */
+    public long getTotalChargedMinutes(List<TimeSheetDTO> timeSheetDTOList) {
+        long chargedMinutes = 0;
+        for (TimeSheetDTO timeSheet : timeSheetDTOList) {
+            if (timeSheet.getProject() == null) {
+                /*total is for chargeable items only, chargeable item must have PID.*/
+                continue;
+            }
+            if (!timeSheet.getProjectTask().getTask().isChargeable()) {
+                log.warn("This case is timesheet with projectTask.chargeable = false, this is impossible case @2020.05.21 by the original technique from Thammasak " +
+                        "(chargeable=false will switch to use task-colume and leave null for project-column and project-task-column)" +
+                        "(chargeable=true will switch to use project-column and project-task-column and leave null for task-column) {}", timeSheet);
+                continue;
+            }
+            chargedMinutes += timeSheet.getChargeDuration().toMinutes();
+        }
+        return chargedMinutes;
+    }
+
     public UserMandaysDTO getTotalMandays(List<UserMandaysDTO> userMandaysDTOList) {
         long chargeMinutes = 0;
         BigDecimal chargeHours = BigDecimal.ZERO;
@@ -494,38 +490,28 @@ public class TimeSheetManager {
         return totalUserMandays;
     }
 
-    public UtilizationDTO getUtilization(int year, UserMandaysDTO totalMandaysDTO) throws RecordNotFoundException {
-        /*
-         * utilizationInPercent = sumActualChargeInMinute x 100 / [totalWorkingInMinute]
-         * totalWorkingInMinute = [totalWorkingInDay] x 8(hrs) x 60(minutes)
-         * totalWorkingInDay = [workingInDay] - [holidayInDay]
-         **/
-        PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
-        long daysInYearExcludeWeekends = DateTimeUtil.countWorkingDay(performanceYear.getStartDate(), performanceYear.getEndDate());
-        long holidaysInYear = holidayDAO.countHoliday(performanceYear.getStartDate(), performanceYear.getEndDate());
+    public PerformanceYear getPerformanceYear(int year) throws RecordNotFoundException {
+        return performanceYearDAO.findByYear(year);
+    }
+
+    public UtilizationDTO getUtilization(Date startDate, Date endDate, long chargeMinutes) {
+        long daysInYearExcludeWeekends = DateTimeUtil.countWorkingDay(startDate, endDate);
+        long holidaysInYear = holidayDAO.countHoliday(startDate, endDate);
         long netWorkingDays = daysInYearExcludeWeekends - holidaysInYear;
         long netWorkingDaysInMinutes = netWorkingDays * 8 * 60;
 
-        /* -- all formula below are the same (depends on the Multiply Rule) --
-         * percentCU = netWorkingDays / 100 x chargedMandays
-         * percentCU = chargedMandays x 100 / netWorkingDays
-         * percentCU = newWorkingdays / chargedMandays x 100
-         **/
-        long chargeMinutes = totalMandaysDTO.getChargeMinutes();
-        BigDecimal percentCU = new BigDecimal(chargeMinutes * 100L).divide(BigDecimal.valueOf(netWorkingDaysInMinutes), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-
         UtilizationDTO utilization = new UtilizationDTO();
-        utilization.setYear(performanceYear.getYear());
-        utilization.setYearStartDate(performanceYear.getStartDate());
-        utilization.setYearEndDate(performanceYear.getEndDate());
+        utilization.setStartDate(startDate);
+        utilization.setEndDate(endDate);
         utilization.setDaysInYearExcludeWeekends(daysInYearExcludeWeekends);
         utilization.setHolidaysInYear(holidaysInYear);
         utilization.setNetWorkingDays(netWorkingDays);
         utilization.setNetWorkingDaysInMinutes(netWorkingDaysInMinutes);
         utilization.setChargedMinutes(chargeMinutes);
-        utilization.setPercentCU(percentCU);
+        utilization.setPercentCU(utilization.getPercentCUByDays());
         log.debug("utilization = {}", utilization);
 
         return utilization;
     }
+
 }

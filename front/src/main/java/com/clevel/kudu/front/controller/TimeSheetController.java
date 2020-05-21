@@ -147,6 +147,7 @@ public class TimeSheetController extends AbstractController {
             log.debug(message);
             FacesUtil.addError(message);
             viewOnly = !viewOnly;
+            return;
         }
 
         ServiceResponse<TimeSheetResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetResult>>() {
@@ -157,6 +158,7 @@ public class TimeSheetController extends AbstractController {
             log.debug(message);
             FacesUtil.addError(message);
             viewOnly = !viewOnly;
+            return;
         }
 
         String message = "Update ViewOnly flag success.";

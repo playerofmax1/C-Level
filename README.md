@@ -159,7 +159,8 @@ The version.property is used in the front-end to show full version text on the b
 | Project Task | The Project Task is sub task of the Product sold to customer refer by PID and Task ID.<br />Somebody know as chargeable tasks assigned to a user. |
 | Task         | Template for Project Task.                                   |
 | Holiday      | Specified day marked as a holiday for User and not count as working day of a year in %CU chapter. |
-| Screen       | Web pages that already listed in the Left Side Menu to show for a user filtered by Screen Permission (Role-Screen) |
+| Working Day  | Working Day of a month is <days-in-a-month> - <weekends> - <holidays-in-a-month>, working day is used in %CU calculation. |
+| Screen       | Web pages that already listed in the Left Side Menu to show for a user filtered by Screen Permission (Role-Screen)<br />All screens need a defined code in a Screen(.java) class. |
 | Function     | Specific Function defined in a Function(.java) class and used in many screens that refer to the function description (Role-Function) |
 
 

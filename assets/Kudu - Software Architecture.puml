@@ -45,7 +45,9 @@ card "API Module" {
 card "PJT-LIB Module" as LIB {
     OFF_SERVICE_APPLICATION(DBMODEL, "DB Table Model", agent, #black) #white
     OFF_SERVICE_APPLICATION(APIINT, "API Service Interface", agent, #black) #white
-    OFF_SERVICE_APPLICATION(UTIL, "Utilities Classes", agent, #black) #white
+    OFF_SERVICE_APPLICATION(UTIL, "Utility Classes", agent, #black) #white
+    OFF_SERVICE_APPLICATION(SCREEN, "Screen Definition", agent, #black) #white
+    OFF_SERVICE_APPLICATION(FUNCTION, "Function Definition", agent, #black) #white
 }
 
 DEV_MYSQL(DB, "MariaDB\n---\nDatabase", database, #black) #lightgray

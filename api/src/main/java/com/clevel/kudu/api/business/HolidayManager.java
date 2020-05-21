@@ -105,8 +105,10 @@ public class HolidayManager {
 
         long workingDays = DateTimeUtil.countWorkingDay(month);
         log.debug("normal working days: {}",workingDays);
+
         long holidays = holidayDAO.countHoliday(month);
         log.debug("holidays: {}",holidays);
+
         long totalWorkingDays = workingDays-holidays;
         log.debug("total working days: {}",totalWorkingDays);
 

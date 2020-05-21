@@ -115,8 +115,8 @@ public class DateTimeUtil {
 
     public static BigDecimal getManDays(long minutes) {
         BigDecimal m = new BigDecimal(minutes);
-        BigDecimal result = m.divide(MANDAYS_MINUTE,DEFAULT_SCALE, RoundingMode.HALF_UP)
-                .divide(MANDAYS_HOUR,DEFAULT_SCALE, RoundingMode.HALF_UP);
+        BigDecimal result = m.divide(MANDAYS_MINUTE, DEFAULT_SCALE, RoundingMode.HALF_UP)
+                .divide(MANDAYS_HOUR, DEFAULT_SCALE, RoundingMode.HALF_UP);
 //        log.debug("getManDay. (minutes: {}, manDays: {} MD.)",minutes,result);
         return result;
     }
@@ -128,7 +128,7 @@ public class DateTimeUtil {
 
     public static Duration getTotalDuration(Long... minutes) {
         Duration duration = Duration.ZERO;
-        for (Long l:minutes) {
+        for (Long l : minutes) {
             duration = duration.plus(Duration.ofMinutes(l));
         }
         return duration;
@@ -136,8 +136,8 @@ public class DateTimeUtil {
 
     public static long getTotalMinute(Long... minutes) {
         long total = 0L;
-        for (Long l:minutes) {
-            total = total+l;
+        for (Long l : minutes) {
+            total = total + l;
         }
         return total;
     }
@@ -153,7 +153,7 @@ public class DateTimeUtil {
 //        log.debug("start.getDayOfWeek(): {}",start.getDayOfWeek());
 //        log.debug("days - 2 * ((days + start.getDayOfWeek().getValue())/7)");
 //        log.debug("{} - 2 * (({} + {})/{})",days,days,start.getDayOfWeek().getValue(),7);
-        final long daysWithoutWeekends = days - 2 * ((days + start.getDayOfWeek().getValue())/7);
+        final long daysWithoutWeekends = days - 2 * ((days + start.getDayOfWeek().getValue()) / 7);
         return daysWithoutWeekends + (start.getDayOfWeek() == DayOfWeek.SUNDAY ? 1 : 0) + (end.getDayOfWeek() == DayOfWeek.SUNDAY ? 1 : 0);
 
 //        Set<DayOfWeek> weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
@@ -162,27 +162,44 @@ public class DateTimeUtil {
 //                .count();
     }
 
+    /**
+     * This code is modified version of: DateTimeUtil.countWorkingDay()
+     */
+    public static long countWorkingDay(Date startDate, Date endDate) {
+        final LocalDate start = startDate.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDate().withDayOfMonth(1);
+        final LocalDate end = endDate.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).withDayOfMonth(start.lengthOfMonth()).plusDays(1).toLocalDate();
+
+        final long days = countDay(startDate, endDate);
+        final long daysWithoutWeekends = days - 2 * ((days + start.getDayOfWeek().getValue()) / 7);
+        return daysWithoutWeekends + (start.getDayOfWeek() == DayOfWeek.SUNDAY ? 1 : 0) + (end.getDayOfWeek() == DayOfWeek.SUNDAY ? 1 : 0);
+    }
+
+    public static long countDay(Date startDate, Date endDate) {
+        return (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
+    }
+
+
     public static boolean isHoliday(final Date date) {
         LocalDate localDate = date.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDate();
         return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY;
     }
 
     public static Duration getWorkHour(Date timeIn, Date timeOut) {
-        log.debug("getWorkHour. (timeIn: {}, timeOut: {})",timeIn,timeOut);
+        log.debug("getWorkHour. (timeIn: {}, timeOut: {})", timeIn, timeOut);
         LocalDateTime in = timeIn.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDateTime();
         LocalDateTime out = timeOut.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDateTime();
 
-        Date lunchStart = getDatePlusHoursAndMinutes(timeIn,12,0);
-        Date lunchEnd = getDatePlusHoursAndMinutes(timeOut,13,0);
+        Date lunchStart = getDatePlusHoursAndMinutes(timeIn, 12, 0);
+        Date lunchEnd = getDatePlusHoursAndMinutes(timeOut, 13, 0);
         if (timeIn.after(lunchStart) && timeIn.before(lunchEnd)) {
             lunchStart = timeIn;
         }
         if (timeOut.after(lunchStart) && timeOut.before(lunchEnd)) {
             lunchEnd = timeOut;
         }
-        Duration lunchDuration = diffTime(lunchStart,lunchEnd);
+        Duration lunchDuration = diffTime(lunchStart, lunchEnd);
 //        log.debug("lunchStart: {}, lunchEnd: {}, lunchDuration: {}",lunchStart,lunchEnd,lunchDuration);
-        Duration workHour = Duration.between(in,out);
+        Duration workHour = Duration.between(in, out);
 //        log.debug("workHour: {}, minutes: {}",workHour,workHour.toMinutes());
         if (timeIn.before(lunchEnd)) {
             workHour = workHour.minusMinutes(lunchDuration.toMinutes());

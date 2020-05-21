@@ -2,10 +2,7 @@ package com.clevel.kudu.api;
 
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.SimpleDTO;
-import com.clevel.kudu.dto.working.ProjectTaskRequest;
-import com.clevel.kudu.dto.working.TimeSheetDTO;
-import com.clevel.kudu.dto.working.TimeSheetRequest;
-import com.clevel.kudu.dto.working.UtilizationRequest;
+import com.clevel.kudu.dto.working.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +13,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
-import java.util.Date;
 
 @Path("/timeSheet")
 @Produces("application/json")
@@ -35,6 +31,13 @@ public interface TimeSheetService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response getTimeSheetInfo(@Parameter(description = "request: TimeSheetDTO, result: List\\<TimeSheetDTO\\>", required = true)
                                   ServiceRequest<TimeSheetDTO> request);
+
+    @POST
+    @Path("/mandays")
+    @Operation(summary = "get mandays for a user at year n", description = "get mandays for a user at year n")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response getMandays(@Parameter(description = "request: MandaysRequest, result: MandaysResult", required = true)
+                                  ServiceRequest<MandaysRequest> request);
 
     @POST
     @Path("/new")

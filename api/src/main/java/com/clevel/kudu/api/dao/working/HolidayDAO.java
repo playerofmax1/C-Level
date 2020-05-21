@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.Date;
 import java.util.List;
 
-public class HolidayDAO extends GenericDAO<Holiday,Long> {
+public class HolidayDAO extends GenericDAO<Holiday, Long> {
     @Inject
     private Logger log;
 
@@ -29,13 +29,14 @@ public class HolidayDAO extends GenericDAO<Holiday,Long> {
 
         criteria.where(
                 cb.equal(root.get(Holiday_.status), RecordStatus.ACTIVE)
-        ).orderBy(cb.asc(root.get(Holiday_.holidayDate)));;
+        ).orderBy(cb.asc(root.get(Holiday_.holidayDate)));
+        ;
 
         Query query = em.createQuery(criteria);
         query.setHint(FETCH_GRAPH, graph);
 
         List<Holiday> holidays = query.getResultList();
-        log.debug("findAll. (result: {})",holidays.size());
+        log.debug("findAll. (result: {})", holidays.size());
         return holidays;
     }
 
@@ -64,7 +65,7 @@ public class HolidayDAO extends GenericDAO<Holiday,Long> {
 
     @SuppressWarnings("unchecked")
     public long countHoliday(Date month) {
-        log.debug("countHoliday. (month: {})",month);
+        log.debug("countHoliday. (month: {})", month);
 
         CriteriaQuery<Long> criteria = createCriteriaCount();
 
@@ -85,18 +86,39 @@ public class HolidayDAO extends GenericDAO<Holiday,Long> {
     }
 
     @SuppressWarnings("unchecked")
+    public long countHoliday(Date startDate, Date endDate) {
+        log.debug("countHoliday. (start: {}, end: {})", startDate, endDate);
+
+        CriteriaQuery<Long> criteria = createCriteriaCount();
+
+        criteria.select(cb.count(root))
+                .where(
+                        cb.and(
+                                cb.equal(root.get(Holiday_.status), RecordStatus.ACTIVE),
+                                cb.between(root.get(Holiday_.holidayDate), startDate, endDate)
+                        )
+                );
+
+        Query query = em.createQuery(criteria);
+
+        long result = (long) query.getSingleResult();
+        log.debug("countHoliday. (result: {})", result);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Holiday> findByMonth(Date month) {
         log.debug("findByMonth. (month: {})", month);
 
         CriteriaQuery<Holiday> criteria = createCriteriaQuery();
 
         criteria.where(cb.and(
-                        cb.equal(root.get(Holiday_.status), RecordStatus.ACTIVE),
-                        cb.between(root.get(Holiday_.holidayDate),
-                                DateTimeUtil.getFirstDateOfMonth(month),
-                                DateTimeUtil.getLastDateOfMonth(month))
-                        )
-                );
+                cb.equal(root.get(Holiday_.status), RecordStatus.ACTIVE),
+                cb.between(root.get(Holiday_.holidayDate),
+                        DateTimeUtil.getFirstDateOfMonth(month),
+                        DateTimeUtil.getLastDateOfMonth(month))
+                )
+        );
 
         Query query = em.createQuery(criteria);
 

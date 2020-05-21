@@ -43,17 +43,33 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:panelGrid columns="3">
+                        <h:panelGrid columns="7">
                             <h:outputText value="Project Code:"/>
                             <p:inputText value="#{projectCtl.searchRequest.code}"/>
+
+                            <p:spacer width="10" />
+                            <h:outputText value="Status:"/>
+                            <p:selectOneMenu value="#{projectCtl.searchRequest.status}">
+                                <f:selectItem itemLabel="ALL" itemValue="INACTIVE"/>
+                                <f:selectItem itemLabel="ACTIVE" itemValue="ACTIVE"/>
+                                <f:selectItem itemLabel="CLOSE" itemValue="CLOSE"/>
+                            </p:selectOneMenu>
+
+                            <p:spacer width="10" />
                             <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
                                              update="mainForm"/>
                         </h:panelGrid>
 
                         <p:separator/>
 
-                        <p:dataTable var="project" value="#{projectCtl.projectList}" rows="10" sortBy="#{project.code}"
-                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+                        <p:dataTable var="project"
+                                     widgetVar="project"
+                                     value="#{projectCtl.projectList}"
+                                     rows="10"
+                                     sortBy="#{project.code}"
+                                     paginator="true"
+                                     paginatorPosition="bottom"
+                                     style="font-size: 12px">
 
                             <f:facet name="header">
                                 <p:outputPanel styleClass="transparent no-padding no-border">

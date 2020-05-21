@@ -159,7 +159,7 @@ public class ProjectManager {
         // validate user
         User user = userDAO.findById(userId);
 
-        return projectMapper.toDTO(projectDAO.searchProject(searchRequest.getCode(),searchRequest.getName()).stream());
+        return projectMapper.toDTO(projectDAO.searchProject(searchRequest.getCode(), searchRequest.getName(), searchRequest.getStatus()).stream());
     }
 
     // Project task
@@ -188,11 +188,11 @@ public class ProjectManager {
         // validate user
         User user = userDAO.findById(userId);
 
-        return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId,user).stream());
+        return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId, user).stream());
     }
 
     public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException {
-        log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})",userId,projectTaskDTO);
+        log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
 
@@ -226,7 +226,7 @@ public class ProjectManager {
     }
 
     public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO) throws RecordNotFoundException {
-        log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})",userId,projectTaskDTO,projectTaskExtDTO);
+        log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})", userId, projectTaskDTO, projectTaskExtDTO);
         User user = userDAO.findById(userId);
 
         ProjectTask parentProjectTask = projectTaskDAO.findById(projectTaskDTO.getId());
@@ -298,7 +298,7 @@ public class ProjectManager {
         // plan cost
         BigDecimal planCost = BigDecimal.ZERO;
         List<ProjectTask> projectTasks = projectTaskDAO.findByProject(project);
-        for (ProjectTask pt: projectTasks) {
+        for (ProjectTask pt : projectTasks) {
             planCost = planCost.add(DateTimeUtil.getManDays(pt.getPlanMDMinute()).multiply(pt.getUser().getRate().getCost()).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP));
         }
         costDTO.setPlanCost(planCost);
@@ -306,7 +306,7 @@ public class ProjectManager {
         // extend cost
         BigDecimal extendCost = BigDecimal.ZERO;
         List<ProjectTaskExt> projectTaskExtList = projectTaskExtDAO.findByProject(project);
-        for (ProjectTaskExt pte: projectTaskExtList) {
+        for (ProjectTaskExt pte : projectTaskExtList) {
             extendCost = extendCost.add(DateTimeUtil.getManDays(pte.getExtendMDMinute()).multiply(pte.getParent().getUser().getRate().getCost()).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP));
         }
         costDTO.setExtendCost(extendCost);
@@ -317,7 +317,7 @@ public class ProjectManager {
         // actual cost
         BigDecimal actualCost = BigDecimal.ZERO;
         List<TimeSheet> timeSheets = timeSheetDAO.findByProject(project);
-        for (TimeSheet ts: timeSheets) {
+        for (TimeSheet ts : timeSheets) {
             actualCost = actualCost.add(DateTimeUtil.getManDays(ts.getChargeMinute()).multiply(ts.getUser().getRate().getCost()).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP));
         }
         costDTO.setActualCost(actualCost);
@@ -326,15 +326,15 @@ public class ProjectManager {
     }
 
     public void deleteProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException, ValidationException {
-        log.debug("deleteProjectTask. (userId: {}, projectTaskDTO: {})",userId,projectTaskDTO);
+        log.debug("deleteProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
         ProjectTask projectTask = projectTaskDAO.findById(projectTaskDTO.getId());
 
         // validation project task actual man day still be zero.
-        if (projectTask.getActualMDMinute()!=0) {
-            log.debug("project task has already started, actual MD(min): {}",projectTask.getActualMDMinute());
-            throw new ValidationException(APIResponse.FAILED,"project task has already started!");
+        if (projectTask.getActualMDMinute() != 0) {
+            log.debug("project task has already started, actual MD(min): {}", projectTask.getActualMDMinute());
+            throw new ValidationException(APIResponse.FAILED, "project task has already started!");
         }
 
         projectTask.setStatus(RecordStatus.INACTIVE);
@@ -345,7 +345,7 @@ public class ProjectManager {
     }
 
     public void lockProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException {
-        log.debug("lockProjectTask. (userId: {}, projectTaskDTO: {})",userId,projectTaskDTO);
+        log.debug("lockProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
         ProjectTask projectTask = projectTaskDAO.findById(projectTaskDTO.getId());
@@ -358,7 +358,7 @@ public class ProjectManager {
     }
 
     public void unlockProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException {
-        log.debug("unlockProjectTask. (userId: {}, projectTaskDTO: {})",userId,projectTaskDTO);
+        log.debug("unlockProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
         ProjectTask projectTask = projectTaskDAO.findById(projectTaskDTO.getId());
@@ -376,8 +376,8 @@ public class ProjectManager {
         log.debug("reCalculationPercentAMD. (start)");
         List<ProjectTask> projectTaskList = projectTaskDAO.findAll();
 
-        for (ProjectTask pt: projectTaskList) {
-            pt.setPercentAMD(MDUtil.getPercentAMD(pt.getPlanMDMinute(),pt.getActualMDMinute()));
+        for (ProjectTask pt : projectTaskList) {
+            pt.setPercentAMD(MDUtil.getPercentAMD(pt.getPlanMDMinute(), pt.getActualMDMinute()));
         }
 
         projectTaskDAO.persist(projectTaskList);

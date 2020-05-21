@@ -138,11 +138,15 @@ public class TimeSheetDTO implements LookupList {
     }
 
     public BigDecimal getChargeHours() {
-        return new BigDecimal(chargeDuration.toMinutes() / 60).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        BigDecimal chargeMinutes = BigDecimal.valueOf(chargeDuration.toMinutes());
+        BigDecimal sixtyMinutes = BigDecimal.valueOf(60);
+        return chargeMinutes.divide(sixtyMinutes,DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getChargeDays() {
-        return new BigDecimal(chargeDuration.toMinutes() / 480).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        BigDecimal chargeMinutes = BigDecimal.valueOf(chargeDuration.toMinutes());
+        BigDecimal eightHoursInMinutes = BigDecimal.valueOf(480);
+        return chargeMinutes.divide(eightHoursInMinutes,DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     @Override

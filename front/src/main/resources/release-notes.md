@@ -3,18 +3,19 @@
 
 
 
-## Kudu (Alpha) Version 1.2.2
+## Kudu (Alpha) Version 1.2.2 (RC2)
 
 Fixed: KUDU-4: insert button beside Charge Hours.
 Fixed: KUDU-8: Reopen: Export as XLSX, fix file name, fix project column and task column.
 Fixed: KUDU-12: %CU Calculation.
 Fixed: KUDU-13: %CU Summary Report.
+Fixed: KUDU-16: Project - Search by project status
 Fixed: KUDU-17: MD(Mandays) fields need validation message.
 SQL: V4__add_performance_year.sql
 More: 
-
 + Improve TimeSheet UI, decimal Numbers in Summary need Round Half Up with 2 Decimal Points.
 + Improve the UX of Calendar Fields
++ Use same template for all screen (one standard)
 + downgrade to Primefaces 6.2 by the issues in Calendar when TimeOnly = True on Primefaces7.0 (no new features of 7.0 are needed by this project)
 + Remove sample data in SQL:V3__add_timesheet_month_locker.sql
 

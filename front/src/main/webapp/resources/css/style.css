@@ -86,12 +86,22 @@
     background-color: transparent !important;
 }
 
-.no-border {
+.inputLabel {
+    font-weight: bold;
+}
+
+.no-border,
+.ui-panelgrid.no-border > tbody > tr,
+.ui-panelgrid.no-border > tbody > tr > td {
     border-width: 0 0 0 0 !important;
 }
 
 .no-padding {
     padding: 0 0 0 0 !important;
+}
+
+.no-margin {
+    margin: 0 0 0 0 !important;
 }
 
 .gridInputRow {
@@ -118,7 +128,7 @@ footer {
     width: 100%;
 }
 
-.warning {
+.warning-message {
     text-align: left;
     font-weight: bold;
     font-family: Courier, serif;
@@ -132,6 +142,10 @@ footer {
 
 .red {
     background-color: red;
+}
+
+.red-font {
+    color: red;
 }
 
 .green {
@@ -161,8 +175,7 @@ footer {
 }
 
 label {
-    font-weight: unset;
-!important;
+    margin-bottom: 0 !important;
 }
 
 label.require:after {
@@ -197,6 +210,10 @@ label.require:after {
     padding: 5px 5px !important;
     border-radius: 3px !important;
     box-shadow: inset 1px 1px 4px #cccccc !important;
+}
+
+.ui-inputnumber {
+    margin: 0 0 0px !important;
 }
 
 .ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
@@ -246,9 +263,12 @@ label.require:after {
     border: 1px solid #a8a8a8;
 }
 
+hr,
 hr.ui-separator {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
+    border: 0;
+    border-top: 1px solid #eee;
 }
 
 .ui-widget {
@@ -257,6 +277,10 @@ hr.ui-separator {
 
 .ui-datepicker {
     margin: 0;
+}
+
+.ui_tpicker_time_input {
+    border-bottom: 0 !important;
 }
 
 .ui-timepicker-div .ui-widget-header,

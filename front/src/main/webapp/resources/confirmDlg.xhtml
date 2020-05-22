@@ -8,12 +8,13 @@
 
     <p:dialog header="#{header}" widgetVar="#{widgetVar}" modal="true" width="40%" resizable="false">
         <h:form id="#{formName}">
-            <h:panelGrid columns="1">
+            <p:panelGrid columns="1" styleClass="no-border">
                 <h:outputText value="#{msg1}"/>
                 <h:outputText value="&#34;#{msg2}&#34;" style="font-weight: bold"/>
-            </h:panelGrid>
+            </p:panelGrid>
 
-            <p:separator/>
+            <hr/>
+
             <div class="alignRight">
                 <p:commandButton value="#{actionButton}" action="#{controller[action]}"
                                  onsuccess="PF('#{widgetVar}').hide();"

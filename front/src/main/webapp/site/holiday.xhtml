@@ -100,24 +100,26 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Holiday" widgetVar="holidayDlg" modal="true" width="75%" height="300px" resizable="false">
+        <p:dialog header="Add/Edit Holiday" widgetVar="holidayDlg" modal="true" resizable="false">
             <h:form id="holidayDlgForm">
-                <h:panelGrid columns="2">
+                <p:panelGrid columns="2" styleClass="no-border">
                     <h:outputLabel value="Date" styleClass="require"/>
                     <p:calendar id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
                                 pattern="dd/MM/yyyy"
                                 mask="true"/>
                     <h:outputLabel value="Description" styleClass="require" />
                     <p:inputText value="#{holidayCtl.newHoliday.description}" style="width: 500px;"/>
-                </h:panelGrid>
-                <div class="onBottomRight">
-                    <p:commandButton value="Save" action="#{holidayCtl.onNewHoliday}"
-                                     rendered="#{holidayCtl.editMode==false}"
-                                     update="mainForm,holidayDlgForm"/>
-                    <p:commandButton value="Update" action="#{holidayCtl.onUpdateHoliday}"
-                                     rendered="#{holidayCtl.editMode==true}"
-                                     update="mainForm,holidayDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('holidayDlg').hide()"/>
+                </p:panelGrid>
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-lg-12 alignRight">
+                        <p:commandButton value="Save" action="#{holidayCtl.onNewHoliday}"
+                                         rendered="#{holidayCtl.editMode==false}"
+                                         update="mainForm,holidayDlgForm"/>
+                        <p:commandButton value="Update" action="#{holidayCtl.onUpdateHoliday}"
+                                         rendered="#{holidayCtl.editMode==true}"
+                                         update="mainForm,holidayDlgForm"/>
+                        <p:commandButton value="Cancel" onclick="PF('holidayDlg').hide()"/>
+                    </div>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>

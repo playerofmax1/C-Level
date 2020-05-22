@@ -58,7 +58,7 @@
 
                     <h:form id="monthForm">
 
-                        <h:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}">
+                        <p:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}" styleClass="no-border">
                             <h:outputText value="User: "/>
                             <p:selectOneMenu value="#{timeSheetCtl.timeSheetUserId}" style="width:300px">
                                 <f:selectItems value="#{timeSheetCtl.userList}" var="user"
@@ -66,7 +66,7 @@
                                                itemValue="#{user.id}"/>
                                 <p:ajax event="change" listener="#{timeSheetCtl.onChangeUser()}" update="monthForm"/>
                             </p:selectOneMenu>
-                        </h:panelGrid>
+                        </p:panelGrid>
 
                         <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
 
@@ -108,7 +108,7 @@
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.percentCU} %"/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="percentCUPanel" for="percentCU" hideEffect="fade">
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Start:" style="width:20em"/>
                                                     <p:outputLabel value="#{timeSheetCtl.utilization.startDate}" style="width:12em">
@@ -135,7 +135,9 @@
                                                     <p:outputLabel value="Charged Mandays:"/>
                                                     <p:outputLabel value="#{timeSheetCtl.utilization.chargedDays}"/>
                                                 </p:panelGrid>
-                                                <p:separator/>
+
+                                                <hr/>
+
                                                 <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Utilization = Charged Mandays &#247; Net Workdays x 100" escape="false"/>
                                                 </p:panelGrid>
@@ -217,7 +219,7 @@
                                 <p:commandButton id="editBtn" icon="ui-icon-pencil" disabled="#{timeSheetCtl.viewOnly}"
                                                  action="#{timeSheetCtl.onPreEdit(timesheet)}"
                                                  update="timeSheetDlgForm"
-                                                 onsuccess="PF('timeSheetDlg').show();">
+                                                 onsuccess="PF('timeSheetDlg').show();PF('timeSheetDlg').initPosition();">
                                 </p:commandButton>
                                 <p:tooltip for="editBtn" value="Edit" position="top"/>
                                 <p:commandButton id="plusBtn" icon="ui-icon-plus" disabled="#{timeSheetCtl.viewOnly}"
@@ -241,11 +243,11 @@
             </div>
         </div>
 
-        <p:dialog showHeader="true" header="Timesheet Detail" widgetVar="timeSheetDlg" modal="true" width="75%" position="center">
+        <p:dialog showHeader="true" header="Timesheet Detail" widgetVar="timeSheetDlg" modal="true" width="75%" position="center" resizable="false">
             <h:form id="timeSheetDlgForm">
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-4 ui-md-12">
-                        <p:outputLabel value="Work Date:" style="font-weight: bold;"/>
+                        <p:outputLabel value="Work Date:"/>
                         <p:outputLabel value="#{timeSheetCtl.detail.workDate}">
                             <f:convertDateTime pattern="dd/MM/yyyy (EEEE)" timeZone="Asia/Bangkok"/>
                         </p:outputLabel>
@@ -253,7 +255,7 @@
 
                     <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
                         <p:outputLabel value="Time in: "
-                                       style="font-weight: bold;"
+
                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
                         <p:calendar id="timeIn"
                                     value="#{timeSheetCtl.detail.timeIn}"
@@ -269,7 +271,7 @@
 
                     <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
                         <p:outputLabel value="Time Out: "
-                                       style="font-weight: bold;"
+
                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
                         <p:calendar id="timeOut"
                                     value="#{timeSheetCtl.detail.timeOut}"
@@ -283,11 +285,11 @@
                     </div>
                 </div>
 
-                <p:separator/>
+                <hr/>
 
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
-                        <p:outputLabel value="Project: " style="font-weight: bold;"/>
+                        <p:outputLabel value="Project: "/>
                     </div>
                     <div class="ui-g-12 ui-lg-5 ui-md-12">
                         <p:selectOneMenu value="#{timeSheetCtl.selectedProjectId}" style="width: 100%">
@@ -301,7 +303,7 @@
                     </div>
 
                     <div class="ui-g-12 ui-lg-1 ui-md-12 alignRight alignMiddle">
-                        <p:outputLabel value="Task: " style="font-weight: bold"/>
+                        <p:outputLabel value="Task: "/>
                     </div>
                     <div class="ui-g-12 ui-lg-5 ui-md-12">
                         <p:outputPanel id="taskGroup">
@@ -325,7 +327,7 @@
                     </div>
 
                     <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
-                        <p:outputLabel value="Charge Hours: " style="font-weight: bold"/>
+                        <p:outputLabel value="Charge Hours: "/>
                     </div>
                     <div class="ui-g-12 ui-lg-11">
                         <h:panelGroup>
@@ -350,7 +352,7 @@
                     </div>
                 </div>
 
-                <h:outputText value="Description: " style="font-weight: bold"/><br/>
+                <p:outputLabel value="Description: "/><br/>
                 <p:inputTextarea id="desc" value="#{timeSheetCtl.detail.description}" style="width: 100%"
                                  autoResize="false"/>
 
@@ -391,7 +393,7 @@
 
                 </p:dataTable>
 
-                <p:separator/>
+                <hr/>
 
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-6 alignLeft">

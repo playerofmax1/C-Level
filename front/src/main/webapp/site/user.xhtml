@@ -131,9 +131,9 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="75%" resizable="false">
+        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" resizable="false">
             <h:form id="userDlgForm">
-                <h:panelGrid columns="4">
+                <p:panelGrid columns="4" styleClass="no-border">
                     <h:outputLabel value="Name" styleClass="require"/>
                     <p:inputText value="#{userCtl.newUser.name}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Lastname" styleClass="require"/>
@@ -175,10 +175,10 @@
                     <p:password value="#{userCtl.confirmPwd}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
                                 rendered="#{userCtl.editMode==false}"/>
 
-                </h:panelGrid>
-                <p:spacer height="200"/>
+                </p:panelGrid>
 
-                <p:separator/>
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{userCtl.onNewUser}"
                                      rendered="#{userCtl.editMode==false}"
@@ -194,14 +194,16 @@
 
         <p:dialog header="Reset Password" widgetVar="resetDlg" modal="true" width="50%" resizable="false">
             <h:form id="resetDlgForm">
-                <h:panelGrid columns="1">
+                <p:panelGrid columns="1" styleClass="no-border">
 
                     <h:outputText value="Reset password for user: #{userCtl.newUser.name} #{userCtl.newUser.lastName} (#{userCtl.newUser.loginName})"/>
                     <h:outputText value="New password will be sent to email: #{userCtl.newUser.email}"/>
 
 
-                </h:panelGrid>
-                <p:separator/>
+                </p:panelGrid>
+
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Reset" action="#{userCtl.onResetPassword}"
                                      onsuccess="PF('resetDlg').hide();"
@@ -229,7 +231,8 @@
 
                 </p:pickList>
 
-                <p:separator/>
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Close" onclick="PF('viewTSDlg').hide()"/>
                 </div>

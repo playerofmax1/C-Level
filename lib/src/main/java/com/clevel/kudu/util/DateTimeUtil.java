@@ -103,7 +103,13 @@ public class DateTimeUtil {
         return String.format("%02d:%02d", hour, minute);
     }
 
-    // pattern = HH:mm
+    //
+
+    /**
+     * Hours:Minutes to Duration
+     *
+     * @param str in this pattern 'HH:mm'
+     */
     public static Duration stringToDuration(String str) {
         String[] tmp = str.split(":");
         if (tmp.length == 1) {
@@ -186,26 +192,32 @@ public class DateTimeUtil {
 
     public static Duration getWorkHour(Date timeIn, Date timeOut) {
         log.debug("getWorkHour. (timeIn: {}, timeOut: {})", timeIn, timeOut);
-        LocalDateTime in = timeIn.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDateTime();
-        LocalDateTime out = timeOut.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDateTime();
 
-        Date lunchStart = getDatePlusHoursAndMinutes(timeIn, 12, 0);
-        Date lunchEnd = getDatePlusHoursAndMinutes(timeOut, 13, 0);
-        if (timeIn.after(lunchStart) && timeIn.before(lunchEnd)) {
-            lunchStart = timeIn;
-        }
-        if (timeOut.after(lunchStart) && timeOut.before(lunchEnd)) {
-            lunchEnd = timeOut;
-        }
-        Duration lunchDuration = diffTime(lunchStart, lunchEnd);
-//        log.debug("lunchStart: {}, lunchEnd: {}, lunchDuration: {}",lunchStart,lunchEnd,lunchDuration);
-        Duration workHour = Duration.between(in, out);
-//        log.debug("workHour: {}, minutes: {}",workHour,workHour.toMinutes());
-        if (timeIn.before(lunchEnd)) {
-            workHour = workHour.minusMinutes(lunchDuration.toMinutes());
-//            log.debug("[-lunch time] workHour: {}, minutes: {}",workHour,workHour.toMinutes());
+        long mid = 1300;
+        long in = Long.parseLong(DateTimeUtil.getDateStr(timeIn, "Hmm"));
+        long out = Long.parseLong(DateTimeUtil.getDateStr(timeOut, "Hmm"));
+        Duration duration = DateTimeUtil.diffTime(timeIn, timeOut);
+        log.debug("getWorkHour. in:{}, out:{}, mid:{}", in, out, mid);
+
+        /* KUDU-22: use this table for WorkHour/Duration (mid = 13:00, before mid is < mid, after mid is => mid)
+         *
+         * | In         | Out        |WorkHour/Duration|
+         * | ---------- | ---------- | -------------- |
+         * | before mid | before mid | = duration     |
+         * | before mid | after mid  | = duration - 1 |
+         * | after mid  | after mid  | = duration     |
+         *
+         * | In         | Out        | WorkHour       |
+         * | ---------- | ---------- | -------------- |
+         * | < mid      | < mid      | = duration     |
+         * | < mid      | >= mid     | = duration - 1 |
+         * | >= mid     | >= mid     | = duration     |
+         **/
+        if (in < mid && out >= mid) {
+            duration = duration.plusHours(-1);
         }
 
-        return workHour;
+        log.debug("getWorkHour = {}", duration);
+        return duration;
     }
 }

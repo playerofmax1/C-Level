@@ -46,6 +46,9 @@ public class UtilizationDTO {
     }
 
     public long getDays() {
+        if (startDate == null || endDate == null) {
+            return 0L;
+        }
         return DateTimeUtil.countDay(startDate, endDate);
     }
 

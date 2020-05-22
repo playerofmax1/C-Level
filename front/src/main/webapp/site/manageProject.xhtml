@@ -28,6 +28,11 @@
                 $('#project').addClass('active');
             });
         </script>
+        <style>
+            .floatRight {
+                margin-top: -5px;
+            }
+        </style>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -41,55 +46,53 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:panelGrid columns="2">
+                        <p:panelGrid columns="2" columnClasses="alignLeft,alignRight" styleClass="floatRight no-padding">
+                            <h:outputLabel value="Billable MD:" style="width: 120px;"/>
+                            <h:outputText value="#{managePrjCtl.project.billableMD}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+
+                            <h:outputLabel value="Total Plan MD:"/>
+                            <h:outputText value="#{managePrjCtl.project.totalPlanMD}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+
+                            <h:outputLabel value="Remaining MD:" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'red-font':''}"/>
+                            <h:outputText value="#{managePrjCtl.project.remainingMD}" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'red-font':''}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="2" styleClass="no-border" columnClasses="no-padding">
                             <h:outputLabel value="Description:" style="width: 100px"/>
-                            <h:outputLabel value="#{managePrjCtl.project.description}"/>
+                            <h:outputText value="#{managePrjCtl.project.description}"/>
+
                             <h:outputLabel value="Customer:"/>
-                            <h:outputLabel value="#{managePrjCtl.project.customer.name}"/>
-                        </h:panelGrid>
+                            <h:outputText value="#{managePrjCtl.project.customer.name}"/>
 
-                        <h:panelGrid columns="8" rendered="false">
-                            <h:outputLabel value="Plan cost:" style="width: 80px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.projectCost.planCost}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                            <h:outputLabel value="Extend cost:" style="width: 80px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.projectCost.extendCost}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                            <h:outputLabel value="Total cost:" style="width: 80px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.projectCost.totalCost}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                            <h:outputLabel value="Actual cost:" style="width: 80px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.projectCost.actualCost}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </h:panelGrid>
-
-                        <h:panelGrid columns="8">
-                            <h:outputLabel value="Billable MD:" style="width: 120px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.project.billableMD}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                            <h:outputLabel value="Total Plan MD:" style="width: 120px; horiz-align: right"/>
-                            <h:outputLabel value="#{managePrjCtl.project.totalPlanMD}" style="width: 120px; horiz-align: left">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                            <h:outputLabel value="Remaining MD:" style="width: 120px; horiz-align: right" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'warning':''}"/>
-                            <h:outputLabel value="#{managePrjCtl.project.remainingMD}" style="width: 120px; horiz-align: left" styleClass="#{(managePrjCtl.project.remainingMD lt 0)?'warning':''}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </h:panelGrid>
+                            <h:outputLabel value=" "/>
+                            <h:outputLabel value=" "/>
+                        </p:panelGrid>
 
                         <hr/>
 
-                        <p:commandButton value="New Project Task" action="#{managePrjCtl.onPreAddNew}"
-                                         onsuccess="PF('projectTaskDlg').show()" update="projectTaskDlgForm"/>
-                        <p:spacer height="30"/>
-
                         <p:dataTable var="task" value="#{managePrjCtl.projectTaskList}" rows="10" sortBy="#{task.project.id}"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newProjectTask"
+                                                             value="New Project Task"
+                                                             action="#{managePrjCtl.onPreAddNew}"
+                                                             onsuccess="PF('projectTaskDlg').show()"
+                                                             update="projectTaskDlgForm"/>
+                                            <p:tooltip position="right" value="Create new project task." for="newProjectTask"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
 
                             <p:column headerText="Task" style="width: 200px">
                                 <h:outputText value="[#{task.task.code}] #{task.task.name}"/>
@@ -187,7 +190,7 @@
 
         <p:dialog header="Add/Edit Project Task" widgetVar="projectTaskDlg" modal="true" width="60%" resizable="false">
             <h:form id="projectTaskDlgForm">
-                <h:panelGrid columns="2">
+                <p:panelGrid columns="2" styleClass="no-border">
 
                     <h:outputLabel value="Task" styleClass="require"/>
                     <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:400px"
@@ -236,8 +239,10 @@
                     <h:outputLabel value="Description"/>
                     <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}" style="width: 500px"
                                      autoResize="false"/>
-                </h:panelGrid>
-                <p:separator/>
+                </p:panelGrid>
+
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{managePrjCtl.onAddNew}"
                                      rendered="#{managePrjCtl.editMode==false}"
@@ -253,7 +258,7 @@
 
         <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="60%" resizable="false">
             <h:form id="extendMDDlgForm">
-                <h:panelGrid columns="2">
+                <p:panelGrid columns="2" styleClass="no-border">
                     <h:outputLabel value="Extend from task: "/>
                     <p:outputLabel
                             value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}"/>
@@ -266,7 +271,7 @@
                     <p:inputTextarea value="#{managePrjCtl.newExtTask.description}" style="width: 500px"
                                      autoResize="false"/>
 
-                </h:panelGrid>
+                </p:panelGrid>
 
                 <p:dataTable var="taskExt" value="#{managePrjCtl.taskExtList}" rows="10"
                              paginator="true" paginatorPosition="bottom" style="font-size: 12px">
@@ -290,7 +295,8 @@
                     </p:column>
                 </p:dataTable>
 
-                <p:separator/>
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{managePrjCtl.onExtendManDay()}"
                                      update="mainForm,extendMDDlgForm"/>

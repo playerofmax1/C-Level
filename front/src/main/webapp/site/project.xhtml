@@ -43,11 +43,10 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:panelGrid columns="7">
+                        <p:panelGrid columns="5" styleClass="no-border">
                             <h:outputText value="Project Code:"/>
                             <p:inputText value="#{projectCtl.searchRequest.code}"/>
 
-                            <p:spacer width="10" />
                             <h:outputText value="Status:"/>
                             <p:selectOneMenu value="#{projectCtl.searchRequest.status}">
                                 <f:selectItem itemLabel="ALL" itemValue="INACTIVE"/>
@@ -55,12 +54,11 @@
                                 <f:selectItem itemLabel="CLOSE" itemValue="CLOSE"/>
                             </p:selectOneMenu>
 
-                            <p:spacer width="10" />
                             <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
                                              update="mainForm"/>
-                        </h:panelGrid>
+                        </p:panelGrid>
 
-                        <p:separator/>
+                        <hr/>
 
                         <p:dataTable var="project"
                                      widgetVar="project"
@@ -109,10 +107,10 @@
                                 <h:outputText value="#{project.customer.name}"/>
                             </p:column>
 
-                            <p:column headerText="Actions">
+                            <p:column headerText="Actions" style="width: 178px">
                                 <p:commandButton id="editBtn" value="E" action="#{projectCtl.onPreUpdateProject}"
                                                  update="projectDlgForm"
-                                                 onsuccess="PF('projectDlg').show();">
+                                                 onsuccess="PF('projectDlg').show();PF('projectDlg').initPosition();">
                                     <f:setPropertyActionListener value="#{project.id}"
                                                                  target="#{projectCtl.selectedProjectId}"/>
                                 </p:commandButton>
@@ -150,55 +148,56 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Project" widgetVar="projectDlg" modal="true" width="50%" resizable="false">
+        <p:dialog header="Add/Edit Project" widgetVar="projectDlg" modal="true" resizable="false">
             <h:form id="projectDlgForm">
-                <h:panelGrid columns="2">
-                    <h:outputLabel value="Customer"/>
-                    <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" style="width:250px">
+                <p:panelGrid columns="4" styleClass="no-border no-margin">
+
+                    <h:outputLabel value="Code:" styleClass="require ui-outputlabel"/>
+                    <p:inputText value="#{projectCtl.newProject.code}"
+                                 styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"
+                                 style="width:100%"/>
+
+                    <h:outputLabel value="Customer:" styleClass="ui-outputlabel"/>
+                    <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" style="width:200px">
                         <f:selectItems value="#{projectCtl.customerList}" var="customer" itemLabel="[#{customer.code}] #{customer.name}"
                                        itemValue="#{customer.id}"/>
                         <p:ajax event="change" update="projectDlgForm" listener="#{projectCtl.onChangeCustomer}"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="Code" styleClass="require"/>
-                    <p:inputText value="#{projectCtl.newProject.code}" styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"/>
+                    <h:outputLabel value="Name:" styleClass="require ui-outputlabel"/>
+                    <p:inputText value="#{projectCtl.newProject.name}"
+                                 styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"
+                                 style="width:100%"/>
 
-                    <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{projectCtl.newProject.name}" styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
-
-                    <h:outputLabel value="Type" styleClass="require"/>
-                    <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:300px">
+                    <h:outputLabel value="Type:" styleClass="require ui-outputlabel"/>
+                    <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:100%">
                         <f:selectItem itemLabel="Normal" itemValue="NORMAL"/>
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="Billable MD" styleClass="require"/>
-                    <p:outputPanel id="billableMD">
-                        <p:calendar rendered="#{!projectCtl.newProject.moreThan99Hours}"
-                                    value="#{projectCtl.newProject.billableMDDuration}"
-                                    converter="durationConverter"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    maxHour="99"
-                                    mask="true">
-                            <p:ajax event="dateSelect" update="billableMD"/>
-                        </p:calendar>
-                        <p:inputText rendered="#{projectCtl.newProject.moreThan99Hours}"
-                                     value="#{projectCtl.newProject.billableMDDuration}"
-                                     converter="durationConverter"
-                                     styleClass="ui-inputtext">
-                            <p:ajax event="change" update="billableMD"/>
-                        </p:inputText>
-                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
-                        <p:commandButton value="100+" action="#{projectCtl.onHundredPlusClicked()}"
-                                         rendered="#{!projectCtl.newProject.moreThan99Hours}"
-                                         update="billableMD"/>
+                    <h:outputLabel value="Billable MD:" styleClass="require"/>
+                    <p:outputPanel styleClass="no-padding">
+                        <div class="ui-inputgroup">
+                            <p:inputNumber value="#{projectCtl.newProject.billableMDDuration}"
+                                           converter="durationDayConverter"
+                                           emptyValue="zero"/>
+                            <span class="ui-inputgroup-addon">(days)</span>
+                        </div>
                     </p:outputPanel>
 
-                    <h:outputLabel value="Description"/>
-                    <p:inputTextarea value="#{projectCtl.newProject.description}" style="width: 400px"/>
-                </h:panelGrid>
-                <p:separator/>
+                    <!-- need to fulfill all cell in this table to avoid invalid DOM that make all dialogs after this point unstable -->
+                    <h:outputLabel value=" "/>
+                    <h:outputLabel value=" "/>
+                </p:panelGrid>
+
+                <p:spacer height="10" />
+                <h:outputLabel value="Description:"/><br/>
+                <p:inputTextarea value="#{projectCtl.newProject.description}"
+                                 style="width: 100%"
+                                 autoResize="false"/>
+
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{projectCtl.onNewProject}"
                                      rendered="#{projectCtl.editMode==false}"

@@ -51,7 +51,7 @@
 
                     <h:form id="yearForm">
 
-                        <h:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}">
+                        <p:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}" styleClass="no-border">
                             <h:outputText value="User: "/>
                             <p:selectOneMenu value="#{rptMandaysCtl.selectedUserId}" style="width:300px">
                                 <f:selectItems value="#{rptMandaysCtl.userList}" var="user"
@@ -59,7 +59,7 @@
                                                itemValue="#{user.id}"/>
                                 <p:ajax event="change" listener="#{rptMandaysCtl.onChangeUser()}" update="yearForm"/>
                             </p:selectOneMenu>
-                        </h:panelGrid>
+                        </p:panelGrid>
 
                         <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
 
@@ -100,7 +100,7 @@
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="percentCUPanel" for="percentCU" hideEffect="fade">
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Year Start:" style="width:20em"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.startDate}" style="width:12em">
@@ -127,7 +127,9 @@
                                                     <p:outputLabel value="Charged Mandays:"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.chargedDays}"/>
                                                 </p:panelGrid>
-                                                <p:separator/>
+
+                                                <hr/>
+
                                                 <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Utilization = Charged Mandays &#247; Net Workdays x 100" escape="false"/>
                                                 </p:panelGrid>

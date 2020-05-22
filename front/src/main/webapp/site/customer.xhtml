@@ -100,7 +100,7 @@
 
         <p:dialog header="Add/Edit Customer" widgetVar="customerDlg" modal="true" width="50%" resizable="false">
             <h:form id="customerDlgForm">
-                <h:panelGrid columns="2">
+                <p:panelGrid columns="2" styleClass="no-border">
                     <h:outputLabel value="Code" styleClass="require"/>
                     <p:inputText value="#{customerCtl.newCustomer.code}" styleClass="#{customerCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
                     <h:outputLabel value="Name" styleClass="require"/>
@@ -108,8 +108,10 @@
                     <h:outputLabel value="Description"/>
                     <p:inputTextarea value="#{customerCtl.newCustomer.description}" style="width: 400px"
                                      autoResize="false"/>
-                </h:panelGrid>
-                <p:separator/>
+                </p:panelGrid>
+
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{customerCtl.onNewCustomer}"
                                      rendered="#{customerCtl.editMode==false}"

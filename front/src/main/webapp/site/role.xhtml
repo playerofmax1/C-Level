@@ -48,16 +48,16 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:panelGrid columns="2">
+                        <p:panelGrid columns="2" styleClass="no-border">
                             <h:outputText value="Role:"/>
                             <p:selectOneMenu value="#{roleCtl.selectedRoleId}" style="width:250px">
                                 <f:selectItems value="#{roleCtl.roleList}" var="role" itemLabel="#{role.name}"
                                                itemValue="#{role.id}"/>
                                 <p:ajax event="change" update="mainForm" listener="#{roleCtl.onChangeRole}"/>
                             </p:selectOneMenu>
-                        </h:panelGrid>
+                        </p:panelGrid>
 
-                        <p:separator/>
+                        <hr/>
 
                         <p:panel style="font-size: 12px">
                             <f:facet name="header">
@@ -131,13 +131,15 @@
 
         <p:dialog header="Add/Edit Role" widgetVar="roleDlg" modal="true" width="50%" resizable="false">
             <h:form id="roleDlgForm">
-                <h:panelGrid columns="2">
+                <p:panelGrid columns="2" styleClass="no-border">
                     <h:outputLabel value="Name" styleClass="require"/>
                     <p:inputText value="#{roleCtl.newRole.name}" styleClass="#{roleCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Description "/>
                     <p:inputTextarea value="#{roleCtl.newRole.description}" style="width: 400px"/>
-                </h:panelGrid>
-                <p:separator/>
+                </p:panelGrid>
+
+                <hr/>
+
                 <div class="alignRight">
                     <p:commandButton value="Save" action="#{roleCtl.onNewRole}"
                                      rendered="#{roleCtl.editMode==false}"

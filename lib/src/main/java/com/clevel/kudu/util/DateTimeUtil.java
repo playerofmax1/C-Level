@@ -103,7 +103,13 @@ public class DateTimeUtil {
         return String.format("%02d:%02d", hour, minute);
     }
 
-    // pattern = HH:mm
+    //
+
+    /**
+     * Hours:Minutes to Duration
+     *
+     * @param str in this pattern 'HH:mm'
+     */
     public static Duration stringToDuration(String str) {
         String[] tmp = str.split(":");
         if (tmp.length == 1) {

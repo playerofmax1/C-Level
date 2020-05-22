@@ -254,24 +254,30 @@ public class TimeSheetController extends AbstractController {
         ServiceRequest<TimeSheetRequest> request = new ServiceRequest<>(timeSheetRequest);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getTimeSheetResource().getTimeSheet(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetResult>>() {
-            });
-            TimeSheetResult result = serviceResponse.getResult();
-
-            timeSheetList = result.getTimeSheetList();
-            sortList(timeSheetList);
-
-            timeSheetSummaryList = sumHoursOfProject(timeSheetList);
-            utilization = result.getUtilization();
-
-            checkNavigationButtonEnable();
-            checkViewOnly(result);
-
-        } else {
+        if (response.getStatus() != 200) {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
+            return;
         }
+
+        ServiceResponse<TimeSheetResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetResult>>() {
+        });
+        TimeSheetResult result = serviceResponse.getResult();
+        if (result == null) {
+            log.debug("Result not found!");
+            FacesUtil.addError("Result not found!");
+            return;
+        }
+
+        timeSheetList = result.getTimeSheetList();
+        sortList(timeSheetList);
+
+        timeSheetSummaryList = sumHoursOfProject(timeSheetList);
+        utilization = result.getUtilization();
+
+        checkNavigationButtonEnable();
+        checkViewOnly(result);
+
     }
 
     private void loadTimeSheetInfo(TimeSheetDTO timeSheet) {

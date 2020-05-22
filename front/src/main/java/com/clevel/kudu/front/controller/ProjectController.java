@@ -177,9 +177,10 @@ public class ProjectController extends AbstractController {
             ServiceResponse<ProjectDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<ProjectDTO>>() {
             });
             newProject = serviceResponse.getResult();
+            FacesUtil.actionSuccess();
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            FacesUtil.actionFailed("wrong response from server!");
         }
     }
 

@@ -36,7 +36,7 @@
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <h:panelGrid columns="2">
+                        <p:panelGrid columns="2">
                         <h:outputLabel value="Old Password" styleClass="require"/>
                             <p:password value="#{systemCtl.pwdRequest.oldPassword}" styleClass="#{systemCtl.validator.failMap['oldPwd']==null?'ui-inputtext':'ui-state-error'}"
                                         rendered="#{userCtl.editMode==false}"/>
@@ -46,7 +46,7 @@
                         <h:outputLabel value="Confirm Password" styleClass="require"/>
                             <p:password value="#{systemCtl.confirmPwd}" styleClass="#{systemCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
                                         rendered="#{userCtl.editMode==false}"/>
-                        </h:panelGrid>
+                        </p:panelGrid>
 
                         <p:commandButton value="Save" action="#{systemCtl.onChangePwd}" update="mainForm" />
 

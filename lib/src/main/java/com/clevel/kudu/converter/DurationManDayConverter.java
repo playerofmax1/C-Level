@@ -11,18 +11,22 @@ import java.time.Duration;
 
 /**
  * Convert between
- * Variable:Duration and Input-String:Days (1day=24hrs)
+ * Variable:Duration and Input-String:ManDays (1md=8hrs)
  */
-@FacesConverter("durationDayConverter")
-public class DurationDayConverter implements Converter {
-    private Logger log= LoggerFactory.getLogger(DurationDayConverter.class);
+@FacesConverter("durationManDayConverter")
+public class DurationManDayConverter implements Converter {
+    private Logger log= LoggerFactory.getLogger(DurationManDayConverter.class);
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
         if (s == null) {
             return Duration.ZERO;
         }
-        Duration duration = Duration.ofDays(Long.parseLong(s));
+        long hours = Long.parseLong(s) * 8;
+        Duration duration = Duration.ofHours(hours);
+        if (log.isDebugEnabled()) {
+            log.debug("DurationManDayConverter.getAsObject({})={}({}mandays)",s,duration.toString(),duration.toHours()/8);
+        }
         return duration;
     }
 
@@ -32,7 +36,10 @@ public class DurationDayConverter implements Converter {
             return "0";
         }
         Duration duration = (Duration) o;
-        long days = duration.toDays();
+        long days = duration.toHours() / 8;
+        if (log.isDebugEnabled()) {
+            log.debug("DurationManDayConverter.getAsString({})={}days",duration.toString(),days);
+        }
         return String.valueOf(days);
     }
 }

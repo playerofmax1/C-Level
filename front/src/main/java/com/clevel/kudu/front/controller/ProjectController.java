@@ -141,13 +141,14 @@ public class ProjectController extends AbstractController {
         }
 
         //validation pass
+        log.debug("onNewProject.newProject={}", newProject);
         ServiceRequest<ProjectDTO> request = new ServiceRequest<>(newProject);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getProjectResource().newProject(request);
         if (response.getStatus() == 200) {
             ServiceResponse<ProjectDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<ProjectDTO>>() {
             });
-            log.debug("response: {}",serviceResponse);
+            log.debug("response: {}", serviceResponse);
             switch (serviceResponse.getApiResponse()) {
                 case SUCCESS:
                     FacesUtil.addInfo(serviceResponse.getApiResponse().description());
@@ -216,6 +217,7 @@ public class ProjectController extends AbstractController {
             return;
         }
 
+        log.debug("onUpdateProject.newProject={}", newProject);
         ServiceRequest<ProjectDTO> request = new ServiceRequest<>(newProject);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getProjectResource().updateProjectInfo(request);

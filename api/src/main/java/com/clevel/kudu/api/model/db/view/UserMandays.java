@@ -25,7 +25,9 @@ public class UserMandays implements Serializable {
   @Column(name = "workYear")
   private long workYear;
 
-
+  @Id
+  @Column(name = "planFlag")
+  private boolean planFlag;
 
   @Column(name = "targetPercentCU")
   private BigDecimal targetPercentCU;
@@ -84,6 +86,14 @@ public class UserMandays implements Serializable {
 
   public void setWorkYear(long workYear) {
     this.workYear = workYear;
+  }
+
+  public boolean isPlanFlag() {
+    return planFlag;
+  }
+
+  public void setPlanFlag(boolean planFlag) {
+    this.planFlag = planFlag;
   }
 
   public BigDecimal getTargetPercentCU() {

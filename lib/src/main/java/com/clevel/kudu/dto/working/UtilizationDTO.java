@@ -20,6 +20,7 @@ public class UtilizationDTO {
     private long netWorkingDaysInMinutes;
     private long chargedMinutes;
     private BigDecimal percentCU;
+    private BigDecimal percentAMD;
 
     public long getYear() {
         return year;
@@ -117,6 +118,14 @@ public class UtilizationDTO {
         return percentCURecheck;
     }
 
+    public BigDecimal getPercentAMD() {
+        return percentAMD;
+    }
+
+    public void setPercentAMD(BigDecimal percentAMD) {
+        this.percentAMD = percentAMD;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -129,6 +138,7 @@ public class UtilizationDTO {
                 .append("netWorkingDaysInMinutes", netWorkingDaysInMinutes)
                 .append("chargedMinutes", chargedMinutes)
                 .append("percentCU", percentCU)
+                .append("percentAMD", percentAMD)
                 .toString()
                 .replace('=', ':');
     }

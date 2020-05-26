@@ -129,7 +129,7 @@ public class TimeSheetResource implements TimeSheetService {
             int year = mandaysRequest.getYear();
             if (year == 0) {
                 year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
-                log.debug("{} = {}",SystemConfig.PF_YEAR.name(), year);
+                log.debug("{} = {}", SystemConfig.PF_YEAR.name(), year);
             }
 
             List<UserMandaysDTO> userMandaysDTOList = timeSheetManager.getUserMandays(mandaysRequest.getUserId(), year);
@@ -139,8 +139,10 @@ public class TimeSheetResource implements TimeSheetService {
             mandaysResult.setTotalMandaysDTO(totalMandaysDTO);
 
             PerformanceYear performanceYear = timeSheetManager.getPerformanceYear(year);
-            UtilizationDTO utilization = timeSheetManager.getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), totalMandaysDTO.getChargeMinutes());
+            long AMDMinutes = DateTimeUtil.mandaysToMinutes(totalMandaysDTO.getAMD());
+            UtilizationDTO utilization = timeSheetManager.getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), AMDMinutes);
             utilization.setYear(year);
+            utilization.setPercentAMD(timeSheetManager.generatePercentAMD(userMandaysDTOList, totalMandaysDTO, utilization.getNetWorkingDays()));
             mandaysResult.setUtilization(utilization);
 
             response.setResult(mandaysResult);

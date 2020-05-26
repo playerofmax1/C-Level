@@ -220,4 +220,8 @@ public class DateTimeUtil {
         log.debug("getWorkHour = {}", duration);
         return duration;
     }
+
+    public static long mandaysToMinutes(BigDecimal mandays) {
+        return mandays.multiply(MANDAYS_HOUR).multiply(MANDAYS_MINUTE).longValue();
+    }
 }

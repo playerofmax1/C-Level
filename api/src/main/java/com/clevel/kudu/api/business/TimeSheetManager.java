@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.*;
 
@@ -468,6 +469,8 @@ public class TimeSheetManager {
         long chargeMinutes = 0;
         BigDecimal chargeHours = BigDecimal.ZERO;
         BigDecimal chargeDays = BigDecimal.ZERO;
+        BigDecimal PMD = BigDecimal.ZERO;
+        BigDecimal AMD = BigDecimal.ZERO;
         long workDays = 0;
 
         for (UserMandaysDTO userMandays : userMandaysDTOList) {
@@ -478,6 +481,8 @@ public class TimeSheetManager {
             chargeMinutes += userMandays.getChargeMinutes();
             chargeHours = chargeHours.add(userMandays.getChargeHours());
             chargeDays = chargeDays.add(userMandays.getChargeDays());
+            AMD = AMD.add(userMandays.getAMD());
+            PMD = PMD.add(userMandays.getPMD());
             workDays += userMandays.getWorkDays();
         }
 
@@ -486,6 +491,8 @@ public class TimeSheetManager {
         totalUserMandays.setChargeHours(chargeHours);
         totalUserMandays.setChargeDays(chargeDays);
         totalUserMandays.setWorkDays(workDays);
+        totalUserMandays.setPMD(PMD);
+        totalUserMandays.setAMD(AMD);
 
         return totalUserMandays;
     }
@@ -514,4 +521,84 @@ public class TimeSheetManager {
         return utilization;
     }
 
+    /**
+     * @param userMandaysDTOList two ways, setNetWorkdays for all records, setPMD and setRPMDPercent for (No-Project) record, setWeight for all records.
+     * @param totalMandaysDTO    two ways, setPMD
+     * @param netWorkdays        = DaysInYear - Weekends - Holidays
+     * @return Average PercentAMD.
+     */
+    public BigDecimal generatePercentAMD(List<UserMandaysDTO> userMandaysDTOList, UserMandaysDTO totalMandaysDTO, long netWorkdays) {
+        log.debug("generatePercentAMD(netWorkdays:{})", netWorkdays);
+        BigDecimal percentAMD = BigDecimal.ZERO;
+        BigDecimal PMD;
+        BigDecimal RPMDPercent;
+        BigDecimal totalRPMDPercent = BigDecimal.ZERO;
+        BigDecimal netWorkdaysDec = new BigDecimal(netWorkdays);
+        BigDecimal weight;
+        BigDecimal totalWeight = BigDecimal.ZERO;
+
+        for (UserMandaysDTO userMandays : userMandaysDTOList) {
+            userMandays.setNetWorkdays(netWorkdays);
+
+            if (userMandays.getProject() == null) {
+                log.debug("in case of no-project");
+
+                /*SpecialCaseForNoProject: PMD = (100% - Target %CU) x NetWorkdays*/
+                BigDecimal targetPMD = BigDecimal.valueOf(1.0).subtract(userMandays.getTargetPercentCU());
+                log.debug("targetPMD = {}", targetPMD);
+
+                PMD = targetPMD.multiply(netWorkdaysDec);
+                userMandays.setPMD(PMD);
+                log.debug("PMD = {}", PMD);
+
+                BigDecimal AMD = userMandays.getChargeDays().setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+                userMandays.setAMD(AMD);
+                log.debug("AMD = {}", AMD);
+
+                /*recalc for no-project: [RPMDPercent] = (PMD - AMD) / PMD
+                 * [RPMDPercent] sometimes called %AMD */
+                RPMDPercent = PMD.subtract(AMD).divide(PMD, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+                userMandays.setRPMDPercent(RPMDPercent);
+                log.debug("RPMDPercent = {}", RPMDPercent);
+
+            } else {
+                PMD = userMandays.getPMD();
+                log.debug("PMD = {}", PMD);
+
+                RPMDPercent = userMandays.getRPMDPercent().setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+                userMandays.setRPMDPercent(RPMDPercent);
+                log.debug("RPMDPercent = {}", RPMDPercent);
+
+                totalRPMDPercent = totalRPMDPercent.add(RPMDPercent);
+                log.debug("totalRPMDPercent = {}", totalRPMDPercent);
+            }
+
+            /* recordWeight = (PMD / [NetWorkdays]) x [RPMDPercent]
+             * [RPMDPercent] sometimes called %AMD
+             **/
+            weight = PMD.divide(netWorkdaysDec, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+            log.debug("PMD / newWorkdays = {}", weight);
+
+            weight = weight.multiply(RPMDPercent).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+            log.debug("PMD / newWorkdays x %AMD = {}", weight);
+            userMandays.setWeight(weight);
+
+            totalWeight = totalWeight.add(userMandays.getWeight());
+        }
+
+        /*exclude no-project: totalRPMDPercent */
+        totalMandaysDTO.setRPMDPercent(totalRPMDPercent);
+        log.debug("setTotalRPMDPercent = {}", totalRPMDPercent);
+
+        /*include no-project: totalWeight */
+        totalMandaysDTO.setWeight(totalWeight);
+        log.debug("setTotalWeight = {}", totalWeight);
+
+        /*average percentAMD = totalWeight / recordCount*/
+        log.debug("totalWeight = {}", totalWeight);
+        percentAMD = totalWeight.divide(BigDecimal.valueOf(userMandaysDTOList.size()), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        log.debug("percentAMD = {}", percentAMD);
+
+        return percentAMD;
+    }
 }

@@ -25,6 +25,11 @@ public class UserMandays implements Serializable {
   @Column(name = "workYear")
   private long workYear;
 
+
+
+  @Column(name = "targetPercentCU")
+  private BigDecimal targetPercentCU;
+
   @Column(name = "chargeMinutes")
   private long chargeMinutes;
 
@@ -48,6 +53,15 @@ public class UserMandays implements Serializable {
   @Column(name = "firstToLastDays")
   private long firstToLastDays;
 
+  @Column(name = "PMD")
+  private BigDecimal PMD;
+
+  @Column(name = "AMD")
+  private BigDecimal AMD;
+
+  @Column(name = "RPMDPercent")
+  private BigDecimal RPMDPercent;
+
   public long getUserId() {
     return userId;
   }
@@ -70,6 +84,14 @@ public class UserMandays implements Serializable {
 
   public void setWorkYear(long workYear) {
     this.workYear = workYear;
+  }
+
+  public BigDecimal getTargetPercentCU() {
+    return targetPercentCU;
+  }
+
+  public void setTargetPercentCU(BigDecimal targetPercentCU) {
+    this.targetPercentCU = targetPercentCU;
   }
 
   public long getChargeMinutes() {
@@ -126,5 +148,29 @@ public class UserMandays implements Serializable {
 
   public void setFirstToLastDays(long firstToLastDays) {
     this.firstToLastDays = firstToLastDays;
+  }
+
+  public BigDecimal getPMD() {
+    return PMD;
+  }
+
+  public void setPMD(BigDecimal PMD) {
+    this.PMD = PMD;
+  }
+
+  public BigDecimal getAMD() {
+    return AMD;
+  }
+
+  public void setAMD(BigDecimal AMD) {
+    this.AMD = AMD;
+  }
+
+  public BigDecimal getRPMDPercent() {
+    return RPMDPercent;
+  }
+
+  public void setRPMDPercent(BigDecimal RPMDPercent) {
+    this.RPMDPercent = RPMDPercent;
   }
 }

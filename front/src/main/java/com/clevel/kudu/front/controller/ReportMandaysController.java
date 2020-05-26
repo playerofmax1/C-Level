@@ -39,6 +39,12 @@ public class ReportMandaysController extends AbstractController {
     private UserMandaysDTO totalUserMandays;
     private UtilizationDTO utilization;
 
+    private String br = "<br/>";
+
+    public String getBr() {
+        return br;
+    }
+
     @PostConstruct
     public void onCreation() {
         log.debug("onCreation.");
@@ -157,10 +163,12 @@ public class ReportMandaysController extends AbstractController {
 
         totalUserMandays.setChargeHours(totalUserMandays.getChargeHours().setScale(scale, roundingMode));
         totalUserMandays.setChargeDays(totalUserMandays.getChargeDays().setScale(scale, roundingMode));
+        totalUserMandays.setAMD(totalUserMandays.getAMD().setScale(scale, roundingMode));
 
         for (UserMandaysDTO userMandays : userMandaysDTOList) {
             userMandays.setChargeDays(userMandays.getChargeDays().setScale(scale, roundingMode));
             userMandays.setChargeHours(userMandays.getChargeHours().setScale(scale, roundingMode));
+            userMandays.setAMD(userMandays.getAMD().setScale(scale, roundingMode));
         }
     }
 

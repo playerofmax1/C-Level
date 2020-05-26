@@ -98,7 +98,8 @@
                                             <p:tooltip for="nextYear" value="Next Year" position="right"/>
                                         </div>
                                         <div class="ui-g-3 alignRight">
-                                            <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/>
+                                            <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/><br/>
+                                            <p:outputLabel value="%AMD: #{rptMandaysCtl.utilization.percentAMD} %"/><br/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
                                             <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
@@ -123,17 +124,18 @@
 
                                                     <p:outputLabel value="Net Workdays:"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.netWorkingDays}"/>
-
-                                                    <p:outputLabel value="Charged Mandays:"/>
-                                                    <p:outputLabel value="#{rptMandaysCtl.utilization.chargedDays}"/>
                                                 </p:panelGrid>
 
                                                 <hr/>
 
                                                 <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
-                                                    <p:outputLabel value="Utilization = Charged Mandays &#247; Net Workdays x 100" escape="false"/>
+                                                    <p:outputLabel value="Utilization = AMD &#247; Net Workdays x 100" escape="false"/>
+                                                </p:panelGrid>
+                                                <p:panelGrid columns="1" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
+                                                    <p:outputLabel value="%AMD(Average) = TotalWeight &#247; #{rptMandaysCtl.userMandaysDTOList.size()}" escape="false"/>
                                                 </p:panelGrid>
                                             </p:overlayPanel>
+
                                         </div>
                                     </div>
                                 </p:outputPanel>
@@ -144,23 +146,31 @@
 
                             </f:facet>
 
-                            <p:column headerText="Project" footerText="TOTAL(exclude gray)" sortBy="#{mandays.project.code}" styleClass="alignCenter">
+                            <p:column headerText="Project" footerText="TOTAL#{rptMandaysCtl.br}(exclude gray)" sortBy="#{mandays.project.code}" styleClass="alignCenter">
                                 <h:outputText value="#{(mandays.project == null)?'-- no project --':mandays.project.code}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="Actual Hours" footerText="#{rptMandaysCtl.totalUserMandays.chargeHours}" sortBy="#{mandays.chargeHours}" styleClass="alignRight">
-                                <h:outputText value="#{mandays.chargeHours}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            <p:column headerText="PMD" footerText="#{rptMandaysCtl.totalUserMandays.PMD}" sortBy="#{mandays.PMD}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.PMD}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="Actual MD" footerText="#{rptMandaysCtl.totalUserMandays.chargeDays}" sortBy="#{mandays.chargeDays}" styleClass="alignRight">
-                                <h:outputText value="#{mandays.chargeDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            <p:column headerText="AMD" footerText="(#{rptMandaysCtl.totalUserMandays.AMD})" sortBy="#{mandays.AMD}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.chargeHours} (#{mandays.AMD})" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="%AMD" footerText="#{rptMandaysCtl.totalUserMandays.RPMDPercent}" sortBy="#{mandays.RPMDPercent}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.RPMDPercent}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
+                            </p:column>
+
+                            <p:column headerText="Weight" footerText="#{rptMandaysCtl.totalUserMandays.weight}#{rptMandaysCtl.br}(include gray)" sortBy="#{mandays.RPMDPercent}" styleClass="alignRight">
+                                <h:outputText value="#{mandays.weight}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
                             <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" sortBy="#{mandays.workDays}" styleClass="alignRight">
                                 <h:outputText value="#{mandays.workDays}" styleClass="#{(mandays.project == null)?'blurLabel':''}"/>
                             </p:column>
 
-                            <p:column headerText="First Day" sortBy="#{mandays.firstChargeDate}"  styleClass="alignCenter">
+                            <p:column headerText="First Day" sortBy="#{mandays.firstChargeDate}" styleClass="alignCenter">
                                 <h:outputText value="#{mandays.firstChargeDate}" styleClass="#{(mandays.project == null)?'blurLabel':''}">
                                     <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
@@ -177,6 +187,17 @@
                             </p:column>
 
                         </p:dataTable>
+
+                        <p:panel>
+                            <div class="alignLeft" style="margin-left:50px;color:gray">
+                                <p:outputLabel value="Remark:" style="margin-left:-50px;"/><br/>
+                                <sub>
+                                    <p:outputLabel value="%AMD = (PMD - AMD) &#247; PMD"/><br/>
+                                    <p:outputLabel value="Weight =  (PMD &#247; Net Workdays) x %AMD"/><br/>
+                                    <p:outputLabel value="Target Utilization = #{rptMandaysCtl.userMandaysDTOList.get(0).targetPercentCU * 100.0}%"/>
+                                </sub>
+                            </div>
+                        </p:panel>
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </h:form>

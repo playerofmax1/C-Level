@@ -10,8 +10,10 @@ public class UserMandaysDTO {
 
   private long userId;
   private ProjectDTO project;
-
   private long workYear;
+
+  private BigDecimal targetPercentCU;
+
   private long chargeMinutes;
   private BigDecimal chargeHours;
   private BigDecimal chargeDays;
@@ -20,6 +22,13 @@ public class UserMandaysDTO {
   private Date firstChargeDate;
   private Date lastChargeDate;
   private long firstToLastDays;
+
+  private BigDecimal PMD;
+  private BigDecimal AMD;
+  private BigDecimal RPMDPercent;
+
+  private long netWorkdays;
+  private BigDecimal weight;
 
   public long getUserId() {
     return userId;
@@ -43,6 +52,14 @@ public class UserMandaysDTO {
 
   public void setWorkYear(long workYear) {
     this.workYear = workYear;
+  }
+
+  public BigDecimal getTargetPercentCU() {
+    return targetPercentCU;
+  }
+
+  public void setTargetPercentCU(BigDecimal targetPercentCU) {
+    this.targetPercentCU = targetPercentCU;
   }
 
   public long getChargeMinutes() {
@@ -101,12 +118,53 @@ public class UserMandaysDTO {
     this.firstToLastDays = firstToLastDays;
   }
 
+  public BigDecimal getPMD() {
+    return PMD;
+  }
+
+  public void setPMD(BigDecimal PMD) {
+    this.PMD = PMD;
+  }
+
+  public BigDecimal getAMD() {
+    return AMD;
+  }
+
+  public void setAMD(BigDecimal AMD) {
+    this.AMD = AMD;
+  }
+
+  public BigDecimal getRPMDPercent() {
+    return RPMDPercent;
+  }
+
+  public void setRPMDPercent(BigDecimal RPMDPercent) {
+    this.RPMDPercent = RPMDPercent;
+  }
+
+  public long getNetWorkdays() {
+    return netWorkdays;
+  }
+
+  public void setNetWorkdays(long netWorkdays) {
+    this.netWorkdays = netWorkdays;
+  }
+
+  public BigDecimal getWeight() {
+    return weight;
+  }
+
+  public void setWeight(BigDecimal weight) {
+    this.weight = weight;
+  }
+
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
             .append("userId", userId)
             .append("project", project)
             .append("workYear", workYear)
+            .append("targetPercentCU", targetPercentCU)
             .append("chargeMinutes", chargeMinutes)
             .append("chargeHours", chargeHours)
             .append("chargeDays", chargeDays)
@@ -114,6 +172,11 @@ public class UserMandaysDTO {
             .append("firstChargeDate", firstChargeDate)
             .append("lastChargeDate", lastChargeDate)
             .append("firstToLastDays", firstToLastDays)
+            .append("PMD", PMD)
+            .append("AMD", AMD)
+            .append("RPMDPercent", RPMDPercent)
+            .append("netWorkdays", netWorkdays)
+            .append("weight", weight)
             .toString()
             .replace('=', ':');
   }

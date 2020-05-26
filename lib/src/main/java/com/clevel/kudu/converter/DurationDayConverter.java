@@ -1,5 +1,8 @@
 package com.clevel.kudu.converter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -8,16 +11,19 @@ import java.time.Duration;
 
 /**
  * Convert between
- * Variable:Duration and Input-String:Days
+ * Variable:Duration and Input-String:Days (1day=24hrs)
  */
 @FacesConverter("durationDayConverter")
 public class DurationDayConverter implements Converter {
+    private Logger log= LoggerFactory.getLogger(DurationDayConverter.class);
+
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
         if (s == null) {
             return Duration.ZERO;
         }
-        return Duration.ofDays(Long.parseLong(s));
+        Duration duration = Duration.ofDays(Long.parseLong(s));
+        return duration;
     }
 
     @Override

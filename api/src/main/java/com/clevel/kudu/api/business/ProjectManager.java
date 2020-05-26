@@ -71,8 +71,9 @@ public class ProjectManager {
         log.debug("newProject: {}", newProject);
 
         long billableMDMinute = projectDTO.getBillableMDDuration().toMinutes();
+        BigDecimal billableMandays = DateTimeUtil.getManDays(billableMDMinute);
         newProject.setBillableMDMinute(billableMDMinute);
-        newProject.setBillableMD(DateTimeUtil.getManDays(billableMDMinute));
+        newProject.setBillableMD(billableMandays);
 
         Date now = DateTimeUtil.now();
         newProject.setCreateDate(now);
@@ -101,8 +102,9 @@ public class ProjectManager {
         log.debug("updateProjectInfo. (userId: {}, projectDTO: {})", userId, projectDTO);
 
         long billableMDMinute = projectDTO.getBillableMDDuration().toMinutes();
+        BigDecimal billableMandays = DateTimeUtil.getManDays(billableMDMinute);
         projectDTO.setBillableMDMinute(billableMDMinute);
-        projectDTO.setBillableMD(DateTimeUtil.getManDays(billableMDMinute));
+        projectDTO.setBillableMD(billableMandays);
 
         // validate user
         User user = userDAO.findById(userId);

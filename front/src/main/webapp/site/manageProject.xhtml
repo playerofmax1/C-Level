@@ -23,16 +23,16 @@
         <!-- Custom styles for this template -->
         <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
         <h:outputStylesheet library="css" name="style.css" target="head"/>
-        <script>
-            $(document).ready(function () {
-                $('#project').addClass('active');
-            });
-        </script>
         <style>
             .floatRight {
                 margin-top: -5px;
             }
         </style>
+        <script>
+            $(document).ready(function () {
+                $('#project').addClass('active');
+            });
+        </script>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -76,13 +76,16 @@
 
                         <hr/>
 
-                        <p:dataTable var="task" value="#{managePrjCtl.projectTaskList}" rows="10" sortBy="#{task.project.id}"
+                        <p:dataTable var="task"
+                                     value="#{managePrjCtl.projectTaskList}"
+                                     sortBy="#{task.user.name}"
+                                     rows="10"
                                      paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
                             <f:facet name="header">
                                 <p:outputPanel styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
-                                        <div class="ui-g-3 alignLeft">
+                                        <div class="ui-g-12 ui-md-6 alignLeft">
                                             <p:commandButton id="newProjectTask"
                                                              value="New Project Task"
                                                              action="#{managePrjCtl.onPreAddNew}"
@@ -90,52 +93,59 @@
                                                              update="projectTaskDlgForm"/>
                                             <p:tooltip position="right" value="Create new project task." for="newProjectTask"/>
                                         </div>
+                                        <div class="ui-g-12 ui-md-6 alignRight">
+                                            <sub><h:outputText value="Plan MD : "/><h:outputText value="#{managePrjCtl.sumPlanMD}"/></sub><br/>
+                                            <sub><h:outputText value="Extend MD : "/><h:outputText value="#{managePrjCtl.sumExtendMD}"/></sub><br/>
+                                            <sub><h:outputText value="Total MD : "/><h:outputText value="#{managePrjCtl.sumTotalMD}"/></sub><br/>
+                                            <sub><h:outputText value="Actual MD : "/><h:outputText value="#{managePrjCtl.sumActualMD}"/></sub><br/>
+                                        </div>
                                     </div>
                                 </p:outputPanel>
                             </f:facet>
 
-                            <p:column headerText="Task" style="width: 200px">
-                                <h:outputText value="[#{task.task.code}] #{task.task.name}"/>
+                            <p:column headerText="Task" sortBy="#{task.task.code}">
+                                <b><h:outputText value="[#{task.task.code}] "/></b>
+                                <h:outputText value="#{task.task.name}"/>
                             </p:column>
 
-                            <p:column headerText="AMD" style="width: 50px">
+                            <p:column headerText="AMD" sortBy="#{task.amdCalculation}" style="width: 50px">
                                 <h:outputText value="#{(task.amdCalculation)?'Yes':'No'}"/>
                             </p:column>
 
-                            <p:column headerText="User" style="width: 120px">
+                            <p:column headerText="User" sortBy="#{task.user.name}">
                                 <h:outputText value="#{task.user.name}"/>
                             </p:column>
 
-                            <p:column headerText="Plan MD" style="width: 100px">
+                            <p:column headerText="Plan MD" sortBy="#{task.planMDDuration}" style="width: 100px">
                                 <h:outputText value="#{task.planMDDuration}" converter="durationConverter"/>
                                 <h:outputText value=" (#{task.planMD})"/>
                             </p:column>
 
-                            <p:column headerText="Extend MD" style="width: 100px">
+                            <p:column headerText="Extend MD" sortBy="#{task.extendMDDuration}" style="width: 100px">
                                 <h:outputText value="#{task.extendMDDuration}" converter="durationConverter"/>
                                 <h:outputText value=" (#{task.extendMD})"/>
                             </p:column>
 
-                            <p:column headerText="Total MD" style="width: 100px">
+                            <p:column headerText="Total MD" sortBy="#{task.totalMDDuration}" style="width: 100px">
                                 <h:outputText value="#{task.totalMDDuration}" converter="durationConverter"/>
                                 <h:outputText value=" (#{task.totalMD})"/>
                             </p:column>
 
-                            <p:column headerText="Actual MD" style="width: 100px">
+                            <p:column headerText="Actual MD" sortBy="#{task.actualMDDuration}" style="width: 100px">
                                 <h:outputText value="#{task.actualMDDuration}" converter="durationConverter"/>
                                 <h:outputText value=" (#{task.actualMD})"/>
                             </p:column>
 
-                            <p:column headerText="%AMD" style="width: 80px">
+                            <p:column headerText="%AMD" sortBy="#{task.percentAMD}" style="width: 80px">
                                 <h:outputText value="#{task.percentAMD}"/>
                                 <h:outputText value="%"/>
                             </p:column>
 
-                            <p:column headerText="Description">
+                            <p:column headerText="Description" sortBy="#{task.description}">
                                 <h:outputText value="#{task.description}"/>
                             </p:column>
 
-                            <p:column headerText="Actions">
+                            <p:column headerText="Actions" style="width: 120px">
                                 <p:commandButton id="editBtn" icon="ui-icon-pencil" action="#{managePrjCtl.onPreEdit(task)}"
                                                  update="projectTaskDlgForm"
                                                  onsuccess="PF('projectTaskDlg').show();"/>
@@ -159,26 +169,6 @@
 
                             </p:column>
 
-                            <p:summaryRow>
-                                <p:column colspan="3" style="text-align:right">
-                                    <h:outputText value="Total:"/>
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{managePrjCtl.sumPlanMD} MD"/>
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{managePrjCtl.sumExtendMD} MD"/>
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{managePrjCtl.sumTotalMD} MD"/>
-                                </p:column>
-                                <p:column>
-                                    <h:outputText value="#{managePrjCtl.sumActualMD} MD"/>
-                                </p:column>
-                                <p:column colspan="3">
-                                </p:column>
-                            </p:summaryRow>
-
                         </p:dataTable>
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -188,12 +178,12 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Project Task" widgetVar="projectTaskDlg" modal="true" width="60%" resizable="false">
+        <p:dialog header="Add/Edit Project Task" widgetVar="projectTaskDlg" modal="true" resizable="false">
             <h:form id="projectTaskDlgForm">
-                <p:panelGrid columns="2" styleClass="no-border">
+                <p:panelGrid columns="4" styleClass="no-border no-margin">
 
-                    <h:outputLabel value="Task" styleClass="require"/>
-                    <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:400px"
+                    <h:outputLabel value="Task:" styleClass="require"/>
+                    <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:100%"
                                      disabled="#{managePrjCtl.editMode}">
                         <f:selectItems value="#{managePrjCtl.taskList}" var="task"
                                        itemLabel="[#{task.code}] #{task.name}"
@@ -201,45 +191,32 @@
                         <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeTask}"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="User" styleClass="require"/>
-                    <p:selectOneMenu value="#{managePrjCtl.selectedUserId}" style="width:400px">
+                    <h:outputLabel value="User:" styleClass="require"/>
+                    <p:selectOneMenu value="#{managePrjCtl.selectedUserId}" style="width:250px">
                         <f:selectItems value="#{managePrjCtl.userList}" var="user" itemLabel="#{user.name} #{user.lastName}"
                                        itemValue="#{user.id}"/>
                         <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeUser}"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="plan MD" styleClass="require"/>
-                    <p:outputPanel id="planMD">
-                        <p:calendar rendered="#{!managePrjCtl.newProjectTask.moreThan99Hours}"
-                                    disabled="#{managePrjCtl.editMode}"
-                                    value="#{managePrjCtl.newProjectTask.planMDDuration}"
-                                    converter="durationConverter"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    maxHour="99"
-                                    mask="true">
-                            <p:ajax event="dateSelect" update="planMD"/>
-                        </p:calendar>
-                        <p:inputText rendered="#{managePrjCtl.newProjectTask.moreThan99Hours}"
-                                     disabled="#{managePrjCtl.editMode}"
-                                     value="#{managePrjCtl.newProjectTask.planMDDuration}"
-                                     converter="durationConverter"
-                                     styleClass="ui-inputtext">
-                            <p:ajax event="change" update="planMD"/>
-                        </p:inputText>
-                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
-                        <p:commandButton value="100+" action="#{managePrjCtl.onHundredPlusClicked()}"
-                                         rendered="#{!managePrjCtl.editMode and !managePrjCtl.newProjectTask.moreThan99Hours}"
-                                         update="planMD"/>
+                    <h:outputLabel value="Plan MD:" styleClass="require"/>
+                    <p:outputPanel styleClass="no-padding no-margin">
+                        <div class="ui-inputgroup">
+                            <p:inputNumber value="#{managePrjCtl.newProjectTask.planMDDuration}"
+                                           converter="durationManDayConverter"
+                                           emptyValue="zero"/>
+                            <span class="ui-inputgroup-addon">mandays</span>
+                        </div>
                     </p:outputPanel>
 
-                    <h:outputLabel value="AMD Calculation" />
-                    <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"  />
-
-                    <h:outputLabel value="Description"/>
-                    <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}" style="width: 500px"
-                                     autoResize="false"/>
+                    <h:outputLabel value="AMD Calculation"/>
+                    <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"/>
                 </p:panelGrid>
+
+                <br/>
+                <h:outputLabel value="Description:"/>
+                <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}"
+                                 style="width: 100%"
+                                 autoResize="false"/>
 
                 <hr/>
 
@@ -256,22 +233,29 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="60%" resizable="false">
+        <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="66%" resizable="false">
             <h:form id="extendMDDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Extend from task: "/>
+                    <h:outputLabel value="Task: "/>
                     <p:outputLabel
                             value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}"/>
 
-                    <h:outputLabel value="extend MD (HH:mm)" styleClass="require"/>
-                    <p:inputText value="#{managePrjCtl.newExtTask.extendMDDuration}" disabled="#{managePrjCtl.editMode}"
-                                 styleClass="ui-inputtext" style="width: 70px" converter="durationConverter"/>
-
-                    <h:outputLabel value="Description"/>
-                    <p:inputTextarea value="#{managePrjCtl.newExtTask.description}" style="width: 500px"
-                                     autoResize="false"/>
-
+                    <h:outputLabel value="Extend MD:" styleClass="require"/>
+                    <p:outputPanel styleClass="no-padding no-margin">
+                        <div class="ui-inputgroup">
+                            <p:inputNumber value="#{managePrjCtl.newExtTask.extendMDDuration}"
+                                           converter="durationManDayConverter"
+                                           emptyValue="zero"/>
+                            <span class="ui-inputgroup-addon">mandays</span>
+                        </div>
+                    </p:outputPanel>
                 </p:panelGrid>
+
+                <br/>
+                <h:outputLabel value="Description:"/>
+                <p:inputTextarea value="#{managePrjCtl.newExtTask.description}"
+                                 style="width: 100%"
+                                 autoResize="false"/>
 
                 <p:dataTable var="taskExt" value="#{managePrjCtl.taskExtList}" rows="10"
                              paginator="true" paginatorPosition="bottom" style="font-size: 12px">

@@ -8,176 +8,202 @@ import java.util.Date;
 
 public class UserMandaysDTO {
 
-  private long userId;
-  private ProjectDTO project;
-  private long workYear;
+    private long userId;
+    private ProjectDTO project;
+    private long workYear;
 
-  private BigDecimal targetPercentCU;
+    private boolean planFlag;
+    private BigDecimal targetPercentCU;
 
-  private long chargeMinutes;
-  private BigDecimal chargeHours;
-  private BigDecimal chargeDays;
-  private long workDays;
+    private long chargeMinutes;
+    private BigDecimal chargeHours;
+    private BigDecimal chargeDays;
+    private long workDays;
 
-  private Date firstChargeDate;
-  private Date lastChargeDate;
-  private long firstToLastDays;
+    private Date firstChargeDate;
+    private Date lastChargeDate;
+    private long firstToLastDays;
 
-  private BigDecimal PMD;
-  private BigDecimal AMD;
-  private BigDecimal RPMDPercent;
+    private BigDecimal PMD;
+    private BigDecimal AMD;
+    private BigDecimal RPMDPercent;
 
-  private long netWorkdays;
-  private BigDecimal weight;
+    private long netWorkdays;
+    private BigDecimal weight;
 
-  public long getUserId() {
-    return userId;
-  }
+    private String styleClass;
 
-  public void setUserId(long userId) {
-    this.userId = userId;
-  }
+    public long getUserId() {
+        return userId;
+    }
 
-  public ProjectDTO getProject() {
-    return project;
-  }
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
-  public void setProject(ProjectDTO project) {
-    this.project = project;
-  }
+    public ProjectDTO getProject() {
+        return project;
+    }
 
-  public long getWorkYear() {
-    return workYear;
-  }
+    public void setProject(ProjectDTO project) {
+        this.project = project;
+    }
 
-  public void setWorkYear(long workYear) {
-    this.workYear = workYear;
-  }
+    public long getWorkYear() {
+        return workYear;
+    }
 
-  public BigDecimal getTargetPercentCU() {
-    return targetPercentCU;
-  }
+    public void setWorkYear(long workYear) {
+        this.workYear = workYear;
+    }
 
-  public void setTargetPercentCU(BigDecimal targetPercentCU) {
-    this.targetPercentCU = targetPercentCU;
-  }
+    public boolean isPlanFlag() {
+        return planFlag;
+    }
 
-  public long getChargeMinutes() {
-    return chargeMinutes;
-  }
+    public void setPlanFlag(boolean planFlag) {
+        this.planFlag = planFlag;
+    }
 
-  public void setChargeMinutes(long chargeMinutes) {
-    this.chargeMinutes = chargeMinutes;
-  }
+    public BigDecimal getTargetPercentCU() {
+        return targetPercentCU;
+    }
 
-  public BigDecimal getChargeHours() {
-    return chargeHours;
-  }
+    public void setTargetPercentCU(BigDecimal targetPercentCU) {
+        this.targetPercentCU = targetPercentCU;
+    }
 
-  public void setChargeHours(BigDecimal chargeHours) {
-    this.chargeHours = chargeHours;
-  }
+    public long getChargeMinutes() {
+        return chargeMinutes;
+    }
 
-  public BigDecimal getChargeDays() {
-    return chargeDays;
-  }
+    public void setChargeMinutes(long chargeMinutes) {
+        this.chargeMinutes = chargeMinutes;
+    }
 
-  public void setChargeDays(BigDecimal chargeDays) {
-    this.chargeDays = chargeDays;
-  }
+    public BigDecimal getChargeHours() {
+        return chargeHours;
+    }
 
-  public long getWorkDays() {
-    return workDays;
-  }
+    public void setChargeHours(BigDecimal chargeHours) {
+        this.chargeHours = chargeHours;
+    }
 
-  public void setWorkDays(long workDays) {
-    this.workDays = workDays;
-  }
+    public BigDecimal getChargeDays() {
+        return chargeDays;
+    }
 
-  public Date getFirstChargeDate() {
-    return firstChargeDate;
-  }
+    public void setChargeDays(BigDecimal chargeDays) {
+        this.chargeDays = chargeDays;
+    }
 
-  public void setFirstChargeDate(Date firstChargeDate) {
-    this.firstChargeDate = firstChargeDate;
-  }
+    public long getWorkDays() {
+        return workDays;
+    }
 
-  public Date getLastChargeDate() {
-    return lastChargeDate;
-  }
+    public void setWorkDays(long workDays) {
+        this.workDays = workDays;
+    }
 
-  public void setLastChargeDate(Date lastChargeDate) {
-    this.lastChargeDate = lastChargeDate;
-  }
+    public Date getFirstChargeDate() {
+        return firstChargeDate;
+    }
 
-  public long getFirstToLastDays() {
-    return firstToLastDays;
-  }
+    public void setFirstChargeDate(Date firstChargeDate) {
+        this.firstChargeDate = firstChargeDate;
+    }
 
-  public void setFirstToLastDays(long firstToLastDays) {
-    this.firstToLastDays = firstToLastDays;
-  }
+    public Date getLastChargeDate() {
+        return lastChargeDate;
+    }
 
-  public BigDecimal getPMD() {
-    return PMD;
-  }
+    public void setLastChargeDate(Date lastChargeDate) {
+        this.lastChargeDate = lastChargeDate;
+    }
 
-  public void setPMD(BigDecimal PMD) {
-    this.PMD = PMD;
-  }
+    public long getFirstToLastDays() {
+        return firstToLastDays;
+    }
 
-  public BigDecimal getAMD() {
-    return AMD;
-  }
+    public void setFirstToLastDays(long firstToLastDays) {
+        this.firstToLastDays = firstToLastDays;
+    }
 
-  public void setAMD(BigDecimal AMD) {
-    this.AMD = AMD;
-  }
+    public BigDecimal getPMD() {
+        return PMD;
+    }
 
-  public BigDecimal getRPMDPercent() {
-    return RPMDPercent;
-  }
+    public void setPMD(BigDecimal PMD) {
+        this.PMD = PMD;
+    }
 
-  public void setRPMDPercent(BigDecimal RPMDPercent) {
-    this.RPMDPercent = RPMDPercent;
-  }
+    public BigDecimal getAMD() {
+        return AMD;
+    }
 
-  public long getNetWorkdays() {
-    return netWorkdays;
-  }
+    public void setAMD(BigDecimal AMD) {
+        this.AMD = AMD;
+    }
 
-  public void setNetWorkdays(long netWorkdays) {
-    this.netWorkdays = netWorkdays;
-  }
+    public BigDecimal getRPMDPercent() {
+        return RPMDPercent;
+    }
 
-  public BigDecimal getWeight() {
-    return weight;
-  }
+    public void setRPMDPercent(BigDecimal RPMDPercent) {
+        this.RPMDPercent = RPMDPercent;
+    }
 
-  public void setWeight(BigDecimal weight) {
-    this.weight = weight;
-  }
+    public long getNetWorkdays() {
+        return netWorkdays;
+    }
 
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
-            .append("userId", userId)
-            .append("project", project)
-            .append("workYear", workYear)
-            .append("targetPercentCU", targetPercentCU)
-            .append("chargeMinutes", chargeMinutes)
-            .append("chargeHours", chargeHours)
-            .append("chargeDays", chargeDays)
-            .append("workDays", workDays)
-            .append("firstChargeDate", firstChargeDate)
-            .append("lastChargeDate", lastChargeDate)
-            .append("firstToLastDays", firstToLastDays)
-            .append("PMD", PMD)
-            .append("AMD", AMD)
-            .append("RPMDPercent", RPMDPercent)
-            .append("netWorkdays", netWorkdays)
-            .append("weight", weight)
-            .toString()
-            .replace('=', ':');
-  }
+    public void setNetWorkdays(long netWorkdays) {
+        this.netWorkdays = netWorkdays;
+    }
+
+    public BigDecimal getWeight() {
+        return weight;
+    }
+
+    public void setWeight(BigDecimal weight) {
+        this.weight = weight;
+    }
+
+    public String getStyleClass() {
+        if (styleClass == null) {
+            if (project == null) {
+                styleClass = "noProjectLabel";
+            } else if (!planFlag) {
+                styleClass = "nonPlanLabel";
+            } else {
+                styleClass = "";
+            }
+        }
+        return styleClass;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
+                .append("userId", userId)
+                .append("project", project)
+                .append("workYear", workYear)
+                .append("planFlag", planFlag)
+                .append("targetPercentCU", targetPercentCU)
+                .append("chargeMinutes", chargeMinutes)
+                .append("chargeHours", chargeHours)
+                .append("chargeDays", chargeDays)
+                .append("workDays", workDays)
+                .append("firstChargeDate", firstChargeDate)
+                .append("lastChargeDate", lastChargeDate)
+                .append("firstToLastDays", firstToLastDays)
+                .append("PMD", PMD)
+                .append("AMD", AMD)
+                .append("RPMDPercent", RPMDPercent)
+                .append("netWorkdays", netWorkdays)
+                .append("weight", weight)
+                .append("styleClass", styleClass)
+                .toString()
+                .replace('=', ':');
+    }
 }

@@ -203,7 +203,8 @@
                         <div class="ui-inputgroup">
                             <p:inputNumber value="#{managePrjCtl.newProjectTask.planMDDuration}"
                                            converter="durationManDayConverter"
-                                           emptyValue="zero"/>
+                                           emptyValue="zero"
+                                           disabled="#{managePrjCtl.editMode}"/>
                             <span class="ui-inputgroup-addon">mandays</span>
                         </div>
                     </p:outputPanel>

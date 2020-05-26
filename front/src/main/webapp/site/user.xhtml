@@ -61,7 +61,7 @@
                                 </p:outputPanel>
                             </f:facet>
 
-                            <p:column headerText="Name" sortBy="#{user.name}" style="width: 160px">
+                            <p:column headerText="Name" sortBy="#{user.name}">
                                 <h:outputText value="#{user.name} #{user.lastName}"/>
                             </p:column>
 
@@ -87,7 +87,7 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 150px">
+                            <p:column headerText="Actions" style="width: 185px">
                                 <p:commandButton id="editBtn" value="E" action="#{userCtl.onPreUpdateUser}"
                                                  update="userDlgForm"
                                                  onsuccess="PF('userDlg').show();">
@@ -176,6 +176,8 @@
                                 rendered="#{userCtl.editMode==false}"/>
 
                 </p:panelGrid>
+
+
 
                 <hr/>
 

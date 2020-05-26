@@ -529,6 +529,11 @@ public class TimeSheetManager {
      */
     public BigDecimal generatePercentAMD(List<UserMandaysDTO> userMandaysDTOList, UserMandaysDTO totalMandaysDTO, long netWorkdays) {
         log.debug("generatePercentAMD(netWorkdays:{})", netWorkdays);
+        int recordCount = userMandaysDTOList.size();
+        if (recordCount == 0) {
+            return BigDecimal.ZERO;
+        }
+
         BigDecimal percentAMD = BigDecimal.ZERO;
         BigDecimal PMD;
         BigDecimal RPMDPercent;
@@ -537,23 +542,22 @@ public class TimeSheetManager {
         BigDecimal weight;
         BigDecimal totalWeight = BigDecimal.ZERO;
 
+        BigDecimal weightMultiplier;
+
         for (UserMandaysDTO userMandays : userMandaysDTOList) {
             userMandays.setNetWorkdays(netWorkdays);
+            weightMultiplier = userMandays.isPlanFlag()?BigDecimal.ONE:BigDecimal.ZERO;
 
             if (userMandays.getProject() == null) {
                 log.debug("in case of no-project");
 
-                /*SpecialCaseForNoProject: PMD = (100% - Target %CU) x NetWorkdays*/
-                BigDecimal targetPMD = BigDecimal.valueOf(1.0).subtract(userMandays.getTargetPercentCU());
-                log.debug("targetPMD = {}", targetPMD);
-
-                PMD = targetPMD.multiply(netWorkdaysDec);
-                userMandays.setPMD(PMD);
-                log.debug("PMD = {}", PMD);
-
                 BigDecimal AMD = userMandays.getChargeDays().setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
                 userMandays.setAMD(AMD);
                 log.debug("AMD = {}", AMD);
+
+                PMD = AMD.add(BigDecimal.ZERO);
+                userMandays.setPMD(PMD);
+                log.debug("PMD = {}", PMD);
 
                 /*recalc for no-project: [RPMDPercent] = (PMD - AMD) / PMD
                  * [RPMDPercent] sometimes called %AMD */
@@ -581,6 +585,8 @@ public class TimeSheetManager {
 
             weight = weight.multiply(RPMDPercent).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
             log.debug("PMD / newWorkdays x %AMD = {}", weight);
+
+            weight = weightMultiplier.multiply(weight);
             userMandays.setWeight(weight);
 
             totalWeight = totalWeight.add(userMandays.getWeight());
@@ -596,7 +602,7 @@ public class TimeSheetManager {
 
         /*average percentAMD = totalWeight / recordCount*/
         log.debug("totalWeight = {}", totalWeight);
-        percentAMD = totalWeight.divide(BigDecimal.valueOf(userMandaysDTOList.size()), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        percentAMD = totalWeight.divide(BigDecimal.valueOf(recordCount), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
         log.debug("percentAMD = {}", percentAMD);
 
         return percentAMD;

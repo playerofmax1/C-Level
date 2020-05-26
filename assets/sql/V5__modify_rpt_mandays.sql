@@ -1,8 +1,44 @@
--- ----------------------------------------------
--- TODO: need solve for the change of Next Year
--- set Target Year by Year.
--- need relation table to link between user and performance_year
--- ----------------------------------------------
+
+--
+-- Table structure for table `wrk_user_performance`
+--
+
+DROP TABLE IF EXISTS `wrk_user_performance`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wrk_user_performance`
+(
+    `id`                bigint(20) NOT NULL AUTO_INCREMENT,
+
+    `userId`            bigint(20) NOT NULL,
+    `performanceYearId` bigint(20) NOT NULL,
+
+    `targetUtilization` double     NOT NULL DEFAULT 0.8,
+
+    /*more columns about performance put here*/
+
+    `createDate`        datetime(6)         DEFAULT NULL,
+    `modifyDate`        datetime(6)         DEFAULT NULL,
+    `version`           bigint(20) NOT NULL,
+    `createBy`          bigint(20) NOT NULL,
+    `modifyBy`          bigint(20) NOT NULL,
+
+    PRIMARY KEY (`id`),
+    CONSTRAINT `FKUSERPF_USER` FOREIGN KEY (`userId`) REFERENCES `wrk_user` (`id`),
+    CONSTRAINT `FKUSERPF_YEAR` FOREIGN KEY (`userId`) REFERENCES `wrk_performance_year` (`id`),
+    CONSTRAINT `FKUSERPF_CREATE` FOREIGN KEY (`createBy`) REFERENCES `wrk_user` (`id`),
+    CONSTRAINT `FKUSERPF_MODIFY` FOREIGN KEY (`modifyBy`) REFERENCES `wrk_user` (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `wrk_user_performance`
+--
+
+
+
 --
 -- Table structure for table `vw_rpt_mandays`
 -- version 2: add planMD from project-task
@@ -49,41 +85,3 @@ CREATE OR REPLACE VIEW vw_rpt_mandays AS (
 
     group by userId, workYear, projectId, planFlag
 );
-
---
--- Table structure for table `wrk_user_performance`
---
-
-DROP TABLE IF EXISTS `wrk_user_performance`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `wrk_user_performance`
-(
-    `id`                bigint(20) NOT NULL AUTO_INCREMENT,
-
-    `userId`            bigint(20) NOT NULL,
-    `performanceYearId` bigint(20) NOT NULL,
-
-    `targetUtilization` double     NOT NULL DEFAULT 0.8,
-
-    /*more columns about performance put here*/
-
-    `createDate`        datetime(6)         DEFAULT NULL,
-    `modifyDate`        datetime(6)         DEFAULT NULL,
-    `version`           bigint(20) NOT NULL,
-    `createBy`          bigint(20) NOT NULL,
-    `modifyBy`          bigint(20) NOT NULL,
-
-    PRIMARY KEY (`id`),
-    CONSTRAINT `FKUSERPF_USER` FOREIGN KEY (`userId`) REFERENCES `wrk_user` (`id`),
-    CONSTRAINT `FKUSERPF_YEAR` FOREIGN KEY (`userId`) REFERENCES `wrk_performance_year` (`id`),
-    CONSTRAINT `FKUSERPF_CREATE` FOREIGN KEY (`createBy`) REFERENCES `wrk_user` (`id`),
-    CONSTRAINT `FKUSERPF_MODIFY` FOREIGN KEY (`modifyBy`) REFERENCES `wrk_user` (`id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 1
-  DEFAULT CHARSET = utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `wrk_user_performance`
---

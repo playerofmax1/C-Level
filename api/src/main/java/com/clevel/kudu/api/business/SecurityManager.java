@@ -448,7 +448,7 @@ public class SecurityManager {
         return userDTO;
     }
 
-    private List<UserPerformance> createUserPerformance(long userId, long timeSheetUserId) throws RecordNotFoundException {
+    public List<UserPerformance> createUserPerformance(long userId, long timeSheetUserId) throws RecordNotFoundException {
         log.debug("createUserPerformance(userId:{},timeSheetUserId:{})", userId, timeSheetUserId);
         List<UserPerformance> userPerformanceList = new ArrayList<>();
 

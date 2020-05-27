@@ -2,6 +2,21 @@
 
 
 
+## Kudu (Alpha) Version 1.2.3 (RC2)
+
+Fixed: KUDU-21: Reopen as Bug: 1MD = 8hours not 24hours.
+Fixed: KUDU-25: Add Project Task - PlanMD change unit from HH:mm to mandays.
+Fixed: KUDU-26: Timesheet Summary - Add columns PMD, AMD and %AMD with Final %AMD under Utilization
++   add target utilization to user, year by year (in database layer).
+
+Fixed: KUDU-27: Need UI to edit Target Utilization
++   Save target utilization on TimeSheet Summary Screen.
++   Edit target utilization on User Screen.
+
+More:
++   Improve layout of Manage Project Screen.
+
+
 
 ## Kudu (Alpha) Version 1.2.2 (RC3)
 
@@ -21,6 +36,7 @@ More:
 + downgrade to Primefaces 6.2 by the issues in Calendar when TimeOnly = True on Primefaces7.0 (no new features of 7.0 are needed by this project)
 + Remove sample data in SQL:V3__add_timesheet_month_locker.sql
 + Fix bad layouts some screens and some dialogs.
+
 
 
 ## Kudu (Alpha) Version 1.2.1
@@ -44,7 +60,6 @@ Fixed: KUDU-14:
        - Billable MD := entered value
        - Total Plan MD:= Sum of Total MD column
        - Remaining MD:= Billable MD - Total Plan MD (in RED when under ZERO)
-InProgress: KUDU-10: Prepare UI for lock/unlock timesheet month by month.
 SQL: V1__handover.sql
 
 

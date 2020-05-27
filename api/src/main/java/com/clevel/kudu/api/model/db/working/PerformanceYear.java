@@ -43,4 +43,5 @@ public class PerformanceYear extends AbstractAuditEntity {
   public void setEndDate(Date endDate) {
     this.endDate = endDate;
   }
+
 }

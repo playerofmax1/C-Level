@@ -208,12 +208,15 @@ label.require:after {
     font-weight: normal !important;
     margin: 0 0 0px !important;
     padding: 5px 5px !important;
-    border-radius: 3px !important;
     box-shadow: inset 1px 1px 4px #cccccc !important;
 }
 
 .ui-inputnumber {
     margin: 0 0 0px !important;
+}
+
+.ui-inputgroup .ui-button {
+    margin: 0;
 }
 
 .ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
@@ -312,6 +315,10 @@ hr.ui-separator {
 .overlayValue,
 .overlayLabel {
     width: 12em;
+}
+
+.cursor-pointer {
+    cursor: pointer;
 }
 
 .fa-chevron-circle-down {

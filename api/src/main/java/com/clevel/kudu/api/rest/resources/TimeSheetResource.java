@@ -295,6 +295,33 @@ public class TimeSheetResource implements TimeSheetService {
     }
 
     @Override
+    public Response saveTargetUtilization(ServiceRequest<TargetUtilizationRequest> request) {
+        log.debug("saveTargetUtilization. (request: {})", request);
+
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
+                request.toString());
+
+        TargetUtilizationResult targetUtilizationResult = new TargetUtilizationResult();
+        ServiceResponse<TargetUtilizationResult> response = new ServiceResponse<>();
+
+        try {
+            TargetUtilizationRequest targetUtilizationRequest = request.getRequest();
+            UserPerformanceDTO userPerformance = timeSheetManager.saveTargetUtilization(request.getUserId(), targetUtilizationRequest.getUserId(), targetUtilizationRequest.getYear(), targetUtilizationRequest.getTargetUtilization());
+            targetUtilizationResult.setUserPerformance(userPerformance);
+
+            response.setResult(targetUtilizationResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
     public Response resetRecord(ServiceRequest<TimeSheetDTO> request) {
         log.debug("resetRecord. (request: {})", request);
 
@@ -346,7 +373,7 @@ public class TimeSheetResource implements TimeSheetService {
         ServiceResponse<TimeSheetResult> response = new ServiceResponse<>();
 
         try {
-            TimeSheetLockDTO timeSheetLockDTO = timeSheetManager.lockTimeSheet(request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
+            TimeSheetLockDTO timeSheetLockDTO = timeSheetManager.lockTimeSheet(request.getUserId(), request.getRequest().getTimeSheetUserId(), request.getRequest().getMonth());
             List<TimeSheetLockDTO> timeSheetLockDTOList = new ArrayList<>();
             timeSheetLockDTOList.add(timeSheetLockDTO);
             timeSheetResult.setTimeSheetLockList(timeSheetLockDTOList);

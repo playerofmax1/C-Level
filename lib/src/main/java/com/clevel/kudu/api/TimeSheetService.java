@@ -82,6 +82,13 @@ public interface TimeSheetService {
                                       ServiceRequest<UtilizationRequest> request);
 
     @POST
+    @Path("/target/utilization")
+    @Operation(summary = "save target utilization for year n", description = "save target utilization for year n")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response saveTargetUtilization(@Parameter(description = "request: TargetUtilizationRequest, result: TargetUtilizationResult", required = true)
+                                      ServiceRequest<TargetUtilizationRequest> request);
+
+    @POST
     @Path("/reset")
     @Operation(summary = "reset timeSheet record", description = "reset timeSheet record")
     @ApiResponse(responseCode = "200", description = "SUCCESS")

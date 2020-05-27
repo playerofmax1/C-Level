@@ -32,6 +32,8 @@ public class TimeSheetManager {
     @Inject
     private UserMandaysDAO userMandaysDAO;
     @Inject
+    private UserPerformanceDAO userPerformanceDAO;
+    @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
     private TimeSheetLockDAO timeSheetLockDAO;
@@ -59,6 +61,8 @@ public class TimeSheetManager {
     private HolidayManager holidayManager;
     @Inject
     private UserMandaysMapper userMandaysMapper;
+    @Inject
+    private UserPerformanceMapper userPerformanceMapper;
 
     private static final BigDecimal BD_100 = new BigDecimal("100");
 
@@ -410,12 +414,13 @@ public class TimeSheetManager {
         log.debug("migrateWorkHour. (finish)");
     }
 
-    public TimeSheetLockDTO lockTimeSheet(long timeSheetUserId, Date date) throws RecordNotFoundException {
-        User user = userDAO.findById(timeSheetUserId);
+    public TimeSheetLockDTO lockTimeSheet(long userId, long timeSheetUserId, Date date) throws RecordNotFoundException {
+        User user = userDAO.findById(userId);
+        User timesheetUser = userDAO.findById(timeSheetUserId);
         Date now = DateTimeUtil.now();
 
         TimeSheetLock timeSheetLock = new TimeSheetLock();
-        timeSheetLock.setUser(user);
+        timeSheetLock.setUser(timesheetUser);
         timeSheetLock.setStartDate(DateTimeUtil.getFirstDateOfMonth(date));
         timeSheetLock.setEndDate(DateTimeUtil.getLastDateOfMonth(date));
 
@@ -606,5 +611,29 @@ public class TimeSheetManager {
         log.debug("percentAMD = {}", percentAMD);
 
         return percentAMD;
+    }
+
+    public UserPerformanceDTO saveTargetUtilization(long userId, long timeSheetUserId, int year, BigDecimal targetUtilization) throws RecordNotFoundException {
+        User user = userDAO.findById(userId);
+        Date now = DateTimeUtil.now();
+
+        UserPerformance userPerformance = userPerformanceDAO.findByYear(timeSheetUserId, year);
+        if (userPerformance == null) {
+            userPerformance = new UserPerformance();
+            userPerformance.setUserId(timeSheetUserId);
+
+            PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
+            userPerformance.setPerformanceYear(performanceYear);
+
+            userPerformance.setTargetUtilization(targetUtilization);
+
+            userPerformance.setCreateBy(user);
+            userPerformance.setCreateDate(now);
+        }
+
+        userPerformance.setModifyBy(user);
+        userPerformance.setModifyDate(now);
+
+        return userPerformanceMapper.toDTO(userPerformanceDAO.persist(userPerformance));
     }
 }

@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,12 +39,9 @@ public class ReportMandaysController extends AbstractController {
     private List<UserMandaysDTO> userMandaysDTOList;
     private UserMandaysDTO totalUserMandays;
     private UtilizationDTO utilization;
+    private BigDecimal targetUtilization;
 
     private String br = "<br/>";
-
-    public String getBr() {
-        return br;
-    }
 
     @PostConstruct
     public void onCreation() {
@@ -150,6 +148,7 @@ public class ReportMandaysController extends AbstractController {
         totalUserMandays = mandaysResult.getTotalMandaysDTO();
         utilization = mandaysResult.getUtilization();
         currentYear = (int) utilization.getYear();
+        targetUtilization = (userMandaysDTOList.size() == 0) ? BigDecimal.ZERO : userMandaysDTOList.get(0).getTargetPercentCU().multiply(BigDecimal.valueOf(100.00));
 
         normalize(totalUserMandays, userMandaysDTOList);
 
@@ -236,6 +235,18 @@ public class ReportMandaysController extends AbstractController {
         this.utilization = utilization;
     }
 
+    public BigDecimal getTargetUtilization() {
+        return targetUtilization;
+    }
+
+    public void setTargetUtilization(BigDecimal targetUtilization) {
+        this.targetUtilization = targetUtilization;
+    }
+
+    public String getBr() {
+        return br;
+    }
+
     public ExcelOptions getExportExcelOptions() {
         return new ExcelOptions("BOLD", "#FFFFFF", "#6666FF", "10", "", "#000000", "11");
     }
@@ -259,4 +270,34 @@ public class ReportMandaysController extends AbstractController {
         return userName + "-utilization-" + currentYear;
     }
 
+    public void onSaveTargetUtilization() {
+        TargetUtilizationRequest targetUtilizationRequest = new TargetUtilizationRequest();
+        targetUtilizationRequest.setUserId(selectedUserId);
+        targetUtilizationRequest.setYear(currentYear);
+        targetUtilizationRequest.setTargetUtilization(targetUtilization.divide(BigDecimal.valueOf(100.00), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP));
+
+        ServiceRequest<TargetUtilizationRequest> request = new ServiceRequest<>(targetUtilizationRequest);
+        request.setUserId(userDetail.getUserId());
+
+        Response response = apiService.getTimeSheetResource().saveTargetUtilization(request);
+        if (response.getStatus() != 200) {
+            String message = "Save target utilization is failed by connection!";
+            log.debug(message);
+            FacesUtil.actionFailed(message);
+            return;
+        }
+
+        ServiceResponse<TargetUtilizationResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TargetUtilizationResult>>() {
+        });
+        if (serviceResponse.getApiResponse() != APIResponse.SUCCESS) {
+            String message = "Save target utilization is failed! " + serviceResponse.getMessage();
+            log.debug(message);
+            FacesUtil.actionFailed(message);
+            return;
+        }
+
+        String message = "Save Target Utilization(" + targetUtilization + "%)";
+        log.debug(message);
+        FacesUtil.actionSuccess(message);
+    }
 }

@@ -115,10 +115,12 @@
                                                                    symbol="%"
                                                                    symbolPosition="s"
                                                                    styleClass="alignRight"/>
-                                                    <p:commandButton icon="fa fa-save"
+                                                    <p:commandButton id="saveTargetUtilization"
+                                                                     icon="fa fa-save"
                                                                      actionListener="#{rptMandaysCtl.onSaveTargetUtilization}"
                                                                      on-complete="if(args.isActionSuccess)PF('targetUtilizationPanel').hide();"
                                                                      update="mainForm,yearForm"/>
+                                                    <p:defaultCommand target="saveTargetUtilization"/>
                                                 </div>
                                                 <p:focus for="editTargetUtilization"/>
                                                 <sub>Type number in percent and click save</sub>

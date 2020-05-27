@@ -63,6 +63,8 @@ public class TimeSheetManager {
     private UserMandaysMapper userMandaysMapper;
     @Inject
     private UserPerformanceMapper userPerformanceMapper;
+    @Inject
+    private SecurityManager securityManager;
 
     private static final BigDecimal BD_100 = new BigDecimal("100");
 
@@ -620,14 +622,13 @@ public class TimeSheetManager {
 
         UserPerformance userPerformance = userPerformanceDAO.findByYear(timeSheetUserId, year);
         if (userPerformance == null) {
-            userPerformance = new UserPerformance();
-            userPerformance.setUserId(timeSheetUserId);
-
-            PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
-            userPerformance.setPerformanceYear(performanceYear);
-
-            userPerformance.setCreateBy(user);
-            userPerformance.setCreateDate(now);
+            List<UserPerformance> userPerformanceList = securityManager.createUserPerformance(userId, timeSheetUserId);
+            for (UserPerformance performance : userPerformanceList) {
+                if (performance.getPerformanceYear().getYear() == year) {
+                    userPerformance = performance;
+                    break;
+                }
+            }
         }
 
         userPerformance.setTargetUtilization(targetUtilization);

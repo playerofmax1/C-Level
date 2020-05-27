@@ -48,24 +48,24 @@ CREATE TABLE `wrk_user_performance`
 --
 CREATE OR REPLACE VIEW vw_rpt_mandays AS (
     select ts.userId,
-           pfy.year                                                                                 as workYear,
+           pfy.year                                                                                  as workYear,
 
-           if(usr.targetUtilization is null, 0.8, usr.targetUtilization)                            as targetPercentCU,
-           pjt.id                                                                                   as projectId,
-           if(pjttask.amdCalculation is null, 0, pjttask.amdCalculation)                            as planFlag,
+           if(usr.targetUtilization is null, cast(defaults.value as decimal), usr.targetUtilization) as targetPercentCU,
+           pjt.id                                                                                    as projectId,
+           if(pjttask.amdCalculation is null, 0, pjttask.amdCalculation)                             as planFlag,
 
-           sum(ts.chargeMinute)                                                                     as chargeMinutes,
-           sum(ts.chargeMinute) / 60                                                                as chargeHours,
-           sum(ts.chargeMinute) / 480                                                               as chargeDays,
-           count(ts.workDate)                                                                       as workDays,
+           sum(ts.chargeMinute)                                                                      as chargeMinutes,
+           sum(ts.chargeMinute) / 60                                                                 as chargeHours,
+           sum(ts.chargeMinute) / 480                                                                as chargeDays,
+           count(ts.workDate)                                                                        as workDays,
 
-           min(ts.workDate)                                                                         as firstChargeDate,
-           max(ts.workDate)                                                                         as lastChargeDate,
-           DATEDIFF(max(ts.workDate), min(ts.workDate)) + 1                                         as firstToLastDays,
+           min(ts.workDate)                                                                          as firstChargeDate,
+           max(ts.workDate)                                                                          as lastChargeDate,
+           DATEDIFF(max(ts.workDate), min(ts.workDate)) + 1                                          as firstToLastDays,
 
            projectTask.PMD,
-           if(projectTask.AMD is null, /*chargeDays*/(sum(ts.chargeMinute) / 480), projectTask.AMD) as AMD,
-           (projectTask.PMD - projectTask.AMD) / projectTask.PMD * 100.00                           as RPMDPercent
+           if(projectTask.AMD is null, /*chargeDays*/(sum(ts.chargeMinute) / 480), projectTask.AMD)  as AMD,
+           (projectTask.PMD - projectTask.AMD) / projectTask.PMD * 100.00                            as RPMDPercent
 
     from wrk_timesheet ts
              left join wrk_project pjt on (ts.projectId = pjt.id)
@@ -73,16 +73,17 @@ CREATE OR REPLACE VIEW vw_rpt_mandays AS (
              left join wrk_performance_year pfy on (ts.workDate between pfy.startDate and pfy.endDate)
              left join wrk_user_performance usr on (ts.userId = usr.userId and usr.performanceYearId = pfy.id)
              left join (
-                    select ptk.projectId,
-                           ptk.userId,
-                           sum(ptk.planMD + ptk.extendMD) as PMD,
-                           sum(ptk.actualMD)              as AMD,
-                           ptk.amdCalculation
-                    from wrk_prj_task ptk
-                    GROUP by ptk.projectId, ptk.amdCalculation, ptk.userId
-                ) projectTask on (projectTask.projectId = ts.projectId
-                    and projectTask.userId = ts.userId
-                    and projectTask.amdCalculation = pjttask.amdCalculation)
+        select ptk.projectId,
+               ptk.userId,
+               sum(ptk.planMD + ptk.extendMD) as PMD,
+               sum(ptk.actualMD)              as AMD,
+               ptk.amdCalculation
+        from wrk_prj_task ptk
+        GROUP by ptk.projectId, ptk.amdCalculation, ptk.userId
+    ) projectTask on (projectTask.projectId = ts.projectId
+        and projectTask.userId = ts.userId
+        and projectTask.amdCalculation = pjttask.amdCalculation)
+             left join sys_config defaults on (defaults.name = 'app.default.target.utilization')
 
     where chargeMinute > 0
 

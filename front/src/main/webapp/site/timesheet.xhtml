@@ -30,9 +30,11 @@
                 display: inline-block;
                 width: 80px !important;
             }
+
             .ui-timepicker-div .ui_tpicker_time {
                 display: inline !important;
             }
+
             .ui-calendar input {
                 width: 100%;
             }
@@ -93,11 +95,11 @@
                                                              action="#{timeSheetCtl.onPrevious}"
                                                              update="monthForm,mainForm">
                                             </p:commandButton>
-                                            <p:spacer width="5px" />
+                                            <p:spacer width="5px"/>
                                             <p:outputLabel value="#{timeSheetCtl.currentMonth}">
                                                 <f:convertDateTime pattern=" MMMM yyyy " timeZone="Asia/Bangkok"/>
                                             </p:outputLabel>
-                                            <p:spacer width="5px" />
+                                            <p:spacer width="5px"/>
                                             <p:commandButton id="nextMonth" icon="fa fa-chevron-right" disabled="#{!timeSheetCtl.nextEnable}"
                                                              action="#{timeSheetCtl.onNext}"
                                                              update="monthForm,mainForm">
@@ -108,7 +110,7 @@
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel value="Utilization: #{timeSheetCtl.utilization.percentCU} %"/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind">
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind" my="right top">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Start:" style="width:20em"/>
                                                     <p:outputLabel value="#{timeSheetCtl.utilization.startDate}" style="width:12em">
@@ -152,8 +154,8 @@
                                             </p:inputSwitch>
                                             <p:outputLabel id="viewOnlyLabel" value="View Only" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter" style="width: 100px"/>
                                             <p:outputLabel id="editableLabel" value="Editable" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter" style="width: 100px"/>
-                                            <p:tooltip position="left" value="View Only / Editable" for="viewOnlyLabel" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" />
-                                            <p:tooltip position="left" value="View Only / Editable" for="editableLabel" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" />
+                                            <p:tooltip position="left" value="View Only / Editable" for="viewOnlyLabel" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}"/>
+                                            <p:tooltip position="left" value="View Only / Editable" for="editableLabel" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}"/>
                                             <br/>
                                             <p:dataList value="#{timeSheetCtl.timeSheetSummaryList}"
                                                         rendered="#{timeSheetCtl.timeSheetSummaryList.size() > 0}"

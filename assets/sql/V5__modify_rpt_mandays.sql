@@ -1,4 +1,7 @@
 
+/*DEFAULT_TARGET_UTILIZATION*/
+INSERT INTO sys_config (description, name, value) VALUES ('DEFAULT_TARGET_UTILIZATION = 80%', 'app.default.target.utilization', '80');
+
 --
 -- Table structure for table `wrk_user_performance`
 --
@@ -13,7 +16,7 @@ CREATE TABLE `wrk_user_performance`
     `userId`            bigint(20) NOT NULL,
     `performanceYearId` bigint(20) NOT NULL,
 
-    `targetUtilization` double     NOT NULL DEFAULT 0.8,
+    `targetUtilization` double     DEFAULT 80,
 
     /*more columns about performance put here*/
 
@@ -25,7 +28,7 @@ CREATE TABLE `wrk_user_performance`
 
     PRIMARY KEY (`id`),
     CONSTRAINT `FKUSERPF_USER` FOREIGN KEY (`userId`) REFERENCES `wrk_user` (`id`),
-    CONSTRAINT `FKUSERPF_YEAR` FOREIGN KEY (`userId`) REFERENCES `wrk_performance_year` (`id`),
+    CONSTRAINT `FKUSERPF_YEAR` FOREIGN KEY (`performanceYearId`) REFERENCES `wrk_performance_year` (`id`),
     CONSTRAINT `FKUSERPF_CREATE` FOREIGN KEY (`createBy`) REFERENCES `wrk_user` (`id`),
     CONSTRAINT `FKUSERPF_MODIFY` FOREIGN KEY (`modifyBy`) REFERENCES `wrk_user` (`id`)
 ) ENGINE = InnoDB

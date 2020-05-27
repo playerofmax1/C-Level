@@ -376,6 +376,7 @@ public class SecurityResource implements SecurityService {
 
         try {
             UserDTO userDTO = securityManager.getUserInfoById(request.getUserId(), request.getRequest().getId());
+
             response.setResult(userDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {

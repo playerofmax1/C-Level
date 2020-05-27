@@ -24,7 +24,6 @@ public class UserPerformanceDAO extends GenericDAO<UserPerformance, Long> {
     
     @SuppressWarnings("unchecked")
     public UserPerformance findByYear(long userId, int year) {
-        log.debug("findByYear.");
         CriteriaQuery<UserPerformance> criteria = createCriteriaQuery();
         Join<UserPerformance, PerformanceYear> performanceYearJoin = root.join(UserPerformance_.performanceYear);
 
@@ -47,4 +46,22 @@ public class UserPerformanceDAO extends GenericDAO<UserPerformance, Long> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public List<UserPerformance> findByUserId(long userId) {
+        CriteriaQuery<UserPerformance> criteria = createCriteriaQuery();
+        Join<UserPerformance, PerformanceYear> performanceYearJoin = root.join(UserPerformance_.performanceYear);
+
+        criteria.where(cb.equal(root.get(UserPerformance_.userId), userId));
+
+        Query query = em.createQuery(criteria);
+        query.setHint(FETCH_GRAPH, graph);
+
+        List<UserPerformance> UserPerformanceList = query.getResultList();
+        if (UserPerformanceList.isEmpty()) {
+            log.debug("UserPerformance for user({}) not found!", userId);
+            return null;
+        } else {
+            return UserPerformanceList;
+        }
+    }
 }

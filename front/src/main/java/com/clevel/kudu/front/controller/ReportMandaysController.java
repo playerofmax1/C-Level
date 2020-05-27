@@ -148,7 +148,7 @@ public class ReportMandaysController extends AbstractController {
         totalUserMandays = mandaysResult.getTotalMandaysDTO();
         utilization = mandaysResult.getUtilization();
         currentYear = (int) utilization.getYear();
-        targetUtilization = (userMandaysDTOList.size() == 0) ? BigDecimal.ZERO : userMandaysDTOList.get(0).getTargetPercentCU().multiply(BigDecimal.valueOf(100.00));
+        targetUtilization = (userMandaysDTOList.size() == 0) ? BigDecimal.ZERO : userMandaysDTOList.get(0).getTargetPercentCU();
 
         normalize(totalUserMandays, userMandaysDTOList);
 
@@ -274,7 +274,8 @@ public class ReportMandaysController extends AbstractController {
         TargetUtilizationRequest targetUtilizationRequest = new TargetUtilizationRequest();
         targetUtilizationRequest.setUserId(selectedUserId);
         targetUtilizationRequest.setYear(currentYear);
-        targetUtilizationRequest.setTargetUtilization(targetUtilization.divide(BigDecimal.valueOf(100.00), DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP));
+        targetUtilizationRequest.setTargetUtilization(targetUtilization);
+        log.debug("onSaveTargetUtilization.targetUtilizationRequest = {}", targetUtilizationRequest);
 
         ServiceRequest<TargetUtilizationRequest> request = new ServiceRequest<>(targetUtilizationRequest);
         request.setUserId(userDetail.getUserId());

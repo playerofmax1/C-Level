@@ -551,7 +551,7 @@ public class TimeSheetManager {
 
         for (UserMandaysDTO userMandays : userMandaysDTOList) {
             userMandays.setNetWorkdays(netWorkdays);
-            weightMultiplier = userMandays.isPlanFlag()?BigDecimal.ONE:BigDecimal.ZERO;
+            weightMultiplier = userMandays.isPlanFlag() ? BigDecimal.ONE : BigDecimal.ZERO;
 
             if (userMandays.getProject() == null) {
                 log.debug("in case of no-project");
@@ -614,6 +614,7 @@ public class TimeSheetManager {
     }
 
     public UserPerformanceDTO saveTargetUtilization(long userId, long timeSheetUserId, int year, BigDecimal targetUtilization) throws RecordNotFoundException {
+        log.debug("saveTargetUtilization(userId:{}, timeSheetUserId:{}, year:{}, targetUtilization:{})", userId, timeSheetUserId, year, targetUtilization);
         User user = userDAO.findById(userId);
         Date now = DateTimeUtil.now();
 
@@ -625,11 +626,11 @@ public class TimeSheetManager {
             PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
             userPerformance.setPerformanceYear(performanceYear);
 
-            userPerformance.setTargetUtilization(targetUtilization);
-
             userPerformance.setCreateBy(user);
             userPerformance.setCreateDate(now);
         }
+
+        userPerformance.setTargetUtilization(targetUtilization);
 
         userPerformance.setModifyBy(user);
         userPerformance.setModifyDate(now);

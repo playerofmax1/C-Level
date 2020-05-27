@@ -3,19 +3,21 @@ package com.clevel.kudu.api.business;
 import com.clevel.kudu.api.dao.relation.RelRoleFunctionDAO;
 import com.clevel.kudu.api.dao.relation.RelRoleScreenDAO;
 import com.clevel.kudu.api.dao.security.RoleDAO;
-import com.clevel.kudu.api.dao.working.RateDAO;
-import com.clevel.kudu.api.dao.working.UserDAO;
-import com.clevel.kudu.api.dao.working.UserTimeSheetDAO;
+import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.*;
 import com.clevel.kudu.api.external.email.template.PasswordResetEmail;
+import com.clevel.kudu.api.model.SystemConfig;
 import com.clevel.kudu.api.model.db.master.Rate;
 import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
 import com.clevel.kudu.api.model.db.relation.RelRoleScreen;
 import com.clevel.kudu.api.model.db.security.Role;
+import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.model.db.working.User;
+import com.clevel.kudu.api.model.db.working.UserPerformance;
 import com.clevel.kudu.api.model.db.working.UserTimeSheet;
 import com.clevel.kudu.api.rest.mapper.RoleMapper;
 import com.clevel.kudu.api.rest.mapper.UserMapper;
+import com.clevel.kudu.api.rest.mapper.UserPerformanceMapper;
 import com.clevel.kudu.api.rest.mapper.UserTSMapper;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.EncryptUtil;
@@ -24,12 +26,14 @@ import com.clevel.kudu.dto.security.RoleDTO;
 import com.clevel.kudu.dto.security.RoleFunctionRequest;
 import com.clevel.kudu.dto.security.RoleScreenRequest;
 import com.clevel.kudu.dto.working.UserDTO;
+import com.clevel.kudu.dto.working.UserPerformanceDTO;
 import com.clevel.kudu.dto.working.UserTimeSheetDTO;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
 import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.model.Screen;
 import com.clevel.kudu.util.DateTimeUtil;
+import com.clevel.kudu.util.LookupUtil;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +41,7 @@ import org.slf4j.Logger;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Stateless
@@ -47,6 +52,10 @@ public class SecurityManager {
     private Application app;
     @Inject
     private UserDAO userDAO;
+    @Inject
+    private UserPerformanceDAO userPerformanceDAO;
+    @Inject
+    private PerformanceYearDAO performanceYearDAO;
     @Inject
     private RelRoleScreenDAO relRoleScreenDAO;
     @Inject
@@ -63,6 +72,8 @@ public class SecurityManager {
     private RoleMapper roleMapper;
     @Inject
     private UserTSMapper userTSMapper;
+    @Inject
+    private UserPerformanceMapper userPerformanceMapper;
 
     @Inject
     PasswordResetEmail passwordResetEmail;
@@ -424,7 +435,46 @@ public class SecurityManager {
         userDAO.findById(userId);
         User user = userDAO.findById(id);
 
-        return userMapper.toDTO(user);
+        UserDTO userDTO = userMapper.toDTO(user);
+
+        List<UserPerformance> userPerformanceList = userPerformanceDAO.findByUserId(id);
+        if (userPerformanceList == null) {
+            /*For users created before 2020.05.27*/
+            userPerformanceList = createUserPerformance(userId, id);
+        }
+        userDTO.setUserPerformanceList(userPerformanceMapper.toDTO(userPerformanceList.stream()));
+        log.debug("userPerformanceList = {}", userDTO.getUserPerformanceList());
+
+        return userDTO;
+    }
+
+    private List<UserPerformance> createUserPerformance(long userId, long timeSheetUserId) throws RecordNotFoundException {
+        log.debug("createUserPerformance(userId:{},timeSheetUserId:{})", userId, timeSheetUserId);
+        List<UserPerformance> userPerformanceList = new ArrayList<>();
+
+        User user = userDAO.findById(userId);
+        Date now = DateTimeUtil.now();
+        BigDecimal defaultTargetUtilization = new BigDecimal(app.getConfig(SystemConfig.DEFAULT_TARGET_UTILIZATION));
+
+        List<PerformanceYear> performanceYearList = performanceYearDAO.findAll();
+        UserPerformance userPerformance;
+        for (PerformanceYear performanceYear : performanceYearList) {
+            userPerformance = new UserPerformance();
+            userPerformance.setUserId(timeSheetUserId);
+            userPerformance.setPerformanceYear(performanceYear);
+            userPerformance.setTargetUtilization(defaultTargetUtilization);
+
+            userPerformance.setCreateBy(user);
+            userPerformance.setCreateDate(now);
+            userPerformance.setModifyBy(user);
+            userPerformance.setModifyDate(now);
+
+            userPerformanceList.add(userPerformance);
+        }
+
+        userPerformanceDAO.persist(userPerformanceList);
+
+        return userPerformanceList;
     }
 
     public void updateUserInfo(long userId, UserDTO userDTO) throws RecordNotFoundException {
@@ -455,6 +505,28 @@ public class SecurityManager {
 
 //        log.debug("AFTER: {}",after);
         userDAO.persist(after);
+
+        updateUserPerformance(user, userDTO.getId(), userDTO.getUserPerformanceList());
+    }
+
+    private void updateUserPerformance(User user, long timeSheetUserId, List<UserPerformanceDTO> userPerformanceDTOList) {
+        log.debug("updateUserPerformance.userPerformanceDTOList = {}", userPerformanceDTOList);
+        if (userPerformanceDTOList == null || userPerformanceDTOList.size() == 0) {
+            return;
+        }
+
+        Date now = DateTimeUtil.now();
+        List<UserPerformance> userPerformanceList = userPerformanceDAO.findByUserId(timeSheetUserId);
+        UserPerformanceDTO userPerformanceDTO;
+        for (UserPerformance userPerformance : userPerformanceList) {
+            userPerformanceDTO = LookupUtil.getObjById(userPerformanceDTOList,userPerformance.getId());
+            userPerformance.setTargetUtilization(userPerformanceDTO.getTargetUtilization());
+
+            userPerformance.setModifyBy(user);
+            userPerformance.setModifyDate(now);
+        }
+
+        userPerformanceDAO.persist(userPerformanceList);
     }
 
     public List<UserTimeSheetDTO> getUserViewTS(long userId, long id) throws RecordNotFoundException {
@@ -468,7 +540,7 @@ public class SecurityManager {
     }
 
     public void updateUserViewTS(long userId, long ownerUserId, List<UserTimeSheetDTO> userTimeSheetDTOList) throws RecordNotFoundException {
-        log.debug("updateUserViewTS. (userId: {}, ownerUserId: {}, userTimeSheetDTOList: {})",userId,ownerUserId,userTimeSheetDTOList);
+        log.debug("updateUserViewTS. (userId: {}, ownerUserId: {}, userTimeSheetDTOList: {})", userId, ownerUserId, userTimeSheetDTOList);
         // validate user
         userDAO.findById(userId);
 
@@ -483,14 +555,14 @@ public class SecurityManager {
         List<UserTimeSheet> userTimeSheetList = new ArrayList<>();
         UserTimeSheet userTimeSheet;
 
-        for (UserTimeSheetDTO u:userTimeSheetDTOList) {
+        for (UserTimeSheetDTO u : userTimeSheetDTOList) {
             userTimeSheet = new UserTimeSheet();
             userTimeSheet.setUser(user);
             userTimeSheet.setTimeSheetUser(userDAO.findById(u.getTimeSheetUser().getId()));
 
             userTimeSheetList.add(userTimeSheet);
         }
-        log.debug("userTimeSheetList: {}",userTimeSheetList);
+        log.debug("userTimeSheetList: {}", userTimeSheetList);
 
         userTimeSheetDAO.persist(userTimeSheetList);
     }

@@ -27,6 +27,8 @@ public class UserDTO implements LookupList {
     private RoleDTO role;
     private RecordStatus status;
 
+    private List<UserPerformanceDTO> userPerformanceList;
+
     private long version;
 
     public UserDTO() {
@@ -128,6 +130,14 @@ public class UserDTO implements LookupList {
         this.status = status;
     }
 
+    public List<UserPerformanceDTO> getUserPerformanceList() {
+        return userPerformanceList;
+    }
+
+    public void setUserPerformanceList(List<UserPerformanceDTO> userPerformanceList) {
+        this.userPerformanceList = userPerformanceList;
+    }
+
     public long getVersion() {
         return version;
     }
@@ -158,19 +168,22 @@ public class UserDTO implements LookupList {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("id", id)
                 .append("name", name)
                 .append("lastName", lastName)
                 .append("email", email)
                 .append("phoneNumber", phoneNumber)
                 .append("loginName", loginName)
+                .append("password", password)
                 .append("lastLoginDate", lastLoginDate)
                 .append("tsStartDate", tsStartDate)
                 .append("rate", rate)
                 .append("role", role)
                 .append("status", status)
+                .append("userPerformanceList", userPerformanceList)
                 .append("version", version)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

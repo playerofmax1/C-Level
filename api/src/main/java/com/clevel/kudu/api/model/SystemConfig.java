@@ -13,6 +13,8 @@ public enum SystemConfig {
     TS_CUTOFF_DATE("app.ts.cutoff.date"),
 
     PF_YEAR("app.pf.year"),
+
+    DEFAULT_TARGET_UTILIZATION("app.default.target.utilization"),
     ;
 
     private String value;

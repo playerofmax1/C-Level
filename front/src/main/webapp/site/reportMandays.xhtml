@@ -102,11 +102,31 @@
                                             <p:tooltip for="nextYear" value="Next Year" position="right"/>
                                         </div>
                                         <div class="ui-g-3 alignRight">
-                                            <p:outputLabel value="Target Utilization: #{(rptMandaysCtl.userMandaysDTOList.size()>0)?rptMandaysCtl.userMandaysDTOList.get(0).targetPercentCU * 100.00:0.00}%"/><br/>
+                                            <p:outputLabel id="targetUtilization" value="Target Utilization: #{rptMandaysCtl.targetUtilization}%" styleClass="cursor-pointer"/><br/>
+                                            <p:overlayPanel id="targetUtilizationPanel" widgetVar="targetUtilizationPanel" for="targetUtilization"
+                                                            showEffect="blind" hideEffect="blind" appendToBody="false"
+                                                            at="right bottom" my="right top">
+                                                <div class="ui-inputgroup">
+                                                    <p:inputNumber id="editTargetUtilization"
+                                                                   emptyValue="0"
+                                                                   minValue="0"
+                                                                   maxValue="100"
+                                                                   value="#{rptMandaysCtl.targetUtilization}"
+                                                                   symbol="%"
+                                                                   symbolPosition="s"
+                                                                   styleClass="alignRight"/>
+                                                    <p:commandButton icon="fa fa-save"
+                                                                     actionListener="#{rptMandaysCtl.onSaveTargetUtilization}"
+                                                                     on-complete="if(args.isActionSuccess)PF('targetUtilizationPanel').hide();"
+                                                                     update="mainForm,yearForm"/>
+                                                </div>
+                                                <p:focus for="editTargetUtilization"/>
+                                                <sub>Type number in percent and click save</sub>
+                                            </p:overlayPanel>
                                             <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/><br/>
                                             <p:outputLabel value="Final %AMD: #{rptMandaysCtl.utilization.percentAMD} %"/><br/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind">
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind" at="right bottom" my="right top">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Year Start:" style="width:20em"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.startDate}" style="width:12em">

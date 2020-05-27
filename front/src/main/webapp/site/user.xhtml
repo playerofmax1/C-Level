@@ -89,8 +89,8 @@
 
                             <p:column headerText="Actions" style="width: 185px">
                                 <p:commandButton id="editBtn" value="E" action="#{userCtl.onPreUpdateUser}"
-                                                 update="userDlgForm"
-                                                 onsuccess="PF('userDlg').show();">
+                                                 update="userDlgForm,mainForm"
+                                                 oncomplete="PF('userDlg').show();">
                                     <f:setPropertyActionListener value="#{user.id}"
                                                                  target="#{userCtl.selectedUserId}"/>
                                 </p:commandButton>
@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" resizable="false">
+        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="60%" resizable="false">
             <h:form id="userDlgForm">
                 <p:panelGrid columns="4" styleClass="no-border">
                     <h:outputLabel value="Name" styleClass="require"/>
@@ -177,7 +177,38 @@
 
                 </p:panelGrid>
 
+                <p:dataTable var="performanceItem"
+                             value="#{userCtl.newUser.userPerformanceList}"
+                             editable="true"
+                             editMode="cell"
+                             sortBy="#{performanceItem.performanceYear.year}"
+                             rows="5"
+                             paginator="true"
+                             paginatorPosition="bottom"
+                             rendered="#{userCtl.editMode}"
+                             style="font-size: 12px">
 
+                    <p:column headerText="Target Utilization">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <p:outputLabel value="Year #{performanceItem.performanceYear.year}: "/>
+                                <p:outputLabel value="#{performanceItem.targetUtilization}%"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:outputLabel value="Year #{performanceItem.performanceYear.year}: "/>
+                                <p:inputNumber id="modelInput"
+                                               emptyValue="0"
+                                               minValue="0"
+                                               maxValue="100"
+                                               value="#{performanceItem.targetUtilization}"
+                                               symbol="%"
+                                               symbolPosition="s"
+                                               styleClass="alignRight"/>
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                </p:dataTable>
 
                 <hr/>
 

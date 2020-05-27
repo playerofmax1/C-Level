@@ -12,12 +12,15 @@ public abstract class AbstractAuditEntity extends AbstractEntity {
     @Column(name = "createDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "createBy", nullable = false)
     private User createBy;
+
     @Column(name = "modifyDate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifyDate;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "modifyBy", nullable = false)
     private User modifyBy;

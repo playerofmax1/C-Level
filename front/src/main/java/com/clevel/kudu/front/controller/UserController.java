@@ -10,8 +10,6 @@ import com.clevel.kudu.dto.working.UserDTO;
 import com.clevel.kudu.dto.working.UserTimeSheetDTO;
 import com.clevel.kudu.dto.working.UserTimeSheetRequest;
 import com.clevel.kudu.front.validation.Validator;
-import com.clevel.kudu.model.Function;
-import com.clevel.kudu.model.Screen;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
 import org.primefaces.PrimeFaces;
@@ -24,7 +22,6 @@ import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.clevel.kudu.util.LookupUtil.getObjById;
@@ -189,7 +186,7 @@ public class UserController extends AbstractController {
             newUser = serviceResponse.getResult();
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            FacesUtil.actionFailed("wrong response from server!");
         }
     }
 
@@ -197,6 +194,7 @@ public class UserController extends AbstractController {
         log.debug("onPreUpdateUser. (selectedUserId: {})", selectedUserId);
 
         loadUserInfo();
+
         if (newUser.getRole() != null) {
             selectedRoleId = newUser.getRole().getId();
         } else {
@@ -211,6 +209,8 @@ public class UserController extends AbstractController {
 
         editMode = true;
         validator = new Validator();
+
+        FacesUtil.actionSuccess();
     }
 
     public void onUpdateUser() {

@@ -26,12 +26,14 @@
         <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
         <h:outputStylesheet library="css" name="style.css" target="head"/>
         <style>
-            .noProjectLabel {
-                color: silver;
+            .noProjectLabel,
+            .nonPlanLabel {
+                color: #030303;
             }
 
-            .nonPlanLabel {
-                color: red;
+            .plannedLabel {
+                color: green;
+                font-weight: 700;
             }
         </style>
         <script>
@@ -178,12 +180,12 @@
 
                             </f:facet>
 
-                            <p:column headerText="Project" footerText="TOTAL#{rptMandaysCtl.br}(exclude gray)" sortBy="#{mandays.project.code}" styleClass="alignCenter">
+                            <p:column headerText="Project" footerText="#{rptMandaysCtl.totalLabel}" sortBy="#{mandays.project.code}" styleClass="alignCenter">
                                 <h:outputText value="#{(mandays.project == null)?'A00X':mandays.project.code}" styleClass="#{mandays.styleClass}"/>
                             </p:column>
 
                             <p:column headerText="Plan" sortBy="#{mandays.planFlag}" styleClass="alignCenter">
-                                <h:outputText value="#{mandays.planFlag}" styleClass="#{mandays.styleClass}"/>
+                                <h:outputText value="#{mandays.planFlag?'Yes':'No'}" styleClass="#{mandays.styleClass}"/>
                             </p:column>
 
                             <p:column headerText="PMD" footerText="#{rptMandaysCtl.totalUserMandays.PMD}" sortBy="#{mandays.PMD}" styleClass="alignRight">

@@ -37,6 +37,7 @@ public class ProjectResource implements ProjectService {
 
         try {
             ProjectDTO projectDTO = projectManager.createNewProject(request.getUserId(), dto);
+
             response.setResult(projectDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException | ValidationException e1) {

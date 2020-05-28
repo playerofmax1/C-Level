@@ -19,9 +19,9 @@ import java.util.Properties;
 
 public class EmailManager {
     @Inject
-    Logger log;
+    private Logger log;
     @Inject
-    Application app;
+    protected Application app;
 
     private static final String EMAIL_ENCODE = "UTF-8";
 
@@ -37,28 +37,39 @@ public class EmailManager {
             throw new EmailException("invalid address!");
         }
 
-        Properties p = new Properties();
-        p.put("mail.smtp.host", app.getConfig(SystemConfig.EMAIL_SERVER));
-        p.put("mail.smtp.port", app.getConfig(SystemConfig.EMAIL_PORT));
-        p.put("mail.smtp.auth", app.getConfig(SystemConfig.EMAIL_SMTP_AUTH));
-        p.put("mail.transport.protocol", "smtp");
-        p.put("mail.mime.encodefilename", "true");
-        p.put("mail.smtp.starttls.enable", app.getConfig(SystemConfig.EMAIL_TLS_ENABLE));
+        Properties props = new Properties();
+        props.put("mail.smtp.host", app.getConfig(SystemConfig.EMAIL_SERVER));
+        props.put("mail.smtp.port", app.getConfig(SystemConfig.EMAIL_PORT));
+        props.put("mail.smtp.auth", app.getConfig(SystemConfig.EMAIL_SMTP_AUTH));
+        /*props.put("mail.transport.protocol", "smtp");*/
+        /*props.put("mail.mime.encodefilename", "true");*/
+        props.put("mail.smtp.starttls.enable", app.getConfig(SystemConfig.EMAIL_TLS_ENABLE));
+        log.debug("SMTP-Props: {}", props);
 
         try {
-            Session session = Session.getInstance(p, new EmailAuthenticator(app.getConfig(SystemConfig.EMAIL_USERNAME), app.getConfig(SystemConfig.EMAIL_PASSWORD)));
-            MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(app.getConfig(SystemConfig.EMAIL_USERNAME), app.getConfig(SystemConfig.EMAIL_SENDER_NAME), EMAIL_ENCODE));
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddress, false));
-            if (ccAddress != null && !"".equalsIgnoreCase(ccAddress.trim())) {
-                msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccAddress, false));
+            Session session = Session.getInstance(props, new EmailAuthenticator(app.getConfig(SystemConfig.EMAIL_USERNAME), app.getConfig(SystemConfig.EMAIL_PASSWORD)));
+            MimeMessage mimeMessage = new MimeMessage(session);
+
+            mimeMessage.setSentDate(DateTimeUtil.now());
+            mimeMessage.setFrom(new InternetAddress(app.getConfig(SystemConfig.EMAIL_USERNAME), app.getConfig(SystemConfig.EMAIL_SENDER_NAME), EMAIL_ENCODE));
+
+            InternetAddress[] sendTo = InternetAddress.parse(removeQuotes(toAddress), false);
+            mimeMessage.setRecipients(Message.RecipientType.TO, sendTo);
+
+            if (ccAddress != null && !ccAddress.isEmpty()) {
+                InternetAddress[] sendToCC = InternetAddress.parse(removeQuotes(ccAddress), false);
+                mimeMessage.setRecipients(Message.RecipientType.CC, sendToCC);
+                mimeMessage.setReplyTo(sendToCC);
+                log.debug("email.CC={}", sendToCC);
             }
 
-            msg.setSubject(subject, EMAIL_ENCODE);
-            msg.setContent(replaceTemplate(valuesMap), "text/html; charset=" + EMAIL_ENCODE);
-            msg.setSentDate(DateTimeUtil.now());
+            mimeMessage.setSubject(subject, EMAIL_ENCODE);
+            replaceLineBreaks(valuesMap);
+            mimeMessage.setContent(replaceTemplate(valuesMap), "text/html; charset=" + EMAIL_ENCODE);
 
-            Transport.send(msg);
+            Transport.send(mimeMessage);
+            log.debug("message already sent.");
+
         } catch (AuthenticationFailedException e) {
             log.error("", e);
             throw new EmailException("authentication failed!", e);
@@ -72,6 +83,18 @@ public class EmailManager {
             log.error("Email Exception!", e);
             throw new EmailException("send mail failed!", e);
         }
+    }
+
+    private void replaceLineBreaks(Map<String, String> valuesMap) {
+        String value;
+        for (String key : valuesMap.keySet()) {
+            value = replaceLineBreaks(valuesMap.get(key), "<br />");
+            valuesMap.put(key, value);
+        }
+    }
+
+    private String replaceLineBreaks(String source, String replacement) {
+        return source.replaceAll("\\n", replacement);
     }
 
     private String readTemplateFile(String templateFile) {
@@ -110,7 +133,11 @@ public class EmailManager {
 
     protected String replaceTemplate(Map<String, String> valuesMap) {
         String messageBody = readTemplateFile(emailTemplate);
-        return StringSubstitutor.replace(messageBody,valuesMap);
+        return StringSubstitutor.replace(messageBody, valuesMap);
+    }
+
+    protected String removeQuotes(String to) {
+        return to.replaceAll("[\"]", "");
     }
 
 }

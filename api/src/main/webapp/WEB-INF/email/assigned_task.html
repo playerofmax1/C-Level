@@ -1,0 +1,95 @@
+<!doctype html>
+<html style='font-size:12px !important'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>assigned_task.readme.tohtml</title>
+    <style type='text/css'>
+        blockquote {
+            margin-left: 0px;
+            border-left: 4px solid #dfe2e5;
+            padding: 0 15px;
+            color: #777777;
+        }
+
+        blockquote blockquote {
+            padding-right: 0;
+        }
+
+        table {
+            padding: 0;
+            word-break: initial;
+        }
+
+        table tr {
+            border-top: 1px solid #dfe2e5;
+            margin: 0;
+            padding: 0;
+        }
+
+        table tr:nth-child(2n),
+        thead {
+            background-color: #f8f8f8;
+        }
+
+        table tr th {
+            font-weight: bold;
+            border: 1px solid #dfe2e5;
+            border-bottom: 0;
+            margin: 0;
+            padding: 6px 13px;
+        }
+
+        table tr td {
+            border: 1px solid #dfe2e5;
+            margin: 0;
+            padding: 6px 13px;
+        }
+
+        table tr th:first-child,
+        table tr td:first-child {
+            margin-top: 0;
+        }
+
+        table tr th:last-child,
+        table tr td:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class='typora-export os-windows'>
+<p><strong><em><span>เรียนคุณ ${USER_NAME}</span></em></strong></p>
+<p>&nbsp;</p>
+<p><span>ยินดีด้วย! คุณได้รับ Assigned Task ใหม่ ตามรายละเอียดดังต่อไปนี้</span></p>
+<table>
+    <thead>
+    <tr>
+        <th><span>หัวข้อ</span></th>
+        <th><span>รายละเอียด</span></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><span>Project</span></td>
+        <td><span>[${PROJECT_CODE}] ${PROJECT_NAME}</span></td>
+    </tr>
+    <tr>
+        <td><span>Task</span></td>
+        <td><span>[${TASK_CODE}] ${TASK_NAME}</span></td>
+    </tr>
+    <tr>
+        <td><span>Description</span></td>
+        <td><span>${TASK_DESCRIPTION}</span></td>
+    </tr>
+    <tr>
+        <td><span>Plan Mandays</span></td>
+        <td><span>${PLAN_MANDAYS} Mandays</span><br><sup><span>( 1manday = 8hours )</span></sup></td>
+    </tr>
+    </tbody>
+</table>
+<p>&nbsp;</p>
+<p><strong><em><span>Best Regards,</span></em></strong></p>
+<p><span>Kudu Administrator</span></p>
+<p><strong><span>The C-LEVEL Co., Ltd.</span></strong></p>
+</body>
+</html>

@@ -180,56 +180,64 @@
 
         <p:dialog header="Add/Edit Project Task" widgetVar="projectTaskDlg" modal="true" resizable="false">
             <h:form id="projectTaskDlgForm">
-                <p:panelGrid columns="4" styleClass="no-border no-margin">
+                <p:outputPanel id="projectTaskDlg">
+                    <p:panelGrid columns="4" styleClass="no-border no-margin">
 
-                    <h:outputLabel value="Task:" styleClass="require"/>
-                    <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:100%"
-                                     disabled="#{managePrjCtl.editMode}">
-                        <f:selectItems value="#{managePrjCtl.taskList}" var="task"
-                                       itemLabel="[#{task.code}] #{task.name}"
-                                       itemValue="#{task.id}"/>
-                        <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeTask}"/>
-                    </p:selectOneMenu>
+                        <h:outputLabel value="Task:" styleClass="require"/>
+                        <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:100%"
+                                         disabled="#{managePrjCtl.editMode}">
+                            <f:selectItems value="#{managePrjCtl.taskList}" var="task"
+                                           itemLabel="[#{task.code}] #{task.name}"
+                                           itemValue="#{task.id}"/>
+                            <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeTask}"/>
+                        </p:selectOneMenu>
 
-                    <h:outputLabel value="User:" styleClass="require"/>
-                    <p:selectOneMenu value="#{managePrjCtl.selectedUserId}" style="width:250px">
-                        <f:selectItems value="#{managePrjCtl.userList}" var="user" itemLabel="#{user.name} #{user.lastName}"
-                                       itemValue="#{user.id}"/>
-                        <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeUser}"/>
-                    </p:selectOneMenu>
+                        <h:outputLabel value="User:" styleClass="require"/>
+                        <p:selectOneMenu value="#{managePrjCtl.selectedUserId}" style="width:250px">
+                            <f:selectItems value="#{managePrjCtl.userList}" var="user" itemLabel="#{user.name} #{user.lastName}"
+                                           itemValue="#{user.id}"/>
+                            <p:ajax event="change" update="projectTaskDlgForm" listener="#{managePrjCtl.onChangeUser}"/>
+                        </p:selectOneMenu>
 
-                    <h:outputLabel value="Plan MD:" styleClass="require"/>
-                    <p:outputPanel styleClass="no-padding no-margin">
-                        <div class="ui-inputgroup">
-                            <p:inputNumber value="#{managePrjCtl.newProjectTask.planMDDuration}"
-                                           converter="durationManDayConverter"
-                                           emptyValue="zero"
-                                           disabled="#{managePrjCtl.editMode}"/>
-                            <span class="ui-inputgroup-addon">mandays</span>
-                        </div>
-                    </p:outputPanel>
+                        <h:outputLabel value="Plan MD:" styleClass="require"/>
+                        <p:outputPanel styleClass="no-padding no-margin">
+                            <div class="ui-inputgroup">
+                                <p:inputNumber value="#{managePrjCtl.newProjectTask.planMDDuration}"
+                                               converter="durationManDayConverter"
+                                               emptyValue="zero"
+                                               disabled="#{managePrjCtl.editMode}"/>
+                                <span class="ui-inputgroup-addon">mandays</span>
+                            </div>
+                        </p:outputPanel>
 
-                    <h:outputLabel value="AMD Calculation"/>
-                    <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"/>
-                </p:panelGrid>
+                        <h:outputLabel value="AMD Calculation"/>
+                        <p:selectBooleanButton id="value1" value="#{managePrjCtl.newProjectTask.amdCalculation}" onLabel="Yes" offLabel="No"/>
+                    </p:panelGrid>
 
-                <br/>
-                <h:outputLabel value="Description:"/>
-                <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}"
-                                 style="width: 100%"
-                                 autoResize="false"/>
+                    <br/>
+                    <h:outputLabel value="Description:"/>
+                    <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}"
+                                     style="width: 100%"
+                                     autoResize="false"/>
 
-                <hr/>
+                    <hr/>
 
-                <div class="alignRight">
-                    <p:commandButton value="Save" action="#{managePrjCtl.onAddNew}"
-                                     rendered="#{managePrjCtl.editMode==false}"
-                                     update="mainForm,projectTaskDlgForm"/>
-                    <p:commandButton value="Update" action="#{managePrjCtl.onUpdate(newProjectTask)}"
-                                     rendered="#{managePrjCtl.editMode==true}"
-                                     update="mainForm,projectTaskDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('projectTaskDlg').hide()"/>
-                </div>
+                    <div class="alignRight">
+                        <p:commandButton id="addNew" value="Save" action="#{managePrjCtl.onAddNew}"
+                                         rendered="#{managePrjCtl.editMode==false}"
+                                         update="mainForm,projectTaskDlgForm"
+                                         onclick="PF('blockProjectTaskDlgButtons').show();"/>
+                        <p:commandButton value="Update" action="#{managePrjCtl.onUpdate(newProjectTask)}"
+                                         rendered="#{managePrjCtl.editMode==true}"
+                                         update="mainForm,projectTaskDlgForm"/>
+                        <p:commandButton value="Cancel" onclick="PF('projectTaskDlg').hide()"/>
+                    </div>
+                </p:outputPanel>
+
+                <p:blockUI block="projectTaskDlg" widgetVar="blockProjectTaskDlgButtons">
+                    <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                </p:blockUI>
+
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>
         </p:dialog>

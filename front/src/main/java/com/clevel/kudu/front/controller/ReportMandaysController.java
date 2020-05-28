@@ -247,6 +247,10 @@ public class ReportMandaysController extends AbstractController {
         return br;
     }
 
+    public String getTotalLabel() {
+        return "TOTAL<br/><sup>(exclude A00X)</sup>";
+    }
+
     public ExcelOptions getExportExcelOptions() {
         return new ExcelOptions("BOLD", "#FFFFFF", "#6666FF", "10", "", "#000000", "11");
     }

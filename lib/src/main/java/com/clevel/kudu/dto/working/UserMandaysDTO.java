@@ -173,10 +173,10 @@ public class UserMandaysDTO {
         if (styleClass == null) {
             if (project == null) {
                 styleClass = "noProjectLabel";
-            } else if (!planFlag) {
-                styleClass = "nonPlanLabel";
+            } else if (planFlag) {
+                styleClass = "plannedLabel";
             } else {
-                styleClass = "";
+                styleClass = "nonPlanLabel";
             }
         }
         return styleClass;

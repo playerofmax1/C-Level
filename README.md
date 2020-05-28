@@ -162,10 +162,18 @@ The version.property is used in the front-end to show full version text on the b
 | Working Day  | Working Day of a month is <days-in-a-month> - <weekends> - <holidays-in-a-month>, working day is used in %CU calculation. |
 | Screen       | Web pages that already listed in the Left Side Menu to show for a user filtered by Screen Permission (Role-Screen)<br />All screens need a defined code in a Screen(.java) class. |
 | Function     | Specific Function defined in a Function(.java) class and used in many screens that refer to the function description (Role-Function) |
+| Manday       | 1 mandays = 8 hours                                          |
+| BMD          | Billable Mandays, entered mandays from Project Management screen. |
+| PMD          | Plan Mandays, planned mandays from Project Task screen.      |
+| AMD          | Actual Mandays, changed mandays from Time Sheet screen.      |
+| RMD          | Remaining Mandays = BMD - PMD                                |
+| %AMD         | (PMD - AMD) / PMD                                            |
+| Weight       | %PMD / Net Workdays x %AMD                                   |
+| Final %AMD   | Average Weight = sum(Weight) / recordCount                   |
 
 
 
-### Table Notes
+### Database Table Notes
 
 | Table Name    | Notes                                                        |
 | ------------- | ------------------------------------------------------------ |
@@ -213,6 +221,39 @@ The version.property is used in the front-end to show full version text on the b
 | date                         | **Basic check Time Zone on the Server**:<br /><br />[root@localhost ~]# date<br/>Fri May 22 12:18:20 +07 2020 |
 
 
+
+### Issue Priority for Fixer
+
+>   @2020.05.27
+>   Prazit: เรียงลำดับทำก่อนหลังตามนี้ไหมครับ bug, usability problem, performance problem, feature, enhancement
+>   Phongsathorn: bug ก่อน ใช้ครับ แต่อันอื่น น่าจะดูตาม priority ประกอบด้วยนะครับ
+
+| Column   | 1=first to see |
+| -------- | -------------- |
+| State    | 1              |
+| Priority | 2              |
+| Type     | 3              |
+
+| State       | 1=first to do |
+| ----------- | ------------- |
+| IN PROGRESS | 1             |
+| REOPEN      | 2             |
+| OPEN        | 3             |
+| SUBMITTED   | 4             |
+
+| Priority | 1=first to do |
+| -------- | ------------- |
+| High     | 1             |
+| Medium   | 2             |
+| Low      | 3             |
+
+| Type                | 1=first to do |
+| ------------------- | ------------- |
+| Bug                 | 1             |
+| Usability Probelm   | 2             |
+| Performance Problem | 3             |
+| Feature             | 4             |
+| Enhancement         | 5             |
 
 
 

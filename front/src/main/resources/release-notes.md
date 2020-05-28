@@ -13,6 +13,7 @@ Fixed: KUDU-27: Need UI to edit Target Utilization
 +   Save target utilization on TimeSheet Summary Screen.
 +   Edit target utilization on User Screen.
 
+SQL: V5__modify_rpt_mandays.sql
 More:
 +   Improve layout of Manage Project Screen.
 
@@ -50,8 +51,8 @@ SQL: V3__add_timesheet_month_locker.sql
 
 ## Kudu (Alpha) Version 1.2.0
 
-Fixed: KUDU-6: User Management after click V button this screen always show unexpected user list until refresh/reopen this screen.
-Fixed: KUDU-7: 
+Fixed: KUDU-6: User Management: after click V button this screen always show unexpected user list until refresh/reopen this screen.
+Fixed: KUDU-7: User Management: incorrect display list
 Fixed: KUDU-8: Export timesheet to excel file (current month only).
 Fixed: KUDU-9: Timesheet screen: need to show full text on column description.
 Fixed: KUDU-14:

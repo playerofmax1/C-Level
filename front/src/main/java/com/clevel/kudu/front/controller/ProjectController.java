@@ -9,7 +9,6 @@ import com.clevel.kudu.dto.working.SearchRequest;
 import com.clevel.kudu.front.validation.Validator;
 import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.util.FacesUtil;
-import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -151,21 +150,23 @@ public class ProjectController extends AbstractController {
             log.debug("response: {}", serviceResponse);
             switch (serviceResponse.getApiResponse()) {
                 case SUCCESS:
-                    FacesUtil.addInfo(serviceResponse.getApiResponse().description());
+                    FacesUtil.actionSuccess(serviceResponse.getApiResponse().description());
                     break;
+
                 case FAILED:
                 case EXCEPTION:
-                    FacesUtil.addError(serviceResponse.getMessage());
-                    break;
+                    FacesUtil.actionFailed(serviceResponse.getMessage());
+                    return;
             }
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            FacesUtil.actionFailed("wrong response from server!");
+            return;
         }
 
         loadProjectList();
 
-        PrimeFaces.current().executeScript("PF('projectDlg').hide();");
+        FacesUtil.runClientScript("PF('projectDlg').hide();");
     }
 
     private void loadProjectInfo() {
@@ -232,7 +233,7 @@ public class ProjectController extends AbstractController {
 
         loadProjectList();
 
-        PrimeFaces.current().executeScript("PF('projectDlg').hide();");
+        FacesUtil.runClientScript("PF('projectDlg').hide();");
     }
 
     public void onPreDeleteProject() {

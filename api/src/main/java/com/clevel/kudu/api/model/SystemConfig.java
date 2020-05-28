@@ -9,6 +9,8 @@ public enum SystemConfig {
     EMAIL_PASSWORD("app.external.mail.password"),
     EMAIL_SENDER_NAME("app.external.mail.sender.name"),
 
+    AUTO_EMAIL_CC("app.auto.email.cc"),
+
     TS_CUTOFF_DATE_ENABLE("app.ts.cutoff.date.enable"),
     TS_CUTOFF_DATE("app.ts.cutoff.date"),
 

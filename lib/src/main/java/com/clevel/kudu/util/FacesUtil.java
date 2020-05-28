@@ -1,5 +1,6 @@
 package com.clevel.kudu.util;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +11,6 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import javax.faces.context.FacesContext;
-
 import java.io.Serializable;
 
 public class FacesUtil implements Serializable {
@@ -72,6 +70,10 @@ public class FacesUtil implements Serializable {
 
     public static FacesContext getFactContext() {
         return FacesContext.getCurrentInstance();
+    }
+
+    public static void runClientScript(String javaScript) {
+        PrimeFaces.current().executeScript(javaScript);
     }
 
     public static void redirect(String uriPath) {

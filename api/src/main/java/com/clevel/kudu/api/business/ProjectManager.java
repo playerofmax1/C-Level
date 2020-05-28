@@ -1,8 +1,10 @@
 package com.clevel.kudu.api.business;
 
 import com.clevel.kudu.api.dao.working.*;
+import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
+import com.clevel.kudu.api.external.email.template.AssignedTaskEmail;
 import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.api.rest.mapper.ProjectMapper;
 import com.clevel.kudu.api.rest.mapper.ProjectTaskExtMapper;
@@ -49,6 +51,8 @@ public class ProjectManager {
     private CustomerDAO customerDAO;
     @Inject
     private TimeSheetDAO timeSheetDAO;
+    @Inject
+    private AssignedTaskEmail assignedTaskEmail;
 
     @Inject
     public ProjectManager() {
@@ -193,7 +197,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId, user).stream());
     }
 
-    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException {
+    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException, EmailException {
         log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
@@ -223,6 +227,8 @@ public class ProjectManager {
         newProjectTask.setStatus(RecordStatus.ACTIVE);
 
         newProjectTask = projectTaskDAO.persist(newProjectTask);
+
+        assignedTaskEmail.sendMail(newProjectTask);
 
         return projectTaskMapper.toDTO(newProjectTask);
     }

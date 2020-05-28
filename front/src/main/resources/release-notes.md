@@ -13,6 +13,12 @@ Fixed: KUDU-27: Need UI to edit Target Utilization
 +   Save target utilization on TimeSheet Summary Screen.
 +   Edit target utilization on User Screen.
 
+Fixed: KUDU-26: REOPEN
++ Column "Plan" ขอเปลี่ยนเป็น คำว่า YES (จาก True) และ NO (จาก False)
++ (plannedLabel) สีที่ใช้แสดงราย Plan = YES ให้แสดงเป็นสีเขียว หรือ **น้ำเงิน**
++ (nonPlanLabel) สีที่ใช้แสดงราย Plan = NO ขอเปลี่ยนจาก สีแดง (สีแดง สื่อให้เข้าใจผิด ว่า ทำอะไรผิด หรือไม่ครับ) ขอเปลี่ยนเป็น **ดำ** หรือ เทาเข้ม ก็พอ เพื่อแสดงว่า ปกติ แต่ไม่ คิด Final AMD
++ (noProjectLabel) สีที่ใช้แสดงราย Plan = NO และ PID = A00X ให้เปลี่ยนจาก สีแดง เป็น **ดำ** หรือ เทาเข้ม
+
 SQL: V5__modify_rpt_mandays.sql
 More:
 +   Improve layout of Manage Project Screen.

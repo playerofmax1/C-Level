@@ -17,6 +17,7 @@
                 <li id="timesheet"><h:commandLink action="/site/timesheet.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0007')}">Timesheet</h:commandLink></li>
                 <li id="mandays"><h:commandLink action="/site/reportMandays.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0009')}">Timesheet Summary</h:commandLink></li>
                 <li id="holiday"><h:commandLink action="/site/holiday.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0008')}">Holiday</h:commandLink></li>
+                <li id="settings"><h:commandLink action="/site/adminSettings.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0010')}">Admin Settings</h:commandLink></li>
             </ul>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </h:form>

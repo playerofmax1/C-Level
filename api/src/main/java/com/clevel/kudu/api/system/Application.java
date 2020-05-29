@@ -56,4 +56,12 @@ public class Application {
     public String getConfig(SystemConfig config) {
         return configMap.get(config);
     }
+
+    public String getConfig(SystemConfig config, String defaultValue) {
+        String value = configMap.get(config);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
+    }
 }

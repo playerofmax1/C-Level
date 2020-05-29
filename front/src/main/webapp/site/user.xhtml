@@ -98,7 +98,7 @@
 
                                 <p:commandButton id="resetPwdBtn" value="RP" action="#{userCtl.onPreResetPassword}"
                                                  update="resetDlgForm"
-                                                 onsuccess="PF('resetDlg').show();">
+                                                 onsuccess="PF('resetDlg').show();PF('resetDlg').initPosition();">
                                     <f:setPropertyActionListener value="#{user.id}"
                                                                  target="#{userCtl.selectedUserId}"/>
                                 </p:commandButton>
@@ -225,26 +225,33 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Reset Password" widgetVar="resetDlg" modal="true" width="50%" resizable="false">
-            <h:form id="resetDlgForm">
-                <p:panelGrid columns="1" styleClass="no-border">
+        <p:dialog id="resetDlg"
+                  header="Reset Password"
+                  widgetVar="resetDlg" closable="false"
+                  modal="true" width="50%" resizable="false">
+                <h:form id="resetDlgForm">
+                    <p:panelGrid columns="1" styleClass="no-border">
 
-                    <h:outputText value="Reset password for user: #{userCtl.newUser.name} #{userCtl.newUser.lastName} (#{userCtl.newUser.loginName})"/>
-                    <h:outputText value="New password will be sent to email: #{userCtl.newUser.email}"/>
+                        <h:outputText value="Reset password for user: #{userCtl.newUser.name} #{userCtl.newUser.lastName} (#{userCtl.newUser.loginName})"/>
+                        <h:outputText value="New password will be sent to email: #{userCtl.newUser.email}"/>
 
+                    </p:panelGrid>
 
-                </p:panelGrid>
+                    <hr/>
 
-                <hr/>
+                    <div class="alignRight">
+                        <p:commandButton id="reset" value="Reset" action="#{userCtl.onResetPassword}"
+                                         onsuccess="PF('resetDlg').hide();"
+                                         update="mainForm,resetDlgForm"/>
+                        <p:commandButton value="Cancel" onclick="PF('resetDlg').hide()"/>
+                    </div>
 
-                <div class="alignRight">
-                    <p:commandButton value="Reset" action="#{userCtl.onResetPassword}"
-                                     onsuccess="PF('resetDlg').hide();"
-                                     update="mainForm,resetDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('resetDlg').hide()"/>
-                </div>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </h:form>
+                    <p:blockUI block="resetDlgForm" trigger="reset">
+                        <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                    </p:blockUI>
+
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </h:form>
         </p:dialog>
 
         <p:dialog header="Time Sheet View Setting" widgetVar="viewTSDlg" modal="true" width="50%" resizable="false">

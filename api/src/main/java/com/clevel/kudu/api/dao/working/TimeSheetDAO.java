@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class TimeSheetDAO extends GenericDAO<TimeSheet, Long> {
     @Inject
     private Logger log;
@@ -21,7 +22,6 @@ public class TimeSheetDAO extends GenericDAO<TimeSheet, Long> {
     public TimeSheetDAO() {
     }
 
-    @SuppressWarnings("unchecked")
     public List<TimeSheet> findByMonth(User user, Date firstDate,Date lastDate) {
         log.debug("findByMonth. (user: {}, firstDate: {}, lastDate: {})",user,firstDate,lastDate);
         CriteriaQuery<TimeSheet> criteria = createCriteriaQuery();

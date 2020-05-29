@@ -268,7 +268,7 @@
                                     showButtonPanel="true">
                         </p:calendar>
                         <h:outputText value="(HH:mm)" rendered="#{timeSheetCtl.detail.sortOrder==1}" style="padding: 0 10px 0 10px"/>
-                        <p:focus for="timeIn" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        <p:focus for="timeIn" rendered="#{timeSheetCtl.detail.sortOrder==1 and timeSheetCtl.detail.timeIn == timeSheetCtl.detail.timeOut}"/>
                     </div>
 
                     <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
@@ -343,7 +343,7 @@
                                 <p:ajax event="change" listener="#{timeSheetCtl.onChangeDuration()}" update="timeSheetDlgForm:chargeButton"/>
                             </p:calendar>
                             <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
-                            <p:focus rendered="#{timeSheetCtl.detail.sortOrder>1}" for="hour"/>
+                            <p:focus rendered="#{timeSheetCtl.detail.sortOrder>1 or timeSheetCtl.detail.timeIn != timeSheetCtl.detail.timeOut}" for="hour"/>
                         </h:panelGroup>
                         <p:selectOneButton id="chargeButton" value="#{timeSheetCtl.chargeDurationButton}">
                             <f:selectItem itemLabel="2hrs" itemValue="02:00"/>
@@ -358,7 +358,7 @@
                 <p:inputTextarea id="desc" value="#{timeSheetCtl.detail.description}" style="width: 100%"
                                  autoResize="false"/>
 
-                <p:dataTable id="pjtTable" var="pjt" value="#{timeSheetCtl.projectTaskList}" rows="5"
+                <p:dataTable id="pjtTable" var="pjt" value="#{timeSheetCtl.projectTaskList}" rows="2"
                              paginator="true" paginatorPosition="bottom" style="font-size: 12px">>
 
                     <f:facet name="header">
@@ -375,22 +375,22 @@
 
                     <p:column headerText="Plan MD" style="width: 80px">
                         <h:outputText value="#{pjt.planMDDuration}" converter="durationConverter"/>
-                        <h:outputText value=" (#{pjt.planMD})"/>
-
+                        <br/><sup><h:outputText value="(#{pjt.planMD})"/></sup>
                     </p:column>
+
                     <p:column headerText="Extend MD" style="width: 80px">
                         <h:outputText value="#{pjt.extendMDDuration}" converter="durationConverter"/>
-                        <h:outputText value=" (#{pjt.extendMD})"/>
+                        <br/><sup><h:outputText value="(#{pjt.extendMD})"/></sup>
                     </p:column>
 
                     <p:column headerText="Total MD" style="width: 80px">
                         <h:outputText value="#{pjt.totalMDDuration}" converter="durationConverter"/>
-                        <h:outputText value=" (#{pjt.totalMD})"/>
+                        <br/><sup><h:outputText value="(#{pjt.totalMD})"/></sup>
                     </p:column>
 
                     <p:column headerText="Actual MD" style="width: 80px">
                         <h:outputText value="#{pjt.actualMDDuration}" converter="durationConverter"/>
-                        <h:outputText value=" (#{pjt.actualMD})"/>
+                        <br/><sup><h:outputText value="(#{pjt.actualMD})"/></sup>
                     </p:column>
 
                 </p:dataTable>
@@ -399,16 +399,17 @@
 
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-6 alignLeft">
-                        <p:commandButton value="Reset"
+                        <p:commandButton value="Reset" icon="fa fa-undo"
                                          action="#{timeSheetCtl.onReset()}"
                                          update="mainForm,monthForm,timeSheetDlgForm"/>
                     </div>
 
                     <div class="ui-g-12 ui-lg-6 alignRight">
-                        <p:commandButton value="Save"
+                        <p:commandButton value="Save" icon="fa fa-save"
                                          action="#{timeSheetCtl.onSaveDetail()}"
                                          update="mainForm,monthForm"/>
-                        <p:commandButton value="Cancel" onclick="PF('timeSheetDlg').hide()"/>
+                        <p:commandButton value="Cancel" icon="fa fa-ban"
+                                         onclick="PF('timeSheetDlg').hide()"/>
                     </div>
                 </div>
 

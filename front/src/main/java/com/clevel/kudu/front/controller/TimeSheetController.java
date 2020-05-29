@@ -291,6 +291,7 @@ public class TimeSheetController extends AbstractController {
             });
 
             detail = serviceResponse.getResult();
+            chargeDurationButton = DateTimeUtil.durationToString(detail.getChargeDuration());
             log.debug("detail: {}", detail);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());

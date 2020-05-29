@@ -1,10 +1,10 @@
 package com.clevel.kudu.api.dao.working;
 
 import com.clevel.kudu.api.dao.GenericDAO;
-import com.clevel.kudu.api.model.db.relation.RelRoleScreen;
-import com.clevel.kudu.api.model.db.relation.RelRoleScreen_;
-import com.clevel.kudu.api.model.db.security.Role;
-import com.clevel.kudu.api.model.db.working.*;
+import com.clevel.kudu.api.model.db.working.User;
+import com.clevel.kudu.api.model.db.working.UserTimeSheet;
+import com.clevel.kudu.api.model.db.working.UserTimeSheet_;
+import com.clevel.kudu.api.model.db.working.User_;
 import com.clevel.kudu.model.RecordStatus;
 import org.slf4j.Logger;
 
@@ -25,7 +25,7 @@ public class UserTimeSheetDAO extends GenericDAO<UserTimeSheet, Long> {
 
     @SuppressWarnings("unchecked")
     public List<UserTimeSheet> findByUser(User user) {
-        log.debug("findByUser. (user: {})",user);
+        log.debug("findByUser. (user: {})", user);
         CriteriaQuery<UserTimeSheet> criteria = createCriteriaQuery();
 
         graph.addAttributeNodes(UserTimeSheet_.timeSheetUser);
@@ -33,14 +33,17 @@ public class UserTimeSheetDAO extends GenericDAO<UserTimeSheet, Long> {
         Join<UserTimeSheet, User> userTimeSheetUserJoin = root.join(UserTimeSheet_.timeSheetUser);
 
         criteria.where(
-                cb.equal(root.get(UserTimeSheet_.user), user)
-        ).orderBy(cb.asc(userTimeSheetUserJoin.get(User_.name)));;
+                cb.and(
+                        cb.equal(root.get(UserTimeSheet_.user), user),
+                        cb.equal(userTimeSheetUserJoin.get(User_.status), RecordStatus.ACTIVE)
+                )
+        ).orderBy(cb.asc(userTimeSheetUserJoin.get(User_.name)));
 
         Query query = em.createQuery(criteria);
         query.setHint(FETCH_GRAPH, graph);
 
         List<UserTimeSheet> userTimeSheets = query.getResultList();
-        log.debug("findByUser. (result: {})",userTimeSheets.size());
+        log.debug("findByUser. (result: {})", userTimeSheets.size());
         return userTimeSheets;
     }
 

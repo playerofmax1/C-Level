@@ -529,11 +529,17 @@ public class SecurityManager {
         userPerformanceDAO.persist(userPerformanceList);
     }
 
+    /**
+     * Get list of user marked as readable by the User with the {id}.
+     * @param userId current user (logged in user)
+     * @param id userId of the User own the result
+     */
     public List<UserTimeSheetDTO> getUserViewTS(long userId, long id) throws RecordNotFoundException {
         log.debug("getUserViewTS. (userId: {}, id: {})", userId, id);
 
         // validate user
         userDAO.findById(userId);
+
         User user = userDAO.findById(id);
 
         return userTSMapper.toDTO(userTimeSheetDAO.findByUser(user).stream());

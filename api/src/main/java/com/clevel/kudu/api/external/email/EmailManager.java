@@ -60,7 +60,6 @@ public class EmailManager {
                 InternetAddress[] sendToCC = InternetAddress.parse(removeQuotes(ccAddress), false);
                 mimeMessage.setRecipients(Message.RecipientType.CC, sendToCC);
                 mimeMessage.setReplyTo(sendToCC);
-                log.debug("email.CC={}", sendToCC);
             }
 
             mimeMessage.setSubject(subject, EMAIL_ENCODE);

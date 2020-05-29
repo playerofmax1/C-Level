@@ -5,6 +5,7 @@ import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.external.email.template.AssignedTaskEmail;
+import com.clevel.kudu.api.external.email.template.ExtendMandaysEmail;
 import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.api.rest.mapper.ProjectMapper;
 import com.clevel.kudu.api.rest.mapper.ProjectTaskExtMapper;
@@ -53,6 +54,8 @@ public class ProjectManager {
     private TimeSheetDAO timeSheetDAO;
     @Inject
     private AssignedTaskEmail assignedTaskEmail;
+    @Inject
+    private ExtendMandaysEmail extendMandaysEmail;
 
     @Inject
     public ProjectManager() {
@@ -134,7 +137,7 @@ public class ProjectManager {
     }
 
     public void closeProject(long userId, ProjectDTO projectDTO) throws RecordNotFoundException {
-        log.debug("closeProject. (userId: {}, projectDTO: {})",userId,projectDTO);
+        log.debug("closeProject. (userId: {}, projectDTO: {})", userId, projectDTO);
 
         User user = userDAO.findById(userId);
         Project project = projectDAO.findById(projectDTO.getId());
@@ -147,7 +150,7 @@ public class ProjectManager {
     }
 
     public void deleteProject(long userId, ProjectDTO projectDTO) throws RecordNotFoundException {
-        log.debug("deleteProject. (userId: {}, projectDTO: {})",userId,projectDTO);
+        log.debug("deleteProject. (userId: {}, projectDTO: {})", userId, projectDTO);
 
         User user = userDAO.findById(userId);
         Project project = projectDAO.findById(projectDTO.getId());
@@ -233,7 +236,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(newProjectTask);
     }
 
-    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO) throws RecordNotFoundException {
+    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO) throws RecordNotFoundException, EmailException {
         log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})", userId, projectTaskDTO, projectTaskExtDTO);
         User user = userDAO.findById(userId);
 
@@ -260,6 +263,8 @@ public class ProjectManager {
         parentProjectTask.setExtendMDMinute(parentProjectTask.getExtendMDDuration().toMinutes());
         parentProjectTask.setExtendMD(DateTimeUtil.getManDays(parentProjectTask.getExtendMDMinute()));
         projectTaskDAO.persist(parentProjectTask);
+
+        extendMandaysEmail.sendMail(parentProjectTask, ext);
 
         return projectTaskExtMapper.toDTO(ext);
     }

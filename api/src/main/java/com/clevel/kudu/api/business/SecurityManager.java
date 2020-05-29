@@ -35,14 +35,16 @@ import com.clevel.kudu.model.Screen;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.LookupUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 @Stateless
 public class SecurityManager {
@@ -173,21 +175,10 @@ public class SecurityManager {
         userDAO.persist(user);
 
         // notification
-        sendPwdNotification(user, newPwd);
+        passwordResetEmail.sendMail(user, newPwd);
 
         log.debug("reset password success.");
         return userMapper.toDTO(user);
-    }
-
-    private void sendPwdNotification(User user, String newPassword) throws IOException, EmailException {
-        if (StringUtils.isBlank(user.getEmail())) {
-            log.error("invalid email address!");
-            throw new EmailException("invalid email address!");
-        }
-        Map<String, String> map = new HashMap<>();
-        map.put("USER_NAME", user.getName() + " " + user.getLastName());
-        map.put("PASSWORD", newPassword);
-        passwordResetEmail.sendMail(user.getEmail(), "Password reset", "", map);
     }
 
     private void checkPassword(User user, String password) throws CredentialException {

@@ -24,12 +24,13 @@ public class EmailManager {
     protected Application app;
 
     private static final String EMAIL_ENCODE = "UTF-8";
+    private static final String TEMPLATE_PATH = "/WEB-INF/email/";
 
-    protected String emailTemplate;
+    protected String templateName;
 
     @Asynchronous
-    public void sendMail(String toAddress, String subject, String ccAddress, Map<String, String> valuesMap) throws EmailException {
-        log.debug("sendMail. (toAddress: {}, subject: {}, ccAddress: {})", toAddress, subject, ccAddress);
+    public void sendMail(String toAddress, String ccAddress, Map<String, String> valuesMap) throws EmailException {
+        log.debug("sendMail. (toAddress: {}, ccAddress: {})", toAddress, ccAddress);
         log.debug("SMTP host : {}", app.getConfig(SystemConfig.EMAIL_SERVER));
 
         if (toAddress == null || "".equalsIgnoreCase(toAddress.trim())) {
@@ -41,8 +42,6 @@ public class EmailManager {
         props.put("mail.smtp.host", app.getConfig(SystemConfig.EMAIL_SERVER));
         props.put("mail.smtp.port", app.getConfig(SystemConfig.EMAIL_PORT));
         props.put("mail.smtp.auth", app.getConfig(SystemConfig.EMAIL_SMTP_AUTH));
-        /*props.put("mail.transport.protocol", "smtp");*/
-        /*props.put("mail.mime.encodefilename", "true");*/
         props.put("mail.smtp.starttls.enable", app.getConfig(SystemConfig.EMAIL_TLS_ENABLE));
         log.debug("SMTP-Props: {}", props);
 
@@ -62,9 +61,9 @@ public class EmailManager {
                 mimeMessage.setReplyTo(sendToCC);
             }
 
-            mimeMessage.setSubject(subject, EMAIL_ENCODE);
             replaceLineBreaks(valuesMap);
-            mimeMessage.setContent(replaceTemplate(valuesMap), "text/html; charset=" + EMAIL_ENCODE);
+            mimeMessage.setSubject(replaceTemplate("subject.txt",valuesMap), EMAIL_ENCODE);
+            mimeMessage.setContent(replaceTemplate("html",valuesMap), "text/html; charset=" + EMAIL_ENCODE);
 
             Transport.send(mimeMessage);
             log.debug("message already sent.");
@@ -94,6 +93,12 @@ public class EmailManager {
 
     private String replaceLineBreaks(String source, String replacement) {
         return source.replaceAll("\\n", replacement);
+    }
+
+    protected String replaceTemplate(String fileExtension, Map<String, String> valuesMap) {
+        String fileName = TEMPLATE_PATH + templateName +"."+ fileExtension;
+        String messageBody = readTemplateFile(fileName);
+        return StringSubstitutor.replace(messageBody, valuesMap);
     }
 
     private String readTemplateFile(String templateFile) {
@@ -128,11 +133,6 @@ public class EmailManager {
         }
 
         return body.toString();
-    }
-
-    protected String replaceTemplate(Map<String, String> valuesMap) {
-        String messageBody = readTemplateFile(emailTemplate);
-        return StringSubstitutor.replace(messageBody, valuesMap);
     }
 
     protected String removeQuotes(String to) {

@@ -1,7 +1,7 @@
 package com.clevel.kudu.api.external.email;
 
 import com.clevel.kudu.api.exception.EmailException;
-import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.util.DateTimeUtil;
 import org.apache.commons.text.StringSubstitutor;

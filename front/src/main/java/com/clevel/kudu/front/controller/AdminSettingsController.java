@@ -19,8 +19,12 @@ public class AdminSettingsController extends AbstractController {
 
     private List<ConfigDTO> configList;
 
+    private boolean changed;
+
     @PostConstruct
     public void constructor() {
+        changed = false;
+
         loadConfigList();
     }
 
@@ -42,11 +46,42 @@ public class AdminSettingsController extends AbstractController {
 
     }
 
+    public void onChanged() {
+        changed = true;
+    }
+
+    public void onSave() {
+        log.debug("onSave");
+
+        ServiceRequest<List<ConfigDTO>> request = new ServiceRequest<>(configList);
+        request.setUserId(userDetail.getUserId());
+
+        Response response = apiService.getSystemService().saveConfigList(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<List<ConfigDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<ConfigDTO>>>() {
+            });
+            changed = false;
+            configList = serviceResponse.getResult();
+            log.debug("configList: {}", configList);
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+
     public List<ConfigDTO> getConfigList() {
         return configList;
     }
 
     public void setConfigList(List<ConfigDTO> configList) {
         this.configList = configList;
+    }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
     }
 }

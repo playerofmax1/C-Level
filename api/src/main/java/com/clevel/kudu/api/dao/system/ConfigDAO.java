@@ -37,4 +37,17 @@ public class ConfigDAO extends GenericDAO<Config, Long> {
             return configList.get(0);
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Config> findAll() {
+        log.debug("findAll.");
+
+        CriteriaQuery<Config> criteria = createCriteriaQuery();
+
+        criteria.orderBy(cb.asc(root.get(Config_.name)));
+
+        Query query = em.createQuery(criteria);
+
+        return query.getResultList();
+    }
 }

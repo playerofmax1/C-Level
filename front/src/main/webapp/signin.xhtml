@@ -30,6 +30,11 @@
     </h:head>
     <h:body>
         <div class="container">
+            <p:panel header="View Expired"
+                     rendered="#{pfExceptionHandler != null and pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}"
+                     baseZIndex="10000">
+                <h4>The session is timed out, please login again to confirm this is your.</h4>
+            </p:panel>
 
             <h:form id="loginForm" styleClass="form-signin">
                 <p:growl id="msg" showDetail="true"/>

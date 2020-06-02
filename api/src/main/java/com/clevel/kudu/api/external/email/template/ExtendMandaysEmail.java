@@ -2,7 +2,7 @@ package com.clevel.kudu.api.external.email.template;
 
 import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.external.email.EmailManager;
-import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.api.model.db.working.*;
 import org.slf4j.Logger;
 

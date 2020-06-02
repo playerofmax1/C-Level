@@ -29,81 +29,6 @@
     background: #f5f5f5;
 }
 
-.alignLeft {
-    text-align: left;
-}
-
-.alignRight {
-    text-align: right;
-}
-
-.alignCenter {
-    text-align: center;
-}
-
-.alignTop {
-    vertical-align: top;
-}
-
-.alignMiddle {
-    vertical-align: middle;
-}
-
-.alignBottom {
-    vertical-align: bottom;
-}
-
-.floatLeft {
-    float: left;
-}
-
-.floatRight {
-    float: right;
-}
-
-.onTopLeft {
-    position: absolute;
-    text-align: left;
-    left: 10px;
-    top: 10px;
-}
-
-.onBottomLeft {
-    text-align: left;
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-}
-
-.onBottomRight {
-    text-align: right;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-}
-
-.transparent {
-    background-color: transparent !important;
-}
-
-.inputLabel {
-    font-weight: bold;
-}
-
-.no-border,
-.ui-panelgrid.no-border > tbody > tr,
-.ui-panelgrid.no-border > tbody > tr > td {
-    border-width: 0 0 0 0 !important;
-}
-
-.no-padding {
-    padding: 0 0 0 0 !important;
-}
-
-.no-margin {
-    margin: 0 0 0 0 !important;
-}
-
 .gridInputRow {
     height: 42px;
 }
@@ -301,6 +226,10 @@ hr.ui-separator {
     padding: 0 0 0 0 !important;
 }
 
+.ui-blockui {
+
+}
+
 .holiday {
     background-color: steelblue;
     color: white;
@@ -330,4 +259,85 @@ hr.ui-separator {
 
 body {
     font-size: 12px;
+}
+
+/*IMPORTANT!*/
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.alignCenter {
+    text-align: center;
+}
+
+.alignTop {
+    vertical-align: top;
+}
+
+.alignMiddle {
+    vertical-align: middle;
+}
+
+.alignBottom {
+    vertical-align: bottom;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.onTopLeft {
+    position: absolute;
+    text-align: left;
+    left: 10px;
+    top: 10px;
+}
+
+.onBottomLeft {
+    text-align: left;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+
+.onBottomRight {
+    text-align: right;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.transparent {
+    background-color: transparent !important;
+}
+
+.inputLabel {
+    font-weight: bold;
+}
+
+.no-border,
+.ui-panelgrid.no-border > tbody > tr,
+.ui-panelgrid.no-border > tbody > tr > td {
+    border-width: 0 0 0 0 !important;
+}
+
+.no-border.ui-inputfield {
+    box-shadow: none !important;
+}
+
+.no-padding {
+    padding: 0 0 0 0 !important;
+}
+
+.no-margin {
+    margin: 0 0 0 0 !important;
 }

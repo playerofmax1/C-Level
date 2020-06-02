@@ -4,7 +4,7 @@ import com.clevel.kudu.api.TimeSheetService;
 import com.clevel.kudu.api.business.TimeSheetManager;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
-import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.system.SystemManager;

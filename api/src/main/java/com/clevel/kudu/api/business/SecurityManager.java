@@ -6,7 +6,7 @@ import com.clevel.kudu.api.dao.security.RoleDAO;
 import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.*;
 import com.clevel.kudu.api.external.email.template.PasswordResetEmail;
-import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.api.model.db.master.Rate;
 import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
 import com.clevel.kudu.api.model.db.relation.RelRoleScreen;

@@ -1,26 +1,30 @@
 <f:view xmlns="http://www.w3.org/1999/xhtml"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:h="http://java.sun.com/jsf/html"
->
+        xmlns:p="http://primefaces.org/ui">
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <h:form>
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">C-Level - Kudu</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">[#{loginBean.userDetail.userName}]</a></li>
-                        <!--<li><a href="#">Settings</a></li>-->
-                        <li><h:commandLink action="/site/changePwd.jsf?faces-redirect=true">Change Password</h:commandLink></li>
-                        <li><h:commandLink action="#{loginBean.logout}">Sign out</h:commandLink></li>
-                    </ul>
-                </div>
+    <h:form>
+        <div class="ui-g fixed-top no-border no-padding no-margin" style="z-index: 90000;width:calc100%;background-color: white;border-bottom: silver solid thin !important;">
+            <div class="ui-g-6 alignLeft">
+                <p:graphicImage name="img/C-Level.jpg" height="50"/>
+                <p:graphicImage name="img/kudu.png" height="37" styleClass="alignTop"/>
             </div>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </h:form>
-    </nav>
+            <div id="navbar" class="ui-g-6 alignRight">
+                <p:outputPanel id="userMenu" styleClass="user-menu">
+                    <div class="user-circle alignMiddle">
+                        <p:outputLabel styleClass="fa fa-user alignMiddle"/>
+                    </div>
+                    <p:outputLabel value="#{loginBean.userDetail.name}  #{loginBean.userDetail.lastName}" styleClass="alignMiddle" style="margin:5px"/>
+                </p:outputPanel>
+            </div>
+        </div>
+
+        <p:menu overlay="true" trigger="userMenu" my="center top" at="center bottom">
+            <p:menuitem icon="ui-icon-home" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
+            <p:menuitem icon="ui-icon-home" value="Sign out" actionListener="#{loginBean.logout}"/>
+        </p:menu>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </h:form>
 </f:view>
 
 

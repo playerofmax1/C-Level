@@ -1,6 +1,22 @@
-/*.ui-widget, .ui-widget .ui-widget {*/
-/*font-size: 90% !important;*/
-/*}*/
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 80px;
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 5px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+h2 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
 .ui-growl {
     z-index: 9999 !important;
 }
@@ -10,6 +26,33 @@
         width: 80% !important;
         z-index: 9000 !important;
     }
+}
+
+.user-menu {
+    border: silver solid thin !important;
+    padding: 5px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    margin: 0;
+    color: gray;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.user-circle {
+    height: 36px;
+    width: 36px;
+
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
+    border-radius: 18px;
+
+    border: gray solid 1.5px !important;
+    font-size: 2em;
+
+    overflow: hidden;
+    display: inline-block;
 }
 
 .panel-heading {
@@ -101,12 +144,18 @@ footer {
 
 label {
     margin-bottom: 0 !important;
+    cursor: inherit;
 }
 
 label.require:after {
     content: "*";
     color: #ff0000;
     font-size: 1.4em !important;
+}
+
+.ui-menu-overlay {
+    z-index: 91000 !important;
+    margin-top: 5px;
 }
 
 .ui-selectonemenu {
@@ -295,11 +344,12 @@ body {
     float: right;
 }
 
-.onTopLeft {
-    position: absolute;
-    text-align: left;
-    left: 10px;
-    top: 10px;
+.fixed-top {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
 }
 
 .onBottomLeft {

@@ -39,7 +39,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Task</h1>
+                    <h1>Task</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
@@ -82,7 +82,7 @@
                             </p:column>
 
 
-                            <p:column headerText="Actions" style="width: 200px">
+                            <p:column headerText="Actions" style="width: 140px">
                                 <p:commandButton value="Edit" action="#{taskCtl.onPreUpdateTask}"
                                                  update="taskDlgForm"
                                                  onsuccess="PF('taskDlg').show();">

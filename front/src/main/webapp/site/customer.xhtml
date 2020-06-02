@@ -39,7 +39,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Customer</h1>
+                    <h1>Customer</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
@@ -51,6 +51,7 @@
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
                                             <p:commandButton id="newCustomer"
+                                                             icon="ui-icon-plus"
                                                     value="New Customer"
                                                              action="#{customerCtl.onPreNewCustomer}"
                                                              onsuccess="PF('customerDlg').show()"
@@ -61,7 +62,7 @@
                                 </p:outputPanel>
                             </f:facet>
 
-                            <p:column headerText="Code" sortBy="#{customer.codeAsNumber}" style="width: 80px">
+                            <p:column headerText="Code" sortBy="#{customer.codeAsNumber}" styleClass="alignCenter" style="width: 80px">
                                 <h:outputText value="#{customer.code}"/>
                             </p:column>
 
@@ -73,21 +74,22 @@
                                 <h:outputText value="#{customer.description}"/>
                             </p:column>
 
-
-                            <p:column headerText="Actions" style="width: 250px">
-                                <p:commandButton value="Edit" action="#{customerCtl.onPreUpdateCustomer}"
+                            <p:column headerText="Actions" style="width: 90px">
+                                <p:commandButton id="editButon" icon="ui-icon-pencil" action="#{customerCtl.onPreUpdateCustomer}"
                                                  update="customerDlgForm"
                                                  onsuccess="PF('customerDlg').show();">
                                     <f:setPropertyActionListener value="#{customer.id}"
                                                                  target="#{customerCtl.selectedCustomerId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="editButon" value="Edit" position="top"/>
 
-                                <p:commandButton value="Delete" action="#{customerCtl.onPreDeleteCustomer}"
+                                <p:commandButton id="deleteButon" icon="ui-icon-minus" action="#{customerCtl.onPreDeleteCustomer}"
                                                  update="deleteDlgForm"
                                                  onsuccess="PF('deleteCustomerDlg').show();">
                                     <f:setPropertyActionListener value="#{customer.id}"
                                                                  target="#{customerCtl.selectedCustomerId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="deleteButon" value="Delete" position="top"/>
                             </p:column>
 
                         </p:dataTable>
@@ -113,13 +115,13 @@
                 <hr/>
 
                 <div class="alignRight">
-                    <p:commandButton value="Save" action="#{customerCtl.onNewCustomer}"
+                    <p:commandButton icon="fa fa-save" value="Save" action="#{customerCtl.onNewCustomer}"
                                      rendered="#{customerCtl.editMode==false}"
                                      update="mainForm,customerDlgForm"/>
-                    <p:commandButton value="Update" action="#{customerCtl.onUpdateCustomer}"
+                    <p:commandButton icon="fa fa-save" value="Update" action="#{customerCtl.onUpdateCustomer}"
                                      rendered="#{customerCtl.editMode==true}"
                                      update="mainForm,customerDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('customerDlg').hide()"/>
+                    <p:commandButton icon="fa fa-close" value="Cancel" onclick="PF('customerDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>

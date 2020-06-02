@@ -1,10 +1,12 @@
 package com.clevel.kudu.api.business;
 
 import com.clevel.kudu.api.dao.working.HolidayDAO;
+import com.clevel.kudu.api.dao.working.PerformanceYearDAO;
 import com.clevel.kudu.api.dao.working.UserDAO;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.model.db.working.Holiday;
+import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.model.db.working.User;
 import com.clevel.kudu.api.rest.mapper.HolidayMapper;
 import com.clevel.kudu.api.system.Application;
@@ -28,6 +30,8 @@ public class HolidayManager {
     private UserDAO userDAO;
     @Inject
     private HolidayDAO holidayDAO;
+    @Inject
+    private PerformanceYearDAO performanceYearDAO;
     @Inject
     private HolidayMapper holidayMapper;
 
@@ -91,8 +95,15 @@ public class HolidayManager {
         return holidayMapper.toDTO(holidayDAO.findAll().stream());
     }
 
+    public List<HolidayDTO> getHolidaysByPerformanceYear(PerformanceYear performanceYear)throws RecordNotFoundException {
+        log.debug("getHolidaysByYear(performanceYear:{})", performanceYear.getYear());
+
+        List<Holiday> holidayList = holidayDAO.findByStartEnd(performanceYear.getStartDate(),performanceYear.getEndDate());
+        return holidayMapper.toDTO(holidayList.stream());
+    }
+
     public void deleteHoliday(long userId, HolidayDTO holidayDTO) throws RecordNotFoundException {
-        log.debug("deleteHoliday. (userId: {}, holidayDTO: {})",userId,holidayDTO);
+        log.debug("deleteHoliday. (userId: {}, holidayDTO: {})", userId, holidayDTO);
 
         User user = userDAO.findById(userId);
         Holiday holiday = holidayDAO.findById(holidayDTO.getId());
@@ -101,16 +112,16 @@ public class HolidayManager {
     }
 
     public long getTotalWorkingDays(long userId, Date month) {
-        log.debug("getTotalWorkingDays. (userId: {}, month: {})",userId,month);
+        log.debug("getTotalWorkingDays. (userId: {}, month: {})", userId, month);
 
         long workingDays = DateTimeUtil.countWorkingDay(month);
-        log.debug("normal working days: {}",workingDays);
+        log.debug("normal working days: {}", workingDays);
 
         long holidays = holidayDAO.countHoliday(month);
-        log.debug("holidays: {}",holidays);
+        log.debug("holidays: {}", holidays);
 
-        long totalWorkingDays = workingDays-holidays;
-        log.debug("total working days: {}",totalWorkingDays);
+        long totalWorkingDays = workingDays - holidays;
+        log.debug("total working days: {}", totalWorkingDays);
 
         return totalWorkingDays;
     }

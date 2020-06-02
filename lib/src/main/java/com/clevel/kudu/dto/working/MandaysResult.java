@@ -12,6 +12,8 @@ public class MandaysResult {
     private UserMandaysDTO totalMandaysDTO;
     private UtilizationDTO utilization;
 
+    private List<HolidayDTO> holidayList;
+
     public List<UserMandaysDTO> getUserMandaysDTOList() {
         return userMandaysDTOList;
     }
@@ -36,12 +38,21 @@ public class MandaysResult {
         this.utilization = utilization;
     }
 
+    public List<HolidayDTO> getHolidayList() {
+        return holidayList;
+    }
+
+    public void setHolidayList(List<HolidayDTO> holidayList) {
+        this.holidayList = holidayList;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("userMandaysDTOList", userMandaysDTOList)
                 .append("totalMandaysDTO", totalMandaysDTO)
                 .append("utilization", utilization)
+                .append("holidayList", holidayList)
                 .toString()
                 .replace('=', ':');
     }

@@ -1,6 +1,7 @@
 package com.clevel.kudu.api.rest.resources;
 
 import com.clevel.kudu.api.TimeSheetService;
+import com.clevel.kudu.api.business.HolidayManager;
 import com.clevel.kudu.api.business.TimeSheetManager;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
@@ -37,6 +38,8 @@ public class TimeSheetResource implements TimeSheetService {
     private TimeSheetManager timeSheetManager;
     @Inject
     private SystemManager systemManager;
+    @Inject
+    private HolidayManager holidayManager;
 
     @Inject
     private HttpServletRequest httpServletRequest;
@@ -144,6 +147,9 @@ public class TimeSheetResource implements TimeSheetService {
             utilization.setYear(year);
             utilization.setPercentAMD(timeSheetManager.generatePercentAMD(userMandaysDTOList, totalMandaysDTO, utilization.getNetWorkingDays()));
             mandaysResult.setUtilization(utilization);
+
+            List<HolidayDTO> holidayDTOList = holidayManager.getHolidaysByPerformanceYear(performanceYear);
+            mandaysResult.setHolidayList(holidayDTOList);
 
             response.setResult(mandaysResult);
             response.setApiResponse(APIResponse.SUCCESS);

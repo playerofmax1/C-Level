@@ -326,7 +326,11 @@ body {
 
 .no-border,
 .ui-panelgrid.no-border > tbody > tr,
-.ui-panelgrid.no-border > tbody > tr > td {
+.ui-panelgrid.no-border > tbody > tr > td,
+.ui-datatable.no-border > div > table > thead > tr > th,
+.ui-datatable.no-border > div > table > tbody,
+.ui-datatable.no-border > div > table > tbody > tr,
+.ui-datatable.no-border > div > table > tbody > tr > td {
     border-width: 0 0 0 0 !important;
 }
 

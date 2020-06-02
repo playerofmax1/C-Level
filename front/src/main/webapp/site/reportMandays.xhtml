@@ -35,6 +35,23 @@
                 color: green;
                 font-weight: 700;
             }
+
+            .holiday-table {
+                font-size: 11px
+            }
+
+            .holiday-table tr {
+                border-bottom: 1px solid silver !important;
+            }
+
+            .holiday-table .ui-datatable-even,
+            .holiday-table .ui-datatable-odd {
+                background-color: white;
+            }
+
+            .holiday-table .even {
+                background-color: #EFEFEF;
+            }
         </style>
         <script>
             $(document).ready(function () {
@@ -101,7 +118,35 @@
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
                                             <p:tooltip for="previousYear" value="Previous Year" position="left"/>
-                                            <p:tooltip for="nextYear" value="Next Year" position="right"/>
+                                            <p:tooltip for="nextYear" value="Next Year" position="right"/><br/>
+                                            <p:outputLabel value="#{rptMandaysCtl.holidayList.size()} Holidays"/>
+                                            <p:outputLabel id="holidayList" styleClass="fa fa-chevron-circle-down"/>
+                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top">
+                                                <p:dataTable var="holiday" value="#{rptMandaysCtl.holidayList}" sortBy="#{holiday.holidayDate}"
+                                                             styleClass="no-border holiday-table" rowStyleClass="#{(holiday.holidayDate.month % 2 > 0)?'even':'odd'}">
+                                                    <p:column groupRow="true" style="width:45px;" styleClass="alignCenter">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="MMM yyyy" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column style="width:80px;" styleClass="alignLeft">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="EEEE" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column style="width:30px;" styleClass="alignCenter">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="d" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column styleClass="alignLeft">
+                                                        <h:outputText value="#{holiday.description}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:overlayPanel>
                                         </div>
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel id="targetUtilization" value="Target Utilization: #{rptMandaysCtl.targetUtilization}%" styleClass="cursor-pointer"/><br/>

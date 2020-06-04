@@ -4,28 +4,31 @@
         xmlns:p="http://primefaces.org/ui">
 
     <h:form>
-        <div class="ui-g fixed-top no-border no-padding no-margin" style="z-index: 90000;width:calc100%;background-color: white;border-bottom: silver solid thin !important;">
+        <div class="top-bar ui-g fixed-top no-border no-padding no-margin" style="z-index: 90000;width:100%;background-color: white;border-bottom: #eee solid thin !important;">
             <div class="ui-g-6 alignLeft">
                 <p:graphicImage name="img/C-Level.jpg" height="50"/>
                 <p:graphicImage name="img/kudu.png" height="37" styleClass="alignTop"/>
             </div>
-            <div id="navbar" class="ui-g-6 alignRight">
+            <div class="ui-g-6 alignRight">
                 <p:outputPanel id="userMenu" styleClass="user-menu">
                     <div class="user-circle alignMiddle">
                         <p:outputLabel styleClass="fa fa-user alignMiddle"/>
                     </div>
                     <p:outputLabel value="#{loginBean.userDetail.name}  #{loginBean.userDetail.lastName}" styleClass="alignMiddle" style="margin:5px"/>
                 </p:outputPanel>
+                <p:tooltip id="userMenuTip" position="left" escape="false" value="Click to open profile menu.&lt;br/&gt;&lt;sup&gt;(or right click any where)&lt;/sup&gt;" for="userMenu" styleClass="bring-to-top"/>
             </div>
         </div>
 
-        <p:menu overlay="true" trigger="userMenu" my="center top" at="center bottom">
-            <p:menuitem icon="ui-icon-home" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
-            <p:menuitem icon="ui-icon-home" value="Sign out" actionListener="#{loginBean.logout}"/>
+        <p:menu overlay="true" trigger="userMenu" my="center top" at="center bottom" styleClass="bring-to-top">
+            <p:menuitem icon="fa fa-key" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
+            <p:menuitem icon="fa fa-sign-out" value="Sign out" actionListener="#{loginBean.logout}"/>
         </p:menu>
+
+        <p:contextMenu styleClass="bring-to-top">
+            <p:menuitem icon="fa fa-key" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
+            <p:menuitem icon="fa fa-sign-out" value="Sign out" actionListener="#{loginBean.logout}"/>
+        </p:contextMenu>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </h:form>
 </f:view>
-
-
-

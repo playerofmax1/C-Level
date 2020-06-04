@@ -55,6 +55,13 @@ h2 {
     display: inline-block;
 }
 
+.button-bar.ui-sticky {
+    right: 0px !important;
+    width: auto !important;
+    border-radius: 7px 0px 0px 7px !important;
+    padding: 7px !important;
+}
+
 .panel-heading {
     text-align: right;
     height: 30px;
@@ -350,6 +357,10 @@ body {
     top: 0;
     width: 100%;
     margin: 0;
+}
+
+.bring-to-top {
+    z-index: 91000 !important;
 }
 
 .onBottomLeft {

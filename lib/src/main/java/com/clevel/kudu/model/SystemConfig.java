@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum SystemConfig {
-    AUTO_EMAIL_CC("app.auto.email.cc", InputType.TEXT, true),
+    AUTO_EMAIL_CC("app.auto.email.cc", InputType.TEXT, false),
     EMAIL_PASSWORD("app.external.mail.password", InputType.TEXT, false),
     EMAIL_PORT("app.external.mail.port", InputType.INTEGER, false),
     EMAIL_SENDER_NAME("app.external.mail.sender.name", InputType.TEXT, false),

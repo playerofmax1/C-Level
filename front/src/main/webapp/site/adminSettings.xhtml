@@ -39,21 +39,20 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1>Admin Settings</h1>
                     <h:form id="mainForm">
-                        <p:growl id="msg" showDetail="true" escape="false"/>
+                        <p:outputPanel styleClass="button-bar floatRight alignRight no-padding no-margin" id="buttonPanel">
+                            <p:commandButton id="saveButton"
+                                             icon="fa fa-save"
+                                             value="Save"
+                                             disabled="#{!adminSettingsCtl.changed}"
+                                             actionListener="#{adminSettingsCtl.onSave}"
+                                             update="mainForm:buttonPanel"/>
+                            <p:tooltip position="left" value="Save changes." for="saveButton"/>
+                            <p:sticky target="buttonPanel" margin="75"/>
+                        </p:outputPanel>
+                        <h1>Admin Settings</h1>
 
-                        <div class="ui-g" style="font-size:12px;">
-                            <p:outputLabel styleClass="fa fa-cog" style="font-size: 2.5em;color:white;"/>
-                            <p:outputPanel styleClass="ui-g-10 alignRight no-padding" id="buttonPanel">
-                                <p:commandButton id="saveButton"
-                                                 icon="fa fa-save"
-                                                 value="Save"
-                                                 disabled="#{!adminSettingsCtl.changed}"
-                                                 actionListener="#{adminSettingsCtl.onSave}"
-                                                 update="mainForm:saveButton"/>
-                            </p:outputPanel>
-                        </div>
+                        <p:growl id="msg" showDetail="true" escape="false"/>
 
                         <p:dataList value="#{adminSettingsCtl.configList}" var="setting" type="definition"
                                     styleClass="alignMiddle no-margin" itemStyleClass="ui-g alignMiddle" style="font-size:12px">
@@ -71,7 +70,7 @@
                                         <p:inputText value="#{setting.description}" styleClass="no-border no-padding transparent" style="width:100%">
                                             <p:ajax event="change"
                                                     listener="#{adminSettingsCtl.onChanged}"
-                                                    update="mainForm"/>
+                                                    update="mainForm:buttonPanel"/>
                                         </p:inputText>
                                     </sup>
                                 </div>
@@ -79,28 +78,28 @@
 
                             <p:outputPanel styleClass="ui-md-6">
                                 <p:inputText value="#{setting.value}" style="width:100%" rendered="#{setting.systemConfig.inputType=='TEXT'}">
-                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm"/>
+                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputText>
 
                                 <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='INTEGER'}" emptyValue="0" decimalPlaces="0" thousandSeparator="">
-                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm"/>
+                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputNumber>
 
                                 <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='DECIMAL'}" emptyValue="0.00" decimalPlaces="2">
-                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm"/>
+                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputNumber>
 
                                 <p:outputPanel rendered="#{setting.systemConfig.inputType=='PERCENT'}">
                                     <div class="ui-inputgroup">
                                         <p:inputNumber value="#{setting.value}" emptyValue="0.00" decimalPlaces="2">
-                                            <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm"/>
+                                            <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                         </p:inputNumber>
                                         <span class="ui-inputgroup-addon"> % </span>
                                     </div>
                                 </p:outputPanel>
                                 <p:inputSwitch value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='YESNO'}"
                                                onLabel="YES" offLabel="NO">
-                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm"/>
+                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputSwitch>
                             </p:outputPanel>
                         </p:dataList>

@@ -44,7 +44,7 @@
                                 <f:selectItem itemLabel="CLOSE" itemValue="CLOSE"/>
                             </p:selectOneMenu>
 
-                            <p:commandButton value="Search" action="#{projectCtl.onSearchProject}"
+                            <p:commandButton icon="fa fa-search" value="Search" action="#{projectCtl.onSearchProject}"
                                              update="mainForm"/>
                         </p:panelGrid>
 
@@ -63,7 +63,7 @@
                                 <p:outputPanel styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
-                                            <p:commandButton id="newProject" value="New Project"
+                                            <p:commandButton id="newProject" icon="fa fa-plus" value="New Project"
                                                              action="#{projectCtl.onPreNewProject}"
                                                              onsuccess="PF('projectDlg').show()"
                                                              update="projectDlgForm"/>
@@ -97,7 +97,7 @@
                                 <h:outputText value="#{project.customer.name}"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 178px">
+                            <p:column headerText="Actions" style="width: 13em">
                                 <p:commandButton id="editBtn" value="E" action="#{projectCtl.onPreUpdateProject}"
                                                  update="projectDlgForm"
                                                  onsuccess="PF('projectDlg').show();PF('projectDlg').initPosition();">
@@ -127,7 +127,7 @@
                                     <f:setPropertyActionListener value="#{project.id}"
                                                                  target="#{projectCtl.selectedProjectId}"/>
                                 </p:commandButton>
-                                <p:tooltip for="deleteBtn" value="Delete Project" position="top"/>
+                                <p:tooltip for="deleteBtn" value="Delete Project" position="left"/>
                             </p:column>
 
                         </p:dataTable>
@@ -138,7 +138,7 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Project" widgetVar="projectDlg" modal="true" resizable="false">
+        <p:dialog header="Add/Edit Project" widgetVar="projectDlg" modal="true" resizable="false" closable="false">
             <h:form id="projectDlgForm">
                 <p:panelGrid columns="4" styleClass="no-border no-margin">
 
@@ -160,7 +160,7 @@
                                  style="width:100%"/>
 
                     <h:outputLabel value="Type:" styleClass="require ui-outputlabel"/>
-                    <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:100%">
+                    <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:250px">
                         <f:selectItem itemLabel="Normal" itemValue="NORMAL"/>
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
@@ -181,21 +181,24 @@
                 </p:panelGrid>
 
                 <br/>
-                <h:outputLabel value="Description:"/><br/>
-                <p:inputTextarea value="#{projectCtl.newProject.description}"
-                                 style="width: 100%"
-                                 autoResize="false"/>
+
+                <div class="ui-g">
+                    <h:outputLabel value="Description:" styleClass="ui-g-12"/><br/>
+                    <p:inputTextarea value="#{projectCtl.newProject.description}"
+                                     styleClass="ui-g-12"
+                                     autoResize="false"/>
+                </div>
 
                 <hr/>
 
                 <div class="alignRight">
-                    <p:commandButton value="Save" action="#{projectCtl.onNewProject}"
+                    <p:commandButton icon="fa fa-save" value="Save" action="#{projectCtl.onNewProject}"
                                      rendered="#{projectCtl.editMode==false}"
                                      update="mainForm,projectDlgForm"/>
-                    <p:commandButton value="Update" action="#{projectCtl.onUpdateProject}"
+                    <p:commandButton icon="fa fa-save" value="Update" action="#{projectCtl.onUpdateProject}"
                                      rendered="#{projectCtl.editMode==true}"
                                      update="mainForm,projectDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('projectDlg').hide()"/>
+                    <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('projectDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>

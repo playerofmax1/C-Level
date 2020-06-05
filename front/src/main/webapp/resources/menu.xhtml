@@ -20,7 +20,7 @@
         <h:form>
             <div class="additional ui-g">
                 <div class="ui-g-6">
-                    <p:commandButton icon="fa fa-key" value="Change Password" action="/site/changePwd.jsf?faces-redirect=true"/>
+                    <p:commandButton id="chagePassButton" icon="fa fa-key" value="Change Password" action="/site/changePwd.jsf?faces-redirect=true"/>
                 </div>
                 <div class="ui-g-6">
                     <p:commandButton icon="fa fa-sign-out" value="Sign Out" actionListener="#{loginBean.logout}"/>
@@ -28,12 +28,12 @@
             </div>
 
             <p:menu>
-                <p:submenu label="Employee" icon="fa fa-user">
+                <p:submenu label="Employee" icon="fa fa-user" rendered="#{accessCtl.isVisible('S0007','S0009')}">
                     <p:menuitem id="home" icon="fa fa-home" iconPos="right" value="Home" action="/site/welcome.jsf?faces-redirect=true"/>
                     <p:menuitem id="timesheet" icon="fa fa-calendar" value="Time Sheet" action="/site/timesheet.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0007')}"/>
                     <p:menuitem id="mandays" icon="fa fa-calendar" value="Time Sheet Summary" action="/site/reportMandays.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0009')}"/>
                 </p:submenu>
-                <p:submenu label="Administrator" icon="fa fa-user-md">
+                <p:submenu label="Administrator" icon="fa fa-user-md" rendered="#{accessCtl.isVisible('S0001','S0002','S0003','S0004','S0005','S0006','S0008','S0010')}">
                     <p:menuitem id="customer" icon="fa fa-bank" value="Customer" action="/site/customer.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0001')}"/>
                     <p:menuitem id="rate" icon="fa fa-money" value="Rate" action="/site/rate.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0002')}"/>
                     <p:menuitem id="task" icon="fa fa-list" value="Task" action="/site/task.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0003')}"/>
@@ -44,6 +44,9 @@
                     <p:menuitem id="settings" icon="fa fa-cog" value="Admin Settings" action="/site/adminSettings.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0010')}"/>
                 </p:submenu>
             </p:menu>
+
+            <p:focus for="chagePassButton"/>
+
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </h:form>
     </p:sidebar>

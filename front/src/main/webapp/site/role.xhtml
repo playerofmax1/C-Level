@@ -20,11 +20,6 @@
 
         <!-- Custom styles for this template -->
         <h:outputStylesheet library="css" name="kudu.css" target="head"/>
-        <style>
-            .ui-picklist-buttons-cell {
-                margin-right: 6px !important;
-            }
-        </style>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -54,17 +49,20 @@
                                 <div class="ui-g">
                                     <div class="ui-g-12 ui-lg-6 ui-sm-12 alignLeft">
                                         <p:commandButton id="newRole"
+                                                         icon="fa fa-plus"
                                                          value="New Role"
                                                          action="#{roleCtl.onPreNewRole}"
                                                          onsuccess="PF('roleDlg').show()"
                                                          update="mainForm,roleDlgForm"/>
                                         <p:commandButton id="editRole"
+                                                         icon="ui-icon-pencil"
                                                          value="Edit Role"
                                                          action="#{roleCtl.onPreUpdateRole}"
                                                          onsuccess="PF('roleDlg').show()"
                                                          disabled="#{roleCtl.selectedRoleId==0}"
                                                          update="roleDlgForm"/>
                                         <p:commandButton id="deleteRole"
+                                                         icon="fa fa-minus"
                                                          value="Delete Role"
                                                          action="#{roleCtl.onPreDeleteRole}"
                                                          onsuccess="PF('deleteRoleDlg').show();"

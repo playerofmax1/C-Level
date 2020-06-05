@@ -20,6 +20,13 @@
 
         <!-- Custom styles for this template -->
         <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <style>
+            .ui-datalist {
+                font-size: 12px;
+                width: calc(100% - 5vw);
+                padding: 0px 3vw 0px 3vw !important;
+            }
+        </style>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -45,16 +52,16 @@
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
                         <p:dataList value="#{adminSettingsCtl.configList}" var="setting" type="definition"
-                                    styleClass="alignMiddle no-margin" itemStyleClass="ui-g alignMiddle" style="font-size:12px">
+                                    styleClass="alignMiddle no-margin" itemStyleClass="ui-g alignMiddle" style="font-size:12px;width:100%;">
 
-                            <p:outputPanel rendered="#{setting.systemConfig != null and setting.systemConfig.generateAsNewGroup}" styleClass="ui-md-12">
+                            <p:outputPanel rendered="#{setting.systemConfig != null and setting.systemConfig.generateAsNewGroup}" styleClass="ui-sm-12 ui-md-12 ui-lg-12">
                                 <hr/>
                             </p:outputPanel>
 
                             <p:outputLabel styleClass="fa fa-cog" style="font-size: 2.5em"/>
 
-                            <p:outputPanel style="display: inline-block" styleClass="ui-md-4 alignMiddle">
-                                <div class="alignMiddle">
+                            <p:outputPanel style="display: inline-block" styleClass="ui-sm-4 ui-md-4 ui-lg-4 alignMiddle">
+                                <div>
                                     #{setting.name}<br/>
                                     <sup>
                                         <p:inputText value="#{setting.description}" styleClass="no-border no-padding transparent" style="width:100%">
@@ -66,7 +73,7 @@
                                 </div>
                             </p:outputPanel>
 
-                            <p:outputPanel styleClass="ui-md-6">
+                            <p:outputPanel styleClass="ui-sm-6 ui-md-6 ui-lg-6">
                                 <p:inputText value="#{setting.value}" style="width:100%" rendered="#{setting.systemConfig.inputType=='TEXT'}">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputText>

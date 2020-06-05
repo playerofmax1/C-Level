@@ -1,8 +1,9 @@
-
+/* common styles for kudu with aristo primefaces theme */
 body {
     min-width: 640px;
     padding-top: 68px;
     margin-top: 0;
+    font-size: 12px;
 }
 
 .login-panel {
@@ -41,7 +42,6 @@ body {
 }
 
 .main h1 {
-    z-index: 91000 !important;
     position: fixed;
     font-family: sans-serif;
     font-size: 21px;
@@ -57,12 +57,7 @@ body {
     font-weight: 600;
 }
 
-.ui-growl {
-    z-index: 99000 !important;
-}
-
 .top-bar {
-    z-index: 90000;
     min-width: 640px;
     width: 100%;
     background-color: white;
@@ -70,7 +65,7 @@ body {
 }
 
 .top-bar > .alignLeft {
-    padding: 10px 0 0 71px;
+    padding: 13px 0 0 88px;
 }
 
 .user-menu {
@@ -124,7 +119,6 @@ body {
 }
 
 .hamburger-button {
-    z-index: 91000;
     position: fixed;
     margin: -70px 0 0 -6px;
     font-size: 35px;
@@ -133,7 +127,6 @@ body {
 }
 
 .left-side-bar {
-    z-index: 90500 !important;
     width: 286px !important;
     margin: 68px 0 0 0 !important;
     padding: 0 !important;
@@ -291,16 +284,20 @@ footer {
     background-color: red;
 }
 
-.red-font {
-    color: red;
-}
-
 .green {
-    background-color: darkolivegreen;
+    background-color: darkolivegreen !important;
 }
 
 .blue {
-    background-color: cornflowerblue;
+    background-color: cornflowerblue !important;
+}
+
+.red-font {
+    color: red !important;
+}
+
+.white-font {
+    color: white !important;
 }
 
 .summary {
@@ -332,24 +329,34 @@ label.require:after {
     font-size: 1.4em !important;
 }
 
+.ui-dialog .ui-dialog-content {
+    padding: 10px !important;
+}
+
 .ui-menu-overlay {
-    z-index: 91000 !important;
     margin-top: 5px;
+}
+
+.ui-picklist-buttons-cell {
+    margin-right: 0.33em !important;
 }
 
 .ui-inputfield,
 .ui-inputtext {
     outline: none !important;
     font-weight: normal !important;
-    margin: 0 0 0 !important;
     padding: 5px 5px !important;
     box-shadow: inset 1px 1px 4px #cccccc !important;
 }
 
-.ui-inputnumber {
+.ui-inputfield,
+.ui-inputtext,
+.ui-inputnumber,
+.ui-selectonemenu {
     margin: 0 0 0 !important;
 }
 
+.ui-inputgroup .ui-selectonemenu,
 .ui-inputgroup .ui-button {
     margin: 0;
 }
@@ -428,12 +435,8 @@ hr.ui-separator {
     display: none;
 }
 
-.ui-widget.no-padding .ui-widget-content {
-    padding: 0 0 0 0 !important;
-}
-
-.ui-widget.no-padding:parent {
-    padding: 0 0 0 0 !important;
+.ui-datatable-header.ui-widget-header.ui-corner-top {
+    padding: 5px !important;
 }
 
 .holiday {
@@ -463,10 +466,6 @@ hr.ui-separator {
     text-align: center;
 }
 
-body {
-    font-size: 12px;
-}
-
 /*IMPORTANT!*/
 
 .alignLeft {
@@ -483,14 +482,17 @@ body {
 
 .alignTop {
     vertical-align: top;
+    display: inline-block;
 }
 
 .alignMiddle {
     vertical-align: middle;
+    display: inline-block;
 }
 
 .alignBottom {
     vertical-align: bottom;
+    display: inline-block;
 }
 
 .floatLeft {
@@ -507,10 +509,6 @@ body {
     top: 0;
     width: 100%;
     margin: 0;
-}
-
-.bring-to-top {
-    z-index: 91000 !important;
 }
 
 .onBottomLeft {
@@ -549,6 +547,7 @@ body {
     box-shadow: none !important;
 }
 
+.no-padding.ui-widget .ui-widget-content,
 .no-padding {
     padding: 0 0 0 0 !important;
 }
@@ -557,8 +556,55 @@ body {
     margin: 0 0 0 0 !important;
 }
 
-@media (max-width: 640px) {
+.ui-g-1, .ui-g-2, .ui-g-3, .ui-g-4, .ui-g-5, .ui-g-6, .ui-g-7, .ui-g-8, .ui-g-9, .ui-g-10, .ui-g-11, .ui-g-12 {
+    padding: 5px;
+}
 
+/* Z-Index Management */
+
+.top-bar {
+    z-index: 90000 !important;
+}
+
+.left-side-bar {
+    z-index: 90500 !important;
+}
+
+.main h1 {
+    z-index: 91000 !important;
+}
+
+.hamburger-button {
+    z-index: 91000 !important;
+}
+
+.ui-dialog {
+    z-index: 98000 !important;
+}
+
+.ui-datepicker {
+    z-index: 98100 !important;
+}
+
+.ui-selectonemenu-panel {
+    z-index: 98100 !important;
+}
+
+.bring-to-top {
+    z-index: 98300 !important;
+}
+
+.ui-menu-overlay {
+    z-index: 98500 !important;
+}
+
+.ui-growl {
+    z-index: 99000 !important;
+}
+
+/* Improve appearance on small devices */
+
+@media (max-width: 640px) {
 
 
 }

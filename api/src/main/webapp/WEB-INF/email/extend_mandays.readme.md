@@ -19,15 +19,15 @@
 
 ยินดีด้วย! คุณได้รับ Mandays เพิ่มแล้ว ตามรายละเอียดดังต่อไปนี้
 
-| หัวข้อ                                                         | รายละเอียด                                       |
-| ------------------------------------------------------------ | ----------------------------------------------- |
-| Project                                                      | [LH01] LH ETL Outsource                         |
-| Task                                                         | [W40] Development & Unit Test                   |
-| Description                                                  | Web Monitoring Implementation                   |
-| Plan Mandays                                                 | 20 Mandays<br /><sup>( 1manday = 8hours )</sup> |
-| Extend Mandays<br /><sup>(this time)</sup>                   | 5 Mandays<br /><sup>( 1manday = 8hours )</sup>  |
-| Total Extend Mandays                                         | 5 Mandays<br /><sup>( 1manday = 8hours )</sup>  |
-| Total Plan Mandays<br /><sup>( Plan Mandays + Total Extend Mandays )</sup> | 25 Mandays<br /><sup>( 1manday = 8hours )</sup> |
+| หัวข้อ                                                         | รายละเอียด                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Project                                                      | [LH01] LH ETL Outsource                                      |
+| Task                                                         | [W40] Development & Unit Test<br /><sup>Web Monitoring Implementation</sup> |
+| Description                                                  | Request from Bank                                            |
+| Plan Mandays                                                 | 20 Mandays<br /><sup>( 1manday = 8hours )</sup>              |
+| **Extend Mandays**<br /><sup>(this time)</sup>               | 5 Mandays<br /><sup>( 1manday = 8hours )</sup>               |
+| Total Extend Mandays                                         | 5 Mandays<br /><sup>( 1manday = 8hours )</sup>               |
+| Total Plan Mandays<br /><sup>( Plan Mandays + Total Extend Mandays )</sup> | 25 Mandays<br /><sup>( 1manday = 8hours )</sup>              |
 
 
 
@@ -55,6 +55,7 @@ Kudu Administrator
 | ${TASK_CODE}          | W40                           |                                                |
 | ${TASK_NAME}          | Development & Unit Test       |                                                |
 | ${TASK_DESCRIPTION}   | Web Monitoring Implementation |                                                |
+| ${EXTEND_DESCRIPTION} | Request from Bank             | Description                                    |
 | ${PLAN_MANDAYS}       | 20.00                         |                                                |
 | ${EXTEND_MANDAYS}     | 5.00                          |                                                |
 | ${TOTAL_PLAN_MANDAYS} | 25.00                         |                                                |

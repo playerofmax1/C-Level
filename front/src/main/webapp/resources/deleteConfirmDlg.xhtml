@@ -6,7 +6,7 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:ui="http://java.sun.com/jsf/facelets">
 
-    <p:dialog header="#{header}" widgetVar="#{widgetVar}" modal="true" width="40%" resizable="false">
+    <p:dialog header="#{header}" widgetVar="#{widgetVar}" modal="true" width="40%" resizable="false" closeOnEscape="true" closable="false">
         <h:form id="deleteDlgForm">
             <p:panelGrid columns="1" styleClass="no-border">
                 <h:outputText value="#{msg1}"/>
@@ -16,10 +16,10 @@
             <hr/>
 
             <div class="alignRight">
-                <p:commandButton value="Delete" action="#{controller[action]}"
+                <p:commandButton icon="fa fa-remove" value="Delete" action="#{controller[action]}"
                                  onsuccess="PF('#{widgetVar}').hide();"
                                  update="#{update}"/>
-                <p:commandButton value="Cancel" onclick="PF('#{widgetVar}').hide()"/>
+                <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('#{widgetVar}').hide()"/>
             </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </h:form>

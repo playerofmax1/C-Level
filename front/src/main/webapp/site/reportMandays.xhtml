@@ -31,8 +31,16 @@
                 font-weight: 700;
             }
 
+            .holiday-panel {
+                width:56em;
+            }
+
             .holiday-table {
                 font-size: 11px
+            }
+
+            .holiday-table thead {
+                display: none;
             }
 
             .holiday-table tr {
@@ -111,7 +119,7 @@
                                             <p:tooltip for="nextYear" value="Next Year" position="right"/><br/>
                                             <p:outputLabel value="#{rptMandaysCtl.holidayList.size()} Holidays"/>
                                             <p:outputLabel id="holidayList" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top">
+                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top" styleClass="holiday-panel ui-corner-all">
                                                 <p:dataTable var="holiday" value="#{rptMandaysCtl.holidayList}" sortBy="#{holiday.holidayDate}"
                                                              styleClass="no-border holiday-table" rowStyleClass="#{(holiday.holidayDate.month % 2 > 0)?'even':'odd'}">
                                                     <p:column groupRow="true" style="width:45px;" styleClass="alignCenter">

@@ -6,8 +6,6 @@ import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.security.PwdRequest;
 import com.clevel.kudu.front.validation.Validator;
 import com.clevel.kudu.model.APIResponse;
-import com.clevel.kudu.model.Screen;
-import com.clevel.kudu.model.UserDetail;
 import com.clevel.kudu.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
@@ -23,13 +21,15 @@ public class SystemController extends AbstractController {
     private String confirmPwd;
     private Validator validator;
 
+    private boolean saved;
+
     public SystemController() {
     }
 
     @PostConstruct
     public void onCreation() {
         log.debug("onCreation.");
-
+        saved = false;
         pwdRequest = new PwdRequest();
     }
 
@@ -37,10 +37,10 @@ public class SystemController extends AbstractController {
         log.debug("onChangePwd.");
 
         validator = new Validator();
-        validator.mustPwdMatch("pwd",pwdRequest.getNewPassword(),confirmPwd,"The password and confirmation do not match");
+        validator.mustPwdMatch("pwd", pwdRequest.getNewPassword(), confirmPwd, "The password and confirmation do not match");
 
-        validator.mustNotBlank("pwd",pwdRequest.getNewPassword(),"New Password can not be empty");
-        validator.mustNotBlank("oldPwd",pwdRequest.getOldPassword(),"Old password can not be empty");
+        validator.mustNotBlank("pwd", pwdRequest.getNewPassword(), "New Password can not be empty");
+        validator.mustNotBlank("oldPwd", pwdRequest.getOldPassword(), "Old password can not be empty");
         if (validator.isFailed()) {
             FacesUtil.addError(validator.getMessage());
             return;
@@ -54,14 +54,15 @@ public class SystemController extends AbstractController {
             ServiceResponse serviceResponse = response.readEntity(new GenericType<ServiceResponse>() {
             });
 
-            if (serviceResponse.getApiResponse()== APIResponse.FAILED) {
+            if (serviceResponse.getApiResponse() == APIResponse.FAILED) {
                 FacesUtil.addError(serviceResponse.getMessage());
                 return;
             }
-            FacesUtil.addInfo(serviceResponse.getApiResponse().description());
+            FacesUtil.actionSuccess("Password is changed successful.");
+            saved = true;
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            FacesUtil.actionFailed("wrong response from server!");
         }
 
         pwdRequest = new PwdRequest();
@@ -77,7 +78,7 @@ public class SystemController extends AbstractController {
             ServiceResponse serviceResponse = response.readEntity(new GenericType<ServiceResponse>() {
             });
 
-            if (serviceResponse.getApiResponse()== APIResponse.FAILED) {
+            if (serviceResponse.getApiResponse() == APIResponse.FAILED) {
                 FacesUtil.addError(serviceResponse.getMessage());
                 return;
             }
@@ -97,7 +98,7 @@ public class SystemController extends AbstractController {
             ServiceResponse serviceResponse = response.readEntity(new GenericType<ServiceResponse>() {
             });
 
-            if (serviceResponse.getApiResponse()== APIResponse.FAILED) {
+            if (serviceResponse.getApiResponse() == APIResponse.FAILED) {
                 FacesUtil.addError(serviceResponse.getMessage());
                 return;
             }
@@ -130,5 +131,13 @@ public class SystemController extends AbstractController {
 
     public void setValidator(Validator validator) {
         this.validator = validator;
+    }
+
+    public boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(boolean saved) {
+        this.saved = saved;
     }
 }

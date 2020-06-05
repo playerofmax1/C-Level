@@ -53,9 +53,16 @@
                             </h:outputText>
                         </p:panelGrid>
 
-                        <p:panelGrid columns="2" styleClass="no-border" columnClasses="no-padding">
+                        <p:panelGrid columns="2" styleClass="no-border">
+                            <h:commandLink action="/site/project.jsf?faces-redirect=true">
+                                <h:outputText styleClass="fa fa-arrow-left" style="font-size:1.5em;"/>
+                            </h:commandLink>
+                            <h:commandLink action="/site/project.jsf?faces-redirect=true">
+                                <h:outputText value="Back to project management"/>
+                            </h:commandLink>
+
                             <h:outputLabel value="Description:" style="width: 100px"/>
-                            <h:outputText value="#{managePrjCtl.project.description}"/>
+                            <h:outputText value="#{(managePrjCtl.project.description=='')?'(none)':managePrjCtl.project.description}"/>
 
                             <h:outputLabel value="Customer:"/>
                             <h:outputText value="#{managePrjCtl.project.customer.name}"/>
@@ -77,6 +84,7 @@
                                     <div class="ui-g">
                                         <div class="ui-g-12 ui-md-6 alignLeft">
                                             <p:commandButton id="newProjectTask"
+                                                             icon="fa fa-plus"
                                                              value="New Project Task"
                                                              action="#{managePrjCtl.onPreAddNew}"
                                                              onsuccess="PF('projectTaskDlg').show()"
@@ -135,7 +143,7 @@
                                 <h:outputText value="#{task.description}"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 120px">
+                            <p:column headerText="Actions" style="width: 8.2em">
                                 <p:commandButton id="editBtn" icon="ui-icon-pencil" action="#{managePrjCtl.onPreEdit(task)}"
                                                  update="projectTaskDlgForm"
                                                  onsuccess="PF('projectTaskDlg').show();"/>
@@ -174,7 +182,7 @@
                     <p:panelGrid columns="4" styleClass="no-border no-margin">
 
                         <h:outputLabel value="Task:" styleClass="require"/>
-                        <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}" style="width:100%"
+                        <p:selectOneMenu value="#{managePrjCtl.selectedTaskId}"
                                          disabled="#{managePrjCtl.editMode}">
                             <f:selectItems value="#{managePrjCtl.taskList}" var="task"
                                            itemLabel="[#{task.code}] #{task.name}"
@@ -205,10 +213,13 @@
                     </p:panelGrid>
 
                     <br/>
-                    <h:outputLabel value="Description:"/>
-                    <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}"
-                                     style="width: 100%"
-                                     autoResize="false"/>
+
+                    <div class="ui-g">
+                        <h:outputLabel value="Description:" styleClass="ui-g-12"/>
+                        <p:inputTextarea value="#{managePrjCtl.newProjectTask.description}"
+                                         styleClass="ui-g-12"
+                                         autoResize="false"/>
+                    </div>
 
                     <hr/>
 
@@ -217,75 +228,86 @@
                                          rendered="#{managePrjCtl.editMode==false}"
                                          update="mainForm,projectTaskDlgForm"
                                          onclick="PF('blockProjectTaskDlgButtons').show();"/>
-                        <p:commandButton value="Update" action="#{managePrjCtl.onUpdate(newProjectTask)}"
+                        <p:commandButton icon="fa fa-save" value="Update" action="#{managePrjCtl.onUpdate(newProjectTask)}"
                                          rendered="#{managePrjCtl.editMode==true}"
                                          update="mainForm,projectTaskDlgForm"/>
-                        <p:commandButton value="Cancel" onclick="PF('projectTaskDlg').hide()"/>
+                        <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('projectTaskDlg').hide()"/>
                     </div>
                 </p:outputPanel>
 
                 <p:blockUI block="projectTaskDlg" widgetVar="blockProjectTaskDlgButtons" styleClass="ui-corner-all">
                     <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                    <br/>Sending email please wait ...
                 </p:blockUI>
 
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="66%" resizable="false">
+        <p:dialog header="Extend Mandays" widgetVar="extendMDDlg" modal="true" width="66%" resizable="false" closable="false">
             <h:form id="extendMDDlgForm">
-                <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Task: "/>
-                    <p:outputLabel
-                            value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}"/>
+                <p:outputPanel id="extendMDDlg">
+                    <div class="ui-g no-padding alignLeft">
+                        <h:outputLabel value="Task:" styleClass="ui-g-1"/>
+                        <h:outputLabel value="[#{managePrjCtl.newProjectTask.task.code}] #{managePrjCtl.newProjectTask.task.name}" styleClass="ui-g-10"/>
+                        <p:spacer width="5"/>
 
-                    <h:outputLabel value="Extend MD:" styleClass="require"/>
-                    <p:outputPanel styleClass="no-padding no-margin">
-                        <div class="ui-inputgroup">
-                            <p:inputNumber value="#{managePrjCtl.newExtTask.extendMDDuration}"
-                                           converter="durationManDayConverter"
-                                           emptyValue="zero"/>
-                            <span class="ui-inputgroup-addon">mandays</span>
+                        <h:outputLabel value="Extend:" styleClass="ui-g-1 require"/>
+                        <div class="ui-g-10">
+                            <div class="ui-inputgroup">
+                                <p:inputNumber value="#{managePrjCtl.newExtTask.extendMDDuration}"
+                                               converter="durationManDayConverter"
+                                               emptyValue="zero"/>
+                                <span class="ui-inputgroup-addon">mandays</span>
+                            </div>
                         </div>
-                    </p:outputPanel>
-                </p:panelGrid>
 
-                <br/>
-                <h:outputLabel value="Description:"/>
-                <p:inputTextarea value="#{managePrjCtl.newExtTask.description}"
-                                 style="width: 100%"
-                                 autoResize="false"/>
+                        <h:outputLabel value="Description:" styleClass="ui-g-12"/>
+                        <p:inputTextarea value="#{managePrjCtl.newExtTask.description}"
+                                         styleClass="ui-g-12"
+                                         autoResize="false"/>
+                    </div>
 
-                <p:dataTable var="taskExt" value="#{managePrjCtl.taskExtList}" rows="10"
-                             paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+                    <hr/>
 
-                    <f:facet name="header">
-                        Extend History
-                    </f:facet>
+                    <p:dataTable var="taskExt" value="#{managePrjCtl.taskExtList}" rows="10"
+                                 paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
-                    <p:column headerText="Date" style="width: 150px">
-                        <h:outputText value="#{taskExt.createDate}">
-                            <f:convertDateTime pattern="E dd/MM/yyyy HH:mm" timeZone="Asia/Bangkok"/>
-                        </h:outputText>
-                    </p:column>
+                        <f:facet name="header">
+                            Extend History
+                        </f:facet>
 
-                    <p:column headerText="Extend MD" style="width: 100px">
-                        <h:outputText value="#{taskExt.extendMD}"/>
-                    </p:column>
+                        <p:column headerText="Date" style="width: 150px">
+                            <h:outputText value="#{taskExt.createDate}">
+                                <f:convertDateTime pattern="E dd/MM/yyyy HH:mm" timeZone="Asia/Bangkok"/>
+                            </h:outputText>
+                        </p:column>
 
-                    <p:column headerText="Description">
-                        <h:outputText value="#{taskExt.description}"/>
-                    </p:column>
-                </p:dataTable>
+                        <p:column headerText="Extend MD" style="width: 100px">
+                            <h:outputText value="#{taskExt.extendMD}"/>
+                        </p:column>
 
-                <hr/>
+                        <p:column headerText="Description">
+                            <h:outputText value="#{taskExt.description}"/>
+                        </p:column>
+                    </p:dataTable>
 
-                <div class="alignRight">
-                    <p:commandButton value="Save" action="#{managePrjCtl.onExtendManDay()}"
-                                     update="mainForm,extendMDDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('extendMDDlg').hide()"/>
-                </div>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <hr/>
+
+                    <div class="alignRight">
+                        <p:commandButton id="extendSaveButton" icon="fa fa-save" value="Save" action="#{managePrjCtl.onExtendManDay()}"
+                                         update="mainForm,extendMDDlgForm"
+                                         onclick="PF('blockExtendMDDlg').show();"/>
+                        <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('extendMDDlg').hide()"/>
+                    </div>
+
+                    <p:blockUI block="extendMDDlg" widgetVar="blockExtendMDDlg" styleClass="ui-corner-all">
+                        <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                        <br/>Sending email please wait ...
+                    </p:blockUI>
+
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </p:outputPanel>
             </h:form>
         </p:dialog>
 

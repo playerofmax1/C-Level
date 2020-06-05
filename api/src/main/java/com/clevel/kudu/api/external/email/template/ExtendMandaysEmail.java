@@ -39,7 +39,8 @@ public class ExtendMandaysEmail extends EmailManager {
         map.put("PROJECT_NAME", project.getName());
         map.put("TASK_CODE", task.getCode());
         map.put("TASK_NAME", task.getName());
-        map.put("TASK_DESCRIPTION", projectTask.getDescription());
+        map.put("TASK_DESCRIPTION", task.getDescription());
+        map.put("EXTEND_DESCRIPTION", projectTaskExt.getDescription());
 
         BigDecimal planMD = projectTask.getPlanMD();
         BigDecimal totalExtendMD = projectTask.getExtendMD();

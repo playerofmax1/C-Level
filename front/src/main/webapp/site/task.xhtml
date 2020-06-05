@@ -40,7 +40,8 @@
                                 <p:outputPanel styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
-                                            <p:commandButton id="newTask" 
+                                            <p:commandButton id="newTask"
+                                                             icon="fa fa-plus"
                                                              value="New Task" 
                                                              action="#{taskCtl.onPreNewTask}"
                                                              onsuccess="PF('taskDlg').show()" 
@@ -72,20 +73,22 @@
                             </p:column>
 
 
-                            <p:column headerText="Actions" style="width: 140px">
-                                <p:commandButton value="Edit" action="#{taskCtl.onPreUpdateTask}"
+                            <p:column headerText="Actions" style="width: 5.5em">
+                                <p:commandButton id="editButton" icon="ui-icon-pencil" action="#{taskCtl.onPreUpdateTask}"
                                                  update="taskDlgForm"
                                                  onsuccess="PF('taskDlg').show();">
                                     <f:setPropertyActionListener value="#{task.id}"
                                                                  target="#{taskCtl.selectedTaskId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="editButton" value="Edit" position="top"/>
 
-                                <p:commandButton value="Delete" action="#{taskCtl.onPreDeleteTask}"
+                                <p:commandButton id="deleteButton" icon="ui-icon-minus" action="#{taskCtl.onPreDeleteTask}"
                                                  update="deleteDlgForm"
                                                  onsuccess="PF('deleteTaskDlg').show();">
                                     <f:setPropertyActionListener value="#{task.id}"
                                                                  target="#{taskCtl.selectedTaskId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="deleteButton" value="Delete" position="top"/>
                             </p:column>
 
                         </p:dataTable>
@@ -118,13 +121,13 @@
                 <hr/>
 
                 <div class="alignRight">
-                    <p:commandButton value="Save" action="#{taskCtl.onNewTask}"
+                    <p:commandButton icon="fa fa-save" value="Save" action="#{taskCtl.onNewTask}"
                                      rendered="#{taskCtl.editMode==false}"
                                      update="mainForm,taskDlgForm"/>
-                    <p:commandButton value="Update" action="#{taskCtl.onUpdateTask}"
+                    <p:commandButton icon="fa fa-save" value="Update" action="#{taskCtl.onUpdateTask}"
                                      rendered="#{taskCtl.editMode==true}"
                                      update="mainForm,taskDlgForm"/>
-                    <p:commandButton value="Cancel" onclick="PF('taskDlg').hide()"/>
+                    <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('taskDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>

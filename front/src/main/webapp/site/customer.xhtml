@@ -41,8 +41,8 @@
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
                                             <p:commandButton id="newCustomer"
-                                                             icon="ui-icon-plus"
-                                                    value="New Customer"
+                                                             icon="fa fa-plus"
+                                                             value="New Customer"
                                                              action="#{customerCtl.onPreNewCustomer}"
                                                              onsuccess="PF('customerDlg').show()"
                                                              update="customerDlgForm"/>
@@ -64,22 +64,22 @@
                                 <h:outputText value="#{customer.description}"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 90px">
-                                <p:commandButton id="editButon" icon="ui-icon-pencil" action="#{customerCtl.onPreUpdateCustomer}"
+                            <p:column headerText="Actions" style="width: 5.5em">
+                                <p:commandButton id="editButton" icon="ui-icon-pencil" action="#{customerCtl.onPreUpdateCustomer}"
                                                  update="customerDlgForm"
                                                  onsuccess="PF('customerDlg').show();">
                                     <f:setPropertyActionListener value="#{customer.id}"
                                                                  target="#{customerCtl.selectedCustomerId}"/>
                                 </p:commandButton>
-                                <p:tooltip for="editButon" value="Edit" position="top"/>
+                                <p:tooltip for="editButton" value="Edit" position="top"/>
 
-                                <p:commandButton id="deleteButon" icon="ui-icon-minus" action="#{customerCtl.onPreDeleteCustomer}"
+                                <p:commandButton id="deleteButton" icon="ui-icon-minus" action="#{customerCtl.onPreDeleteCustomer}"
                                                  update="deleteDlgForm"
                                                  onsuccess="PF('deleteCustomerDlg').show();">
                                     <f:setPropertyActionListener value="#{customer.id}"
                                                                  target="#{customerCtl.selectedCustomerId}"/>
                                 </p:commandButton>
-                                <p:tooltip for="deleteButon" value="Delete" position="top"/>
+                                <p:tooltip for="deleteButton" value="Delete" position="top"/>
                             </p:column>
 
                         </p:dataTable>
@@ -94,9 +94,9 @@
             <h:form id="customerDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
                     <h:outputLabel value="Code" styleClass="require"/>
-                    <p:inputText value="#{customerCtl.newCustomer.code}" styleClass="#{customerCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{customerCtl.newCustomer.code}" styleClass="#{customerCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{customerCtl.newCustomer.name}" styleClass="#{customerCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
+                    <p:inputText value="#{customerCtl.newCustomer.name}" styleClass="#{customerCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
                     <h:outputLabel value="Description"/>
                     <p:inputTextarea value="#{customerCtl.newCustomer.description}" style="width: 400px"
                                      autoResize="false"/>
@@ -111,7 +111,7 @@
                     <p:commandButton icon="fa fa-save" value="Update" action="#{customerCtl.onUpdateCustomer}"
                                      rendered="#{customerCtl.editMode==true}"
                                      update="mainForm,customerDlgForm"/>
-                    <p:commandButton icon="fa fa-close" value="Cancel" onclick="PF('customerDlg').hide()"/>
+                    <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('customerDlg').hide()"/>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </h:form>

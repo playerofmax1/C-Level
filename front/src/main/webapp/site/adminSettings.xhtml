@@ -18,18 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
-        <script>
-            $(document).ready(function () {
-                $('#settings').addClass('active');
-            });
-        </script>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -39,8 +29,9 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1>Admin Settings</h1>
                     <h:form id="mainForm">
-                        <p:outputPanel styleClass="button-bar floatRight alignRight no-padding no-margin" id="buttonPanel">
+                        <p:outputPanel styleClass="button-bar alignRight no-padding no-margin" id="buttonPanel" style="width:100%">
                             <p:commandButton id="saveButton"
                                              icon="fa fa-save"
                                              value="Save"
@@ -50,7 +41,6 @@
                             <p:tooltip position="left" value="Save changes." for="saveButton"/>
                             <p:sticky target="buttonPanel" margin="75"/>
                         </p:outputPanel>
-                        <h1>Admin Settings</h1>
 
                         <p:growl id="msg" showDetail="true" escape="false"/>
 

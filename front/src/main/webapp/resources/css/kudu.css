@@ -1,31 +1,76 @@
 
-/* Move down content because we have a fixed navbar that is 50px tall */
 body {
-    padding-top: 80px;
+    min-width: 640px;
+    padding-top: 68px;
+    margin-top: 0;
 }
 
-h1 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 5px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+.login-panel {
+    min-width: 250px;
+    padding: 21px !important;
+    width: 25%;
+    background-color: white;
+    display: inline-block;
+
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+
+    border-color: #ddd;
 }
 
-h2 {
+.login-panel.ui-panel .ui-panel-content {
+    display: inline-grid;
+}
+
+.login-panel div {
+    padding: 0;
+    vertical-align: bottom;
+}
+
+.container-fluid {
+}
+
+.container-fluid > .row {
+    margin: 0 !important;
+}
+
+.main {
+    margin: 0 !important;
+    padding: 15px 10px 10px 10px !important;
+}
+
+.main h1 {
+    z-index: 91000 !important;
+    position: fixed;
+    font-family: sans-serif;
+    font-size: 21px;
+    font-weight: normal;
+    margin: -70px 0 0 266px;
+    border-left: silver solid 2px;
+    padding: 13px 10px 7px 16px;
+    color: gray !important;
+}
+
+.main h2 {
     font-size: 16px;
     font-weight: 600;
 }
 
 .ui-growl {
-    z-index: 9999 !important;
+    z-index: 99000 !important;
 }
 
-@media (min-width: 300px) {
-    .my-dialog-class {
-        width: 80% !important;
-        z-index: 9000 !important;
-    }
+.top-bar {
+    z-index: 90000;
+    min-width: 640px;
+    width: 100%;
+    background-color: white;
+    box-shadow: silver 1px 1px 7px 1px;
+}
+
+.top-bar > .alignLeft {
+    padding: 10px 0 0 71px;
 }
 
 .user-menu {
@@ -51,15 +96,136 @@ h2 {
     border: gray solid 1.5px !important;
     font-size: 2em;
 
+    text-align: center;
+    vertical-align: middle;
+
     overflow: hidden;
     display: inline-block;
 }
 
+.button-bar {
+
+}
+
 .button-bar.ui-sticky {
-    right: 0px !important;
+    right: 0 !important;
+    -moz-border-radius: 7px 0 0 7px !important;
+    -webkit-border-radius: 7px 0 0 7px !important;
+    border-radius: 7px 0 0 7px !important;
     width: auto !important;
-    border-radius: 7px 0px 0px 7px !important;
     padding: 7px !important;
+}
+
+.hamburger-bar {
+    top: 100px !important;
+
+    width: auto !important;
+    text-align: center;
+}
+
+.hamburger-button {
+    z-index: 91000;
+    position: fixed;
+    margin: -70px 0 0 -6px;
+    font-size: 35px;
+    padding: 10px !important;
+    cursor: pointer;
+}
+
+.left-side-bar {
+    z-index: 90500 !important;
+    width: 286px !important;
+    margin: 68px 0 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: silver 1px 7px 5px 3px !important;
+}
+
+.left-side-bar .ui-sidebar-close {
+    display: none;
+}
+
+.left-side-bar .additional {
+    margin-bottom: -1px;
+}
+
+.left-side-bar .additional,
+.left-side-bar .additional div {
+    padding: 0;
+}
+
+.left-side-bar .additional button {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    -moz-border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
+.left-side-bar .additional .ui-button-icon-left {
+    left: 0em;
+    top: 0.5em;
+    width: 2em;
+    height: 2em;
+    font-size: 2em;
+    color: gray;
+}
+
+.left-side-bar .ui-menu {
+    width: 100%;
+    height: 5000px;
+    padding: 0;
+    border: 0;
+    margin: 0 !important;
+}
+
+.left-side-bar .ui-widget-header {
+    padding: 7px;
+    margin: 0 !important;
+    border-width: 0;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    width: calc(100% - 14px) !important;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.left-side-bar .ui-widget-header span {
+    margin-right: 10px;
+}
+
+.left-side-bar .ui-menuitem {
+    padding: 5px 0 5px 10px !important;
+    margin: 1px 0 1px 0 !important;
+    border-width: 0;
+    border-bottom-width: 1px;
+    width: calc(100% - 10px) !important;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.left-side-bar .ui-menuitem a {
+    padding-left: 25px !important;
+    width: calc(92% - 25px) !important;
+}
+
+.left-side-bar .ui-menuitem .ui-menuitem-icon {
+    left: 0em;
+    top: 0em;
+    font-size: 1.2em;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.left-side-bar .ui-menuitem .ui-menuitem-text {
+    margin-left: 10px;
+}
+
+.ui-sidebar-mask {
+    margin-top: 68px !important;
 }
 
 .panel-heading {
@@ -84,13 +250,19 @@ h2 {
 }
 
 footer {
+    position: fixed;
+    font-family: sans-serif;
+    bottom: 0;
+    left: auto;
+    right: auto;
     text-align: center;
-    font-family: Georgia, serif;
     font-size: 10px;
     color: #786e68;
-    position: fixed;
-    bottom: 5px;
-    width: 100%;
+    width: 350px;
+    margin-left: calc(50% - 188px) !important;
+    background-color: white;
+    padding: 5px;
+    border-radius: 40px 40px 0 0;
 }
 
 .version {
@@ -165,35 +337,17 @@ label.require:after {
     margin-top: 5px;
 }
 
-.ui-selectonemenu {
-    display: inline-block;
-    position: relative;
-    min-width: 80px !important;
-    height: 34px !important;
-    outline: none !important;
-    background: transparent !important;
-    margin: 0 0 0 0 !important;
-    padding: 0 !important;
-    border: 1px solid #c4c4c4;
-    border-radius: 3px !important;
-    font-family: 'Tahoma', sans-serif !important;
-    font-size: 14px !important;
-    zoom: 1;
-    cursor: pointer;
-    padding-right: 2em;
-}
-
 .ui-inputfield,
 .ui-inputtext {
     outline: none !important;
     font-weight: normal !important;
-    margin: 0 0 0px !important;
+    margin: 0 0 0 !important;
     padding: 5px 5px !important;
     box-shadow: inset 1px 1px 4px #cccccc !important;
 }
 
 .ui-inputnumber {
-    margin: 0 0 0px !important;
+    margin: 0 0 0 !important;
 }
 
 .ui-inputgroup .ui-button {
@@ -218,7 +372,7 @@ label.require:after {
 
 .ui-spinner-input {
     padding-right: 20px !important;
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 
 .ui-spinner .ui-icon {
@@ -226,7 +380,7 @@ label.require:after {
 }
 
 .ui-radiobutton-icon {
-    margin-left: 0px !important;
+    margin-left: 0 !important;
     margin-top: -1px !important;
 }
 
@@ -240,7 +394,7 @@ label.require:after {
 }
 
 .ui-datalist-data {
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
 }
 
 .ui-border {
@@ -280,10 +434,6 @@ hr.ui-separator {
 
 .ui-widget.no-padding:parent {
     padding: 0 0 0 0 !important;
-}
-
-.ui-blockui {
-
 }
 
 .holiday {
@@ -405,4 +555,10 @@ body {
 
 .no-margin {
     margin: 0 0 0 0 !important;
+}
+
+@media (max-width: 640px) {
+
+
+
 }

@@ -8,7 +8,6 @@
 
     <h:head>
         <title>Sign in</title>
-        <h:outputScript library="js" name="sctManage.js"/>
 
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -16,19 +15,11 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <title>Signin for SCTManage</title>
-
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="signin.css" target="head"/>
-
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
 
     </h:head>
-    <h:body>
+    <h:body style="background-color: #eee">
         <div class="container">
             <p:panel header="View Expired"
                      rendered="#{pfExceptionHandler != null and pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}"
@@ -36,13 +27,45 @@
                 <h4>The session is timed out, please login again to confirm this is your.</h4>
             </p:panel>
 
-            <h:form id="loginForm" styleClass="form-signin">
+            <h:form id="loginForm" styleClass="form-signin alignCenter">
                 <p:growl id="msg" showDetail="true"/>
-                <h2 class="h3 mb-3 font-weight-normal">Please sign in</h2>
-                    <p:inputText id="username" value="#{loginBean.userName}" placeholder="username" styleClass="form-control"/>
-                    <p:inputText id="password" type="password" value="#{loginBean.password}" placeholder="password" styleClass="form-control"/>
-                    <p:commandButton id="signInBtn" value="Sign in" styleClass="btn btn-lg btn-primary btn-block"
-                                     action="#{loginBean.login()}" update="loginForm"/>
+
+                <div class="alignCenter" style="width: 100%;">
+                    <p:panel styleClass="login-panel">
+
+                        <div class="ui-g ui-g-12">
+                            <div class="ui-g-6 alignLeft">
+                                <h1 class="floatRight" style="color:pink">LOGIN</h1>
+                            </div>
+                            <div class="ui-g-6 alignRight">
+                                <p:graphicImage name="img/kudu.png" height="64" styleClass="floatLeft"/>
+                            </div>
+                        </div>
+
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon" style="width:10em;">User Name</span>
+                            <p:inputText id="username" value="#{loginBean.userName}" placeholder="username" styleClass="form-control" style="width: 100%"/>
+                            <span class="ui-inputgroup-addon"><span class="fa fa-user"></span></span>
+                        </div>
+
+                        <p:spacer height="2"/>
+
+                        <div class="ui-inputgroup">
+                            <span class="ui-inputgroup-addon" style="width:10em;">Password</span>
+                            <p:inputText id="password" type="password" value="#{loginBean.password}" placeholder="password" styleClass="form-control" style="width: 100%"/>
+                            <span class="ui-inputgroup-addon"><span class="fa fa-key"></span></span>
+                        </div>
+
+                        <p:spacer height="2"/>
+
+                        <div class="ui-inputgroup">
+                            <p:commandButton id="signInBtn" icon="fa fa-sign-out" value="Sign in"
+                                             styleClass="btn btn-lg btn-primary btn-block"
+                                             style="width:100%"
+                                             action="#{loginBean.login()}" update="loginForm"/>
+                        </div>
+                    </p:panel>
+                </div>
             </h:form>
 
         </div>

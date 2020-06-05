@@ -18,13 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
         <style>
             .ui-calendar {
                 display: inline-block;
@@ -38,12 +33,15 @@
             .ui-calendar input {
                 width: 100%;
             }
+
+            .project-group div {
+                vertical-align: middle;
+            }
+
+            .project-group .ui-selectonemenu {
+                width: calc(100% - 32px) !important;
+            }
         </style>
-        <script>
-            $(document).ready(function () {
-                $('#timesheet').addClass('active');
-            });
-        </script>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -257,39 +255,41 @@
 
                     <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
                         <p:outputLabel value="Time in: "
-
                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
-                        <p:calendar id="timeIn"
-                                    value="#{timeSheetCtl.detail.timeIn}"
-                                    rendered="#{timeSheetCtl.detail.sortOrder==1}"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    mask="true"
-                                    showButtonPanel="true">
-                        </p:calendar>
-                        <h:outputText value="(HH:mm)" rendered="#{timeSheetCtl.detail.sortOrder==1}" style="padding: 0 10px 0 10px"/>
+                        <div class="ui-inputgroup" style="display: inline-flex;">
+                            <p:calendar id="timeIn"
+                                        value="#{timeSheetCtl.detail.timeIn}"
+                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        mask="true"
+                                        showButtonPanel="true">
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        </div>
                         <p:focus for="timeIn" rendered="#{timeSheetCtl.detail.sortOrder==1 and timeSheetCtl.detail.timeIn == timeSheetCtl.detail.timeOut}"/>
                     </div>
 
                     <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
                         <p:outputLabel value="Time Out: "
-
                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
-                        <p:calendar id="timeOut"
-                                    value="#{timeSheetCtl.detail.timeOut}"
-                                    rendered="#{timeSheetCtl.detail.sortOrder==1}"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    mask="true"
-                                    showButtonPanel="true">
-                        </p:calendar>
-                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        <div class="ui-inputgroup" style="display: inline-flex;">
+                            <p:calendar id="timeOut"
+                                        value="#{timeSheetCtl.detail.timeOut}"
+                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        mask="true"
+                                        showButtonPanel="true">
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        </div>
                     </div>
                 </div>
 
                 <hr/>
 
-                <div class="ui-g">
+                <div class="ui-g project-group">
                     <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
                         <p:outputLabel value="Project: "/>
                     </div>
@@ -332,7 +332,7 @@
                         <p:outputLabel value="Charge Hours: "/>
                     </div>
                     <div class="ui-g-12 ui-lg-11">
-                        <h:panelGroup>
+                        <div class="ui-inputgroup" style="display: inline-flex;">
                             <p:calendar id="hour"
                                         value="#{timeSheetCtl.detail.chargeDuration}"
                                         converter="durationConverter"
@@ -342,9 +342,10 @@
                                         mask="true">
                                 <p:ajax event="change" listener="#{timeSheetCtl.onChangeDuration()}" update="timeSheetDlgForm:chargeButton"/>
                             </p:calendar>
-                            <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon"/>
                             <p:focus rendered="#{timeSheetCtl.detail.sortOrder>1 or timeSheetCtl.detail.timeIn != timeSheetCtl.detail.timeOut}" for="hour"/>
-                        </h:panelGroup>
+                        </div>
+
                         <p:selectOneButton id="chargeButton" value="#{timeSheetCtl.chargeDurationButton}">
                             <f:selectItem itemLabel="2hrs" itemValue="02:00"/>
                             <f:selectItem itemLabel="6hrs" itemValue="06:00"/>

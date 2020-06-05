@@ -4,14 +4,14 @@
         xmlns:p="http://primefaces.org/ui">
 
     <h:form>
-        <div class="top-bar ui-g fixed-top no-border no-padding no-margin" style="z-index: 90000;width:100%;background-color: white;border-bottom: #eee solid thin !important;">
+        <div class="top-bar ui-g fixed-top no-border no-padding no-margin">
             <div class="ui-g-6 alignLeft">
                 <p:graphicImage name="img/C-Level.jpg" height="50"/>
                 <p:graphicImage name="img/kudu.png" height="37" styleClass="alignTop"/>
             </div>
             <div class="ui-g-6 alignRight">
                 <p:outputPanel id="userMenu" styleClass="user-menu">
-                    <div class="user-circle alignMiddle">
+                    <div class="user-circle">
                         <p:outputLabel styleClass="fa fa-user alignMiddle"/>
                     </div>
                     <p:outputLabel value="#{loginBean.userDetail.name}  #{loginBean.userDetail.lastName}" styleClass="alignMiddle" style="margin:5px"/>
@@ -26,6 +26,8 @@
         </p:menu>
 
         <p:contextMenu styleClass="bring-to-top">
+            <p:menuitem icon="fa fa-navicon" value="Screen Menu" onclick="PF('screenMenu').show();"/>
+            <p:separator/>
             <p:menuitem icon="fa fa-key" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
             <p:menuitem icon="fa fa-sign-out" value="Sign out" actionListener="#{loginBean.logout}"/>
         </p:contextMenu>

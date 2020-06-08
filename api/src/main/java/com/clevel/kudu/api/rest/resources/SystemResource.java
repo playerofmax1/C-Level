@@ -40,4 +40,25 @@ public class SystemResource implements SystemService {
 
         return Response.ok().entity(response).build();
     }
+
+    @Override
+    public Response saveConfigList(ServiceRequest<List<ConfigDTO>> request) {
+        log.debug("saveConfigList(request:{})", request);
+
+        List<ConfigDTO> configDTOList = request.getRequest();
+        ServiceResponse<List<ConfigDTO>> response = new ServiceResponse<>();
+
+        try {
+            configDTOList = systemManager.saveConfigList(configDTOList);
+
+            response.setResult(configDTOList);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+
+    }
 }

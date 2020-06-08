@@ -89,6 +89,15 @@ public class TimeSheetDTO implements LookupList {
         this.project = project;
     }
 
+    public boolean isClosedProject() {
+        if (project == null) {
+            return false;
+        }
+
+        RecordStatus projectStatus = project.getStatus();
+        return RecordStatus.CLOSE.equals(projectStatus) || RecordStatus.INACTIVE.equals(projectStatus);
+    }
+
     public TaskDTO getTask() {
         return task;
     }
@@ -140,13 +149,13 @@ public class TimeSheetDTO implements LookupList {
     public BigDecimal getChargeHours() {
         BigDecimal chargeMinutes = BigDecimal.valueOf(chargeDuration.toMinutes());
         BigDecimal sixtyMinutes = BigDecimal.valueOf(60);
-        return chargeMinutes.divide(sixtyMinutes,DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        return chargeMinutes.divide(sixtyMinutes, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getChargeDays() {
         BigDecimal chargeMinutes = BigDecimal.valueOf(chargeDuration.toMinutes());
         BigDecimal eightHoursInMinutes = BigDecimal.valueOf(480);
-        return chargeMinutes.divide(eightHoursInMinutes,DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+        return chargeMinutes.divide(eightHoursInMinutes, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
     }
 
     @Override

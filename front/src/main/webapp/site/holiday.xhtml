@@ -18,18 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
-        <script>
-            $(document).ready(function () {
-                $('#holiday').addClass('active');
-            });
-        </script>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -39,7 +29,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Holiday</h1>
+                    <h1>Holiday</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
@@ -50,7 +40,7 @@
                                 <p:outputPanel styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
-                                            <p:commandButton id="newHoliday" value="New Holiday"
+                                            <p:commandButton id="newHoliday" icon="fa fa-plus" value="New Holiday"
                                                              action="#{holidayCtl.onPreNewHoliday}"
                                                              onsuccess="PF('holidayDlg').show()"
                                                              update="holidayDlgForm"/>
@@ -76,20 +66,22 @@
                                 <h:outputText value="#{holiday.description}"/>
                             </p:column>
 
-                            <p:column headerText="Actions"  style="width: 150px">
-                                <p:commandButton value="Edit" action="#{holidayCtl.onPreUpdateHoliday}"
+                            <p:column headerText="Actions"  style="width: 5.5em">
+                                <p:commandButton id="editButton" icon="ui-icon-pencil" action="#{holidayCtl.onPreUpdateHoliday}"
                                                  update="holidayDlgForm"
                                                  onsuccess="PF('holidayDlg').show();">
                                     <f:setPropertyActionListener value="#{holiday.id}"
                                                                  target="#{holidayCtl.selectedHolidayId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="editButton" value="Edit" position="top"/>
 
-                                <p:commandButton value="Delete" action="#{holidayCtl.onPreDeleteHoliday}"
+                                <p:commandButton id="deleteButton" icon="ui-icon-minus" action="#{holidayCtl.onPreDeleteHoliday}"
                                                  update="deleteDlgForm"
                                                  onsuccess="PF('deleteHolidayDlg').show();">
                                     <f:setPropertyActionListener value="#{holiday.id}"
                                                                  target="#{holidayCtl.selectedHolidayId}"/>
                                 </p:commandButton>
+                                <p:tooltip for="deleteButton" value="Delete" position="top"/>
                             </p:column>
 
                         </p:dataTable>
@@ -112,13 +104,13 @@
                 </p:panelGrid>
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-12 alignRight">
-                        <p:commandButton value="Save" action="#{holidayCtl.onNewHoliday}"
+                        <p:commandButton icon="fa fa-save" value="Save" action="#{holidayCtl.onNewHoliday}"
                                          rendered="#{holidayCtl.editMode==false}"
                                          update="mainForm,holidayDlgForm"/>
-                        <p:commandButton value="Update" action="#{holidayCtl.onUpdateHoliday}"
+                        <p:commandButton icon="fa fa-save" value="Update" action="#{holidayCtl.onUpdateHoliday}"
                                          rendered="#{holidayCtl.editMode==true}"
                                          update="mainForm,holidayDlgForm"/>
-                        <p:commandButton value="Cancel" onclick="PF('holidayDlg').hide()"/>
+                        <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('holidayDlg').hide()"/>
                     </div>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

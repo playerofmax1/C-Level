@@ -16,10 +16,10 @@
             <hr/>
 
             <div class="alignRight">
-                <p:commandButton value="#{actionButton}" action="#{controller[action]}"
+                <p:commandButton icon="fa fa-save" value="#{actionButton}" action="#{controller[action]}"
                                  onsuccess="PF('#{widgetVar}').hide();"
                                  update="#{update}"/>
-                <p:commandButton value="Cancel" onclick="PF('#{widgetVar}').hide()"/>
+                <p:commandButton icon="fa fa-ban" value="Cancel" onclick="PF('#{widgetVar}').hide()"/>
             </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </h:form>

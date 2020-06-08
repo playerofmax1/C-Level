@@ -18,13 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
         <style>
             .noProjectLabel,
             .nonPlanLabel {
@@ -35,12 +30,32 @@
                 color: green;
                 font-weight: 700;
             }
+
+            .holiday-panel {
+                width:56em;
+            }
+
+            .holiday-table {
+                font-size: 11px
+            }
+
+            .holiday-table thead {
+                display: none;
+            }
+
+            .holiday-table tr {
+                border-bottom: 1px solid silver !important;
+            }
+
+            .holiday-table .ui-datatable-even,
+            .holiday-table .ui-datatable-odd {
+                background-color: white;
+            }
+
+            .holiday-table .even {
+                background-color: #EFEFEF;
+            }
         </style>
-        <script>
-            $(document).ready(function () {
-                $('#mandays').addClass('active');
-            });
-        </script>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -50,7 +65,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Timesheet Summary</h1>
+                    <h1>Timesheet Summary</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
                     </h:form>
@@ -101,7 +116,35 @@
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
                                             <p:tooltip for="previousYear" value="Previous Year" position="left"/>
-                                            <p:tooltip for="nextYear" value="Next Year" position="right"/>
+                                            <p:tooltip for="nextYear" value="Next Year" position="right"/><br/>
+                                            <p:outputLabel value="#{rptMandaysCtl.holidayList.size()} Holidays"/>
+                                            <p:outputLabel id="holidayList" styleClass="fa fa-chevron-circle-down"/>
+                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top" styleClass="holiday-panel ui-corner-all">
+                                                <p:dataTable var="holiday" value="#{rptMandaysCtl.holidayList}" sortBy="#{holiday.holidayDate}"
+                                                             styleClass="no-border holiday-table" rowStyleClass="#{(holiday.holidayDate.month % 2 > 0)?'even':'odd'}">
+                                                    <p:column groupRow="true" style="width:45px;" styleClass="alignCenter">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="MMM yyyy" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column style="width:80px;" styleClass="alignLeft">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="EEEE" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column style="width:30px;" styleClass="alignCenter">
+                                                        <h:outputText value="#{holiday.holidayDate}">
+                                                            <f:convertDateTime pattern="d" timeZone="Asia/Bangkok"/>
+                                                        </h:outputText>
+                                                    </p:column>
+
+                                                    <p:column styleClass="alignLeft">
+                                                        <h:outputText value="#{holiday.description}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:overlayPanel>
                                         </div>
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel id="targetUtilization" value="Target Utilization: #{rptMandaysCtl.targetUtilization}%" styleClass="cursor-pointer"/><br/>
@@ -174,7 +217,7 @@
                                     </div>
                                 </p:outputPanel>
 
-                                <p:blockUI block="mdHeader" trigger="md:previousYear,md:nextYear">
+                                <p:blockUI block="mdHeader" trigger="md:previousYear,md:nextYear" styleClass="ui-corner-all">
                                     <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
                                 </p:blockUI>
 

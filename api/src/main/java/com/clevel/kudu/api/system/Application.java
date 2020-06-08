@@ -1,6 +1,6 @@
 package com.clevel.kudu.api.system;
 
-import com.clevel.kudu.api.model.SystemConfig;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.api.model.db.system.Config;
 import com.clevel.kudu.util.Util;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class Application {
         List<Config> configList = systemManager.loadConfiguration();
         configMap = new ConcurrentHashMap<>();
         for (Config config : configList) {
-            configMap.put(SystemConfig.lookup(config.getName()), config.getValue());
+            configMap.put(SystemConfig.parse(config.getName()), config.getValue());
         }
         log.debug("===== current configuration set (count: {}) =====", configMap.size());
         Util.listFields(configMap);

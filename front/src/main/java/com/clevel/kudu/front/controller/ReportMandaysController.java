@@ -35,6 +35,7 @@ public class ReportMandaysController extends AbstractController {
     private int currentYear;
     private boolean previousEnable;
     private boolean nextEnable;
+    private List<HolidayDTO> holidayList;
 
     private List<UserMandaysDTO> userMandaysDTOList;
     private UserMandaysDTO totalUserMandays;
@@ -149,6 +150,7 @@ public class ReportMandaysController extends AbstractController {
         utilization = mandaysResult.getUtilization();
         currentYear = (int) utilization.getYear();
         targetUtilization = (userMandaysDTOList.size() == 0) ? BigDecimal.ZERO : userMandaysDTOList.get(0).getTargetPercentCU();
+        holidayList = mandaysResult.getHolidayList();
 
         normalize(totalUserMandays, userMandaysDTOList);
 
@@ -241,6 +243,14 @@ public class ReportMandaysController extends AbstractController {
 
     public void setTargetUtilization(BigDecimal targetUtilization) {
         this.targetUtilization = targetUtilization;
+    }
+
+    public List<HolidayDTO> getHolidayList() {
+        return holidayList;
+    }
+
+    public void setHolidayList(List<HolidayDTO> holidayList) {
+        this.holidayList = holidayList;
     }
 
     public String getBr() {

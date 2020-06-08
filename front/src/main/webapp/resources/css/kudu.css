@@ -1,0 +1,623 @@
+/* common styles for kudu with aristo primefaces theme */
+body {
+    min-width: 640px;
+    padding-top: 68px;
+    margin-top: 0;
+    font-size: 12px;
+}
+
+.login-panel {
+    min-width: 250px;
+    padding: 21px !important;
+    width: 25%;
+    background-color: white;
+    display: inline-block;
+
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+
+    border-color: #ddd;
+}
+
+.login-panel.ui-panel .ui-panel-content {
+    display: inline-grid;
+}
+
+.login-panel div {
+    padding: 0;
+    vertical-align: bottom;
+}
+
+.container-fluid {
+}
+
+.container-fluid > .row {
+    margin: 0 !important;
+}
+
+.main {
+    margin: 0 !important;
+    padding: 15px 10px 10px 10px !important;
+}
+
+.main h1 {
+    position: fixed;
+    font-family: sans-serif;
+    font-size: 21px;
+    font-weight: normal;
+    margin: -70px 0 0 266px;
+    border-left: silver solid 2px;
+    padding: 13px 10px 7px 16px;
+    color: gray !important;
+}
+
+.main h2 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.top-bar {
+    min-width: 640px;
+    width: 100%;
+    background-color: white;
+    box-shadow: silver 1px 1px 7px 1px;
+}
+
+.top-bar > .alignLeft {
+    padding: 13px 0 0 88px;
+}
+
+.user-menu {
+    border: silver solid thin !important;
+    padding: 5px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    margin: 0;
+    color: gray;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.user-circle {
+    height: 36px;
+    width: 36px;
+
+    -moz-border-radius: 18px;
+    -webkit-border-radius: 18px;
+    border-radius: 18px;
+
+    border: gray solid 1.5px !important;
+    font-size: 2em;
+
+    text-align: center;
+    vertical-align: middle;
+
+    overflow: hidden;
+    display: inline-block;
+}
+
+.button-bar {
+
+}
+
+.button-bar.ui-sticky {
+    right: 0 !important;
+    -moz-border-radius: 7px 0 0 7px !important;
+    -webkit-border-radius: 7px 0 0 7px !important;
+    border-radius: 7px 0 0 7px !important;
+    width: auto !important;
+    padding: 7px !important;
+}
+
+.hamburger-bar {
+    top: 100px !important;
+
+    width: auto !important;
+    text-align: center;
+}
+
+.hamburger-button {
+    position: fixed;
+    margin: -70px 0 0 -6px;
+    font-size: 35px;
+    padding: 10px !important;
+    cursor: pointer;
+}
+
+.left-side-bar {
+    width: 286px !important;
+    margin: 68px 0 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: silver 1px 7px 5px 3px !important;
+}
+
+.left-side-bar .ui-sidebar-close {
+    display: none;
+}
+
+.left-side-bar .additional {
+    margin-bottom: -1px;
+}
+
+.left-side-bar .additional,
+.left-side-bar .additional div {
+    padding: 0;
+}
+
+.left-side-bar .additional button {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    -moz-border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
+.left-side-bar .additional .ui-button-icon-left {
+    left: 0em;
+    top: 0.5em;
+    width: 2em;
+    height: 2em;
+    font-size: 2em;
+    color: gray;
+}
+
+.left-side-bar .ui-menu {
+    width: 100%;
+    height: 5000px;
+    padding: 0;
+    border: 0;
+    margin: 0 !important;
+}
+
+.left-side-bar .ui-widget-header {
+    padding: 7px;
+    margin: 0 !important;
+    border-width: 0;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    width: calc(100% - 14px) !important;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.left-side-bar .ui-widget-header span {
+    margin-right: 10px;
+}
+
+.left-side-bar .ui-menuitem {
+    padding: 5px 0 5px 10px !important;
+    margin: 1px 0 1px 0 !important;
+    border-width: 0;
+    border-bottom-width: 1px;
+    width: calc(100% - 10px) !important;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.left-side-bar .ui-menuitem a {
+    padding-left: 25px !important;
+    width: calc(92% - 25px) !important;
+}
+
+.left-side-bar .ui-menuitem .ui-menuitem-icon {
+    left: 0em;
+    top: 0em;
+    font-size: 1.2em;
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.left-side-bar .ui-menuitem .ui-menuitem-text {
+    margin-left: 10px;
+}
+
+.ui-sidebar-mask {
+    margin-top: 68px !important;
+}
+
+.panel-heading {
+    text-align: right;
+    height: 30px;
+    padding: 2px 2px !important;
+    /*vertical-align:  middle;*/
+}
+
+.panel-title {
+    text-align: right;
+    background-color: #428bca !important;
+    height: 25px;
+}
+
+.panel-body {
+    background: #f5f5f5;
+}
+
+.gridInputRow {
+    height: 42px;
+}
+
+footer {
+    position: fixed;
+    font-family: sans-serif;
+    bottom: 0;
+    left: auto;
+    right: auto;
+    text-align: center;
+    font-size: 10px;
+    color: #786e68;
+    width: 350px;
+    margin-left: calc(50% - 188px) !important;
+    background-color: white;
+    padding: 5px;
+    border-radius: 40px 40px 0 0;
+}
+
+.version {
+    text-align: right;
+    font-family: "Courier New", Courier, serif;
+    font-size: 10px;
+    color: #786e68;
+    position: fixed;
+    bottom: 5px;
+    width: 100%;
+}
+
+.warning-message {
+    text-align: left;
+    font-weight: bold;
+    font-family: Courier, serif;
+    font-size: 14px;
+    color: #ff0a08;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: darkolivegreen !important;
+}
+
+.blue {
+    background-color: cornflowerblue !important;
+}
+
+.red-font {
+    color: red !important;
+}
+
+.white-font {
+    color: white !important;
+}
+
+.summary {
+    font-family: "Courier New", Courier, serif;
+    font-weight: bold;
+    text-align: right;
+    vertical-align: middle;
+    background-color: #c5c8ca !important;
+    height: 20px;
+}
+
+.credit {
+    font-family: "Courier New", Courier, serif;
+    /*font-weight: bold;*/
+    text-align: right;
+    vertical-align: middle;
+    /*background-color: #c5c8ca !important;*/
+    height: 14px;
+}
+
+label {
+    margin-bottom: 0 !important;
+    cursor: inherit;
+}
+
+label.require:after {
+    content: "*";
+    color: #ff0000;
+    font-size: 1.4em !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 10px !important;
+}
+
+.ui-menu-overlay {
+    margin-top: 5px;
+}
+
+.ui-picklist-buttons-cell {
+    margin-right: 0.33em !important;
+}
+
+.ui-inputfield,
+.ui-inputtext {
+    outline: none !important;
+    font-weight: normal !important;
+    padding: 5px 5px !important;
+    box-shadow: inset 1px 1px 4px #cccccc !important;
+}
+
+.ui-inputfield,
+.ui-inputtext,
+.ui-inputnumber,
+.ui-selectonemenu {
+    margin: 0 0 0 !important;
+}
+
+.ui-inputgroup .ui-selectonemenu,
+.ui-inputgroup .ui-button {
+    margin: 0;
+}
+
+.ui-inputgroup span.ui-inputgroup-addon.disabled {
+    color: silver;
+    border-color: silver;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+    border: 1px solid #e20034 !important;
+    background: #ffffff !important;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next,
+.ui-datepicker .ui-datepicker-title {
+    color: #000000 !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar td.ui-datepicker-today a {
+    background-color: #65a5cc !important;
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+.ui-spinner-input {
+    padding-right: 20px !important;
+    margin-bottom: 0 !important;
+}
+
+.ui-spinner .ui-icon {
+    margin-top: -8px !important;
+}
+
+.ui-radiobutton-icon {
+    margin-left: 0 !important;
+    margin-top: -1px !important;
+}
+
+.ui-inputswitch {
+    vertical-align: bottom;
+}
+
+.ui-datalist > div {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+.ui-datalist-data {
+    margin-bottom: 0 !important;
+}
+
+.ui-border {
+    border: 1px solid #a8a8a8;
+}
+
+hr,
+hr.ui-separator {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.ui-widget {
+    margin: 0.2em;
+}
+
+.ui-datepicker {
+    margin: 0;
+}
+
+.ui_tpicker_time_input {
+    border-bottom: 0 !important;
+}
+
+.ui-timepicker-div .ui-widget-header,
+.ui-timepicker-div .ui_tpicker_time_label,
+.ui-timepicker-div .ui_tpicker_time,
+.ui-datepicker-close {
+    display: none;
+}
+
+.ui-panelgrid > tbody > tr > td > input[type=text] {
+    width: calc(100% - 12px);
+}
+
+.ui-panelgrid > tbody > tr > td > .ui-selectonemenu {
+    width: calc(100% - 29px);
+}
+
+.ui-datatable-header.ui-widget-header.ui-corner-top {
+    padding: 5px !important;
+}
+
+.holiday {
+    background-color: steelblue;
+    color: white;
+    background-image: none;
+}
+
+.normal {
+    background-color: white;
+    background-image: none;
+}
+
+.overlayValue,
+.overlayLabel {
+    width: 12em;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.fa-chevron-circle-down {
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+    text-align: center;
+}
+
+/*IMPORTANT!*/
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.alignCenter {
+    text-align: center;
+}
+
+.alignTop {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.alignMiddle {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.alignBottom {
+    vertical-align: bottom;
+    display: inline-block;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.fixed-top {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.onBottomLeft {
+    text-align: left;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
+
+.onBottomRight {
+    text-align: right;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.transparent {
+    background-color: transparent !important;
+}
+
+.inputLabel {
+    font-weight: bold;
+}
+
+.no-border,
+.ui-panelgrid.no-border > tbody > tr,
+.ui-panelgrid.no-border > tbody > tr > td,
+.ui-datatable.no-border > div > table > thead > tr > th,
+.ui-datatable.no-border > div > table > tbody,
+.ui-datatable.no-border > div > table > tbody > tr,
+.ui-datatable.no-border > div > table > tbody > tr > td {
+    border-width: 0 0 0 0 !important;
+}
+
+.no-border.ui-inputfield {
+    box-shadow: none !important;
+}
+
+.no-padding.ui-widget .ui-widget-content,
+.no-padding {
+    padding: 0 0 0 0 !important;
+}
+
+.no-margin {
+    margin: 0 0 0 0 !important;
+}
+
+.ui-g-1, .ui-g-2, .ui-g-3, .ui-g-4, .ui-g-5, .ui-g-6, .ui-g-7, .ui-g-8, .ui-g-9, .ui-g-10, .ui-g-11, .ui-g-12 {
+    padding: 5px;
+}
+
+/* Z-Index Management */
+
+.top-bar {
+    z-index: 90000 !important;
+}
+
+.left-side-bar {
+    z-index: 90500 !important;
+}
+
+.main h1 {
+    z-index: 91000 !important;
+}
+
+.hamburger-button {
+    z-index: 91000 !important;
+}
+
+.ui-dialog {
+    z-index: 98000 !important;
+}
+
+.ui-datepicker {
+    z-index: 98100 !important;
+}
+
+.ui-selectonemenu-panel {
+    z-index: 98100 !important;
+}
+
+.bring-to-top {
+    z-index: 98300 !important;
+}
+
+.ui-menu-overlay {
+    z-index: 98500 !important;
+}
+
+.ui-growl {
+    z-index: 99000 !important;
+}
+
+/* Improve appearance on small devices */
+
+@media (max-width: 640px) {
+
+
+}

@@ -127,4 +127,23 @@ public class HolidayDAO extends GenericDAO<Holiday, Long> {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Holiday> findByStartEnd(Date startDate, Date endDate) {
+        log.debug("findByStartEnd(startDate: {}, endDate: {})", startDate, endDate);
+
+        CriteriaQuery<Holiday> criteria = createCriteriaQuery();
+
+        criteria.where(cb.and(
+                cb.equal(root.get(Holiday_.status), RecordStatus.ACTIVE),
+                cb.between(root.get(Holiday_.holidayDate), startDate, endDate)
+                )
+        );
+
+        Query query = em.createQuery(criteria);
+
+        List<Holiday> result = query.getResultList();
+        log.debug("findByStartEnd.result.size={}", result.size());
+        return result;
+    }
+
 }

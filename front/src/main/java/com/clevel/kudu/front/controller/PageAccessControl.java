@@ -9,6 +9,7 @@ import com.clevel.kudu.util.FacesUtil;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
 
 @ViewScoped
 @Named("accessCtl")
@@ -38,4 +39,15 @@ public class PageAccessControl extends AbstractController {
     public boolean isVisible(Screen screen) {
         return userDetail.getScreenList().contains(screen);
     }
+
+    public boolean isVisible(Screen... screens) {
+        List<Screen> screenList = userDetail.getScreenList();
+        for (Screen screen : screens) {
+            if (screenList.contains(screen)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

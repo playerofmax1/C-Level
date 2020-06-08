@@ -177,7 +177,16 @@ The version.property is used in the front-end to show full version text on the b
 
 | Table Name    | Notes                                                        |
 | ------------- | ------------------------------------------------------------ |
-| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me) but not worry because of it's already work. |
+| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me, but not worry because of it's already work). |
+
+
+
+### Development Templates
+
+| Name                                                  | Template                                      | Remark           |
+| ----------------------------------------------------- | --------------------------------------------- | ---------------- |
+| + dialog<br />+ inputs on panelGrid<br />+ button set | screen: project.xhtml<br />dialog: projectDlg | styles: kudu.css |
+|                                                       |                                               |                  |
 
 
 
@@ -201,10 +210,24 @@ The version.property is used in the front-end to show full version text on the b
 | ---- | ------------------------------------------------------------ |
 | DEV  | **Know Issues**: Deploy using Web Console will got some exception about class not found, not work!<br />**Recommended**: Copy war file to this path '/opt/wildfly/standalone/deployments' and wait for file-name.isDeployed is appeared and then check server.log<br />(The api.war need to deploy first follow by the front.war if it's successful without error) |
 | DEV  | **Know Issues**: Time Zone on the server need to be 'Asia/Bangkok' +07 +0700 |
+| DEV  | Know Issues: Got error #1 (know issue #1) when code in sys_config.name is not found in the SystemConfig.code (Enum Class). |
 | DEV  | **C-Level 2020 VPN is Required**:<br />Front-end URL: http://192.168.88.19:8080/signin.jsf<br />API URL: http://192.168.88.19:8080/api/rest/resteasy/registry |
 | DEV  | **Public URL Here (no VPN)**:<br />Front-end URL: http://6f3907e3bcf0.sn.mynetname.net:8888/signin.jsf<br />API URL: http://6f3907e3bcf0.sn.mynetname.net:8888/api/rest/resteasy/registry |
 | PROD | Know Issues: @2020.05.16 Application Server use 8087 as internal port, so the front-end configuration need to change from 8080 to 8087 (see web.xml::param-name=rest.api.url)<br />Recommended: Pack war files and put to SFTP of DEV env and notify to Deployment Team (Tech Team)  and wait for response. |
 | PROD | **Public URL Here (no VPN)**:<br />Front-end URL: https://kudu.the-c-level.com/signin.jsf<br />API URL: https://kudu.the-c-level.com/api/rest/resteasy/registry |
+
+
+
+**Know Issue #1**
+
+```
+Caused by: java.lang.NullPointerException
+	at java.base/java.util.concurrent.ConcurrentHashMap.putVal(ConcurrentHashMap.java:1011)
+	at java.base/java.util.concurrent.ConcurrentHashMap.put(ConcurrentHashMap.java:1006)
+	at deployment.api.war//com.clevel.kudu.api.system.Application.loadConfiguration(Application.java:41)
+	at deployment.api.war//com.clevel.kudu.api.system.Application$Proxy$_$$_WeldClientProxy.loadConfiguration(Unknown Source)
+	at deployment.api.war//com.clevel.kudu.api.system.ContextListener.contextInitialized(ContextListener.java:25)
+```
 
 
 

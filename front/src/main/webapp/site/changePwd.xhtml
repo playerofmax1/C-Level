@@ -16,13 +16,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -32,23 +27,51 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Change Password</h1>
+                    <h1>Change Password</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:panelGrid columns="2">
-                        <h:outputLabel value="Old Password" styleClass="require"/>
-                            <p:password value="#{systemCtl.pwdRequest.oldPassword}" styleClass="#{systemCtl.validator.failMap['oldPwd']==null?'ui-inputtext':'ui-state-error'}"
-                                        rendered="#{userCtl.editMode==false}"/>
-                        <h:outputLabel value="New Password" styleClass="require"/>
-                            <p:password value="#{systemCtl.pwdRequest.newPassword}" styleClass="#{systemCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                        rendered="#{userCtl.editMode==false}"/>
-                        <h:outputLabel value="Confirm Password" styleClass="require"/>
-                            <p:password value="#{systemCtl.confirmPwd}" styleClass="#{systemCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                        rendered="#{userCtl.editMode==false}"/>
-                        </p:panelGrid>
+                        <div class="alignCenter" style="display:block;">
+                            <p:panel style="display:inline-block;margin:0 auto;padding:20px;">
 
-                        <p:commandButton value="Save" action="#{systemCtl.onChangePwd}" update="mainForm" />
+                                <div class="ui-inputgroup">
+                                    <h:outputText value="Old Password" styleClass="require ui-inputgroup-addon" style="width:15em;"/>
+                                    <p:password id="oldPassword" value="#{systemCtl.pwdRequest.oldPassword}" styleClass="#{systemCtl.validator.failMap['oldPwd']==null?'ui-inputtext':'ui-state-error'}"
+                                                rendered="#{userCtl.editMode==false}" style="width: 100%"/>
+                                    <span class="ui-inputgroup-addon"><span class="fa fa-key"></span></span>
+                                </div>
+
+                                <hr/>
+
+                                <div class="ui-inputgroup">
+                                    <h:outputText value="New Password" styleClass="require ui-inputgroup-addon" style="width:15em;"/>
+                                    <p:password value="#{systemCtl.pwdRequest.newPassword}" styleClass="#{systemCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
+                                                rendered="#{userCtl.editMode==false}" style="width: 100%"/>
+                                    <span class="ui-inputgroup-addon blue white-font"><span class="fa fa-key"></span></span>
+                                </div>
+
+                                <p:spacer height="2"/>
+
+                                <div class="ui-inputgroup">
+                                    <h:outputText value="Confirm Password" styleClass="require ui-inputgroup-addon" style="width:15em;"/>
+                                    <p:password value="#{systemCtl.confirmPwd}" styleClass="#{systemCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
+                                                rendered="#{userCtl.editMode==false}" style="width: 100%"/>
+                                    <span class="ui-inputgroup-addon blue white-font"><span class="fa fa-key"></span></span>
+                                </div>
+
+                                <hr/>
+
+                                <div class="ui-inputgroup">
+                                    <p:commandButton icon="fa fa-save" value="Save"
+                                                     action="#{systemCtl.onChangePwd}"
+                                                     update="mainForm"
+                                                     oncomplete="if(args.isActionSuccess)PF('screenMenu').show();"
+                                                     style="width:100%" styleClass="blue"/>
+                                </div>
+                            </p:panel>
+                        </div>
+
+                        <p:focus for="oldPassword" rendered="#{!systemCtl.saved}"/>
 
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </h:form>

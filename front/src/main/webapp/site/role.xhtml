@@ -18,23 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
-        <script>
-            $(document).ready(function () {
-                $('#role').addClass('active');
-            });
-        </script>
-        <style>
-            .ui-picklist-buttons-cell {
-                margin-right: 6px !important;
-            }
-        </style>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -44,7 +29,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Role Management</h1>
+                    <h1>Role Management</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
@@ -64,17 +49,20 @@
                                 <div class="ui-g">
                                     <div class="ui-g-12 ui-lg-6 ui-sm-12 alignLeft">
                                         <p:commandButton id="newRole"
+                                                         icon="fa fa-plus"
                                                          value="New Role"
                                                          action="#{roleCtl.onPreNewRole}"
                                                          onsuccess="PF('roleDlg').show()"
                                                          update="mainForm,roleDlgForm"/>
                                         <p:commandButton id="editRole"
+                                                         icon="ui-icon-pencil"
                                                          value="Edit Role"
                                                          action="#{roleCtl.onPreUpdateRole}"
                                                          onsuccess="PF('roleDlg').show()"
                                                          disabled="#{roleCtl.selectedRoleId==0}"
                                                          update="roleDlgForm"/>
                                         <p:commandButton id="deleteRole"
+                                                         icon="fa fa-minus"
                                                          value="Delete Role"
                                                          action="#{roleCtl.onPreDeleteRole}"
                                                          onsuccess="PF('deleteRoleDlg').show();"

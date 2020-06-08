@@ -18,13 +18,8 @@
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
         <!--<link rel="icon" href="../../favicon.ico">-->
 
-        <!-- Bootstrap core CSS -->
-        <h:outputStylesheet library="css" name="bootstrap.min.css" target="head"/>
-        <h:outputStylesheet library="css" name="bootstrap-theme.min.css" target="head"/>
-
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="dashboard.css" target="head"/>
-        <h:outputStylesheet library="css" name="style.css" target="head"/>
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
         <style>
             .ui-calendar {
                 display: inline-block;
@@ -38,12 +33,22 @@
             .ui-calendar input {
                 width: 100%;
             }
+
+            .project-group div {
+                vertical-align: middle;
+            }
+
+            .project-group .ui-selectonemenu {
+                width: calc(100% - 32px) !important;
+            }
+
+            .view-only-label,
+            .editable-label {
+                width: 100px;
+                margin-top: 15px;
+                display: inline-block;
+            }
         </style>
-        <script>
-            $(document).ready(function () {
-                $('#timesheet').addClass('active');
-            });
-        </script>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -53,7 +58,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1 class="sub-header">Time Sheet</h1>
+                    <h1>Time Sheet</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
                     </h:form>
@@ -152,8 +157,8 @@
                                                            offLabel="Editable">
                                                 <p:ajax event="change" update="monthForm" listener="#{timeSheetCtl.onChangeViewOnlyFlag}"/>
                                             </p:inputSwitch>
-                                            <p:outputLabel id="viewOnlyLabel" value="View Only" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter" style="width: 100px"/>
-                                            <p:outputLabel id="editableLabel" value="Editable" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter" style="width: 100px"/>
+                                            <p:outputLabel id="viewOnlyLabel" value="View Only" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter view-only-label"/>
+                                            <p:outputLabel id="editableLabel" value="Editable" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}" styleClass="ui-border alignCenter editable-label"/>
                                             <p:tooltip position="left" value="View Only / Editable" for="viewOnlyLabel" rendered="#{timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}"/>
                                             <p:tooltip position="left" value="View Only / Editable" for="editableLabel" rendered="#{!timeSheetCtl.viewOnly and !accessCtl.functionEnable('F0004')}"/>
                                             <br/>
@@ -168,7 +173,7 @@
                                     </div>
                                 </p:outputPanel>
 
-                                <p:blockUI block="tsHeader" trigger="ts:previousMonth,ts:nextMonth">
+                                <p:blockUI block="tsHeader" trigger="ts:previousMonth,ts:nextMonth" styleClass="ui-corner-all">
                                     <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
                                 </p:blockUI>
 
@@ -197,12 +202,12 @@
                                               rendered="#{timesheet.sortOrder==1}"/>
                             </p:column>
 
-                            <p:column headerText="Project" style="width: 170px" exportFunction="#{timeSheetCtl.exportProject(timesheet)}">
+                            <p:column headerText="Project" exportFunction="#{timeSheetCtl.exportProject(timesheet)}">
                                 <h:outputText escape="false"
-                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name)}"/>
+                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?'(closed)':'')}"/>
                             </p:column>
 
-                            <p:column headerText="Task" style="width: 200px" exportFunction="#{timeSheetCtl.exportTask(timesheet)}">
+                            <p:column headerText="Task" exportFunction="#{timeSheetCtl.exportTask(timesheet)}">
                                 <h:outputText escape="false"
                                               value="#{(timesheet.projectTask==null and timesheet.task==null)?'-- No Task --':(timesheet.projectTask!=null)?
                                         '&lt;b&gt;['.concat(timesheet.projectTask.task.code).concat(']&lt;/b&gt; ').concat(timesheet.projectTask.task.name):
@@ -217,19 +222,19 @@
                                 <h:outputText id="descDetail" value="#{timesheet.description}"/>
                             </p:column>
 
-                            <p:column headerText="Actions" style="width: 100px" exportable="false">
-                                <p:commandButton id="editBtn" icon="ui-icon-pencil" disabled="#{timeSheetCtl.viewOnly}"
+                            <p:column headerText="Actions" style="width: 5.5em" exportable="false">
+                                <p:commandButton id="editBtn" icon="ui-icon-pencil" disabled="#{timeSheetCtl.viewOnly or timesheet.closedProject}"
                                                  action="#{timeSheetCtl.onPreEdit(timesheet)}"
                                                  update="timeSheetDlgForm"
                                                  onsuccess="PF('timeSheetDlg').show();PF('timeSheetDlg').initPosition();">
                                 </p:commandButton>
-                                <p:tooltip for="editBtn" value="Edit" position="top"/>
+                                <p:tooltip for="editBtn" value="Edit (Project-Status: '#{timesheet.project.status}')" position="top"/>
                                 <p:commandButton id="plusBtn" icon="ui-icon-plus" disabled="#{timeSheetCtl.viewOnly}"
                                                  action="#{timeSheetCtl.onAddRecord(timesheet)}"
                                                  update="monthForm,mainForm" rendered="#{timesheet.sortOrder==1}">
                                 </p:commandButton>
                                 <p:tooltip for="plusBtn" value="Add Project" position="top"/>
-                                <p:commandButton id="minusBtn" icon="ui-icon-minus" disabled="#{timeSheetCtl.viewOnly}"
+                                <p:commandButton id="minusBtn" icon="ui-icon-minus" disabled="#{timeSheetCtl.viewOnly or timesheet.closedProject}"
                                                  action="#{timeSheetCtl.onDeleteRecord(timesheet)}"
                                                  update="monthForm,mainForm" rendered="#{timesheet.sortOrder!=1}">
                                 </p:commandButton>
@@ -245,70 +250,94 @@
             </div>
         </div>
 
-        <p:dialog showHeader="true" header="Timesheet Detail" widgetVar="timeSheetDlg" modal="true" width="66%" position="center" resizable="false">
+        <p:dialog showHeader="true" header="Timesheet Detail" widgetVar="timeSheetDlg" modal="true" width="56em" position="center" resizable="false" closable="false">
             <h:form id="timeSheetDlgForm">
                 <div class="ui-g">
-                    <div class="ui-g-12 ui-lg-4 ui-md-12">
-                        <p:outputLabel value="Work Date:"/>
-                        <p:outputLabel value="#{timeSheetCtl.detail.workDate}">
-                            <f:convertDateTime pattern="dd/MM/yyyy (EEEE)" timeZone="Asia/Bangkok"/>
-                        </p:outputLabel>
+
+                    <div class="ui-g-4 alignMiddle">
+                        <div class="ui-inputgroup">
+                            <h:outputText value="Date" styleClass="ui-inputgroup-addon"/>
+                            <p:calendar value="#{timeSheetCtl.detail.workDate}"
+                                        pattern="dd/MM/yyyy"
+                                        showOn="none"
+                                        readonly="true">
+                            </p:calendar>
+                            <h:outputText value="#{timeSheetCtl.detail.workDate}" styleClass="ui-inputgroup-addon">
+                                <f:convertDateTime pattern="(EEEE)" timeZone="Asia/Bangkok"/>
+                            </h:outputText>
+                        </div>
                     </div>
 
-                    <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
-                        <p:outputLabel value="Time in: "
-
-                                       rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
-                        <p:calendar id="timeIn"
-                                    value="#{timeSheetCtl.detail.timeIn}"
-                                    rendered="#{timeSheetCtl.detail.sortOrder==1}"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    mask="true"
-                                    showButtonPanel="true">
-                        </p:calendar>
-                        <h:outputText value="(HH:mm)" rendered="#{timeSheetCtl.detail.sortOrder==1}" style="padding: 0 10px 0 10px"/>
+                    <div class="ui-g-4 alignCenter">
+                        <div class="ui-inputgroup" style="display: inline-flex;">
+                            <h:outputText value="Time In" styleClass="ui-inputgroup-addon"
+                                          rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                            <p:calendar id="timeIn"
+                                        value="#{timeSheetCtl.detail.timeIn}"
+                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        mask="true"
+                                        showButtonPanel="true">
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        </div>
                         <p:focus for="timeIn" rendered="#{timeSheetCtl.detail.sortOrder==1 and timeSheetCtl.detail.timeIn == timeSheetCtl.detail.timeOut}"/>
                     </div>
 
-                    <div class="ui-g-12 ui-lg-4 ui-md-6 ui-sm-12">
-                        <p:outputLabel value="Time Out: "
-
-                                       rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
-                        <p:calendar id="timeOut"
-                                    value="#{timeSheetCtl.detail.timeOut}"
-                                    rendered="#{timeSheetCtl.detail.sortOrder==1}"
-                                    pattern="HH:mm"
-                                    timeOnly="true"
-                                    mask="true"
-                                    showButtonPanel="true">
-                        </p:calendar>
-                        <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
-                    </div>
-                </div>
-
-                <hr/>
-
-                <div class="ui-g">
-                    <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
-                        <p:outputLabel value="Project: "/>
-                    </div>
-                    <div class="ui-g-12 ui-lg-5 ui-md-12">
-                        <p:selectOneMenu value="#{timeSheetCtl.selectedProjectId}" style="width: 100%">
-                            <f:selectItem itemLabel="-- No Project --" itemValue="0"/>
-                            <f:selectItems value="#{timeSheetCtl.projectList}" var="project"
-                                           itemLabel="[#{project.code}] #{project.name}"
-                                           itemValue="#{project.id}"/>
-                            <p:ajax event="change" listener="#{timeSheetCtl.onChangeProjectInDetail()}" update="timeSheetDlgForm:taskGroup,pjtTable"
-                                    oncomplete="PF('timeSheetDlg').initPosition();"/>
-                        </p:selectOneMenu>
+                    <div class="ui-g-4 alignRight">
+                        <div class="ui-inputgroup" style="display: inline-flex;">
+                            <h:outputText value="Time Out" styleClass="ui-inputgroup-addon"
+                                          rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                            <p:calendar id="timeOut"
+                                        value="#{timeSheetCtl.detail.timeOut}"
+                                        rendered="#{timeSheetCtl.detail.sortOrder==1}"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        mask="true"
+                                        showButtonPanel="true">
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon" rendered="#{timeSheetCtl.detail.sortOrder==1}"/>
+                        </div>
                     </div>
 
-                    <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
-                        <p:outputLabel value="Task: "/>
+                    <div class="ui-g-12 no-padding">
+                        <hr/>
                     </div>
-                    <div class="ui-g-12 ui-lg-5 ui-md-12">
-                        <p:outputPanel id="taskGroup">
+
+                    <div class="ui-g-8">
+                        <p:outputPanel class="ui-inputgroup">
+                            <h:outputText value="Project " styleClass="ui-inputgroup-addon" style="width: 5em;"/>
+                            <p:selectOneMenu value="#{timeSheetCtl.selectedProjectId}" style="width: 100%">
+                                <f:selectItem itemLabel="-- No Project --" itemValue="0"/>
+                                <f:selectItems value="#{timeSheetCtl.projectList}" var="project"
+                                               itemLabel="[#{project.code}] #{project.name}"
+                                               itemValue="#{project.id}"/>
+                                <p:ajax event="change" listener="#{timeSheetCtl.onChangeProjectInDetail()}" update="timeSheetDlgForm:taskGroup,pjtTable"
+                                        oncomplete="PF('timeSheetDlg').initPosition();"/>
+                            </p:selectOneMenu>
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="ui-g-4 alignRight">
+                        <p:outputPanel styleClass="ui-inputgroup" style="display: inline-flex;">
+                            <h:outputText value="Charge Hour" styleClass="ui-inputgroup-addon"/>
+                            <p:calendar id="hour"
+                                        value="#{timeSheetCtl.detail.chargeDuration}"
+                                        converter="durationConverter"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        maxHour="8"
+                                        mask="true">
+                                <p:ajax event="change" listener="#{timeSheetCtl.onChangeDuration()}" update="timeSheetDlgForm:chargeButton"/>
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon"/>
+                        </p:outputPanel>
+                    </div>
+
+                    <div class="ui-g-8">
+                        <p:outputPanel id="taskGroup" styleClass="ui-inputgroup">
+                            <h:outputText value="Task " styleClass="ui-inputgroup-addon" style="width: 5em;"/>
                             <p:selectOneMenu id="pjTaskList" value="#{timeSheetCtl.selectedProjectTaskId}" style="width: 100%"
                                              rendered="#{timeSheetCtl.selectedProjectId!=0}">
                                 <f:selectItem itemLabel="-- No Task --" itemValue="0"/>
@@ -328,67 +357,59 @@
                         </p:outputPanel>
                     </div>
 
-                    <div class="ui-g-12 ui-lg-1 ui-md-12 alignMiddle">
-                        <p:outputLabel value="Charge Hours: "/>
-                    </div>
-                    <div class="ui-g-12 ui-lg-11">
-                        <h:panelGroup>
-                            <p:calendar id="hour"
-                                        value="#{timeSheetCtl.detail.chargeDuration}"
-                                        converter="durationConverter"
-                                        pattern="HH:mm"
-                                        timeOnly="true"
-                                        maxHour="8"
-                                        mask="true">
-                                <p:ajax event="change" listener="#{timeSheetCtl.onChangeDuration()}" update="timeSheetDlgForm:chargeButton"/>
-                            </p:calendar>
-                            <h:outputText value="(HH:mm)" style="padding: 0 10px 0 10px"/>
-                            <p:focus rendered="#{timeSheetCtl.detail.sortOrder>1 or timeSheetCtl.detail.timeIn != timeSheetCtl.detail.timeOut}" for="hour"/>
-                        </h:panelGroup>
-                        <p:selectOneButton id="chargeButton" value="#{timeSheetCtl.chargeDurationButton}">
+                    <div class="ui-g-4 alignRight">
+                        <p:selectOneButton id="chargeButton" value="#{timeSheetCtl.chargeDurationButton}" style="width:100%;margin-left:-3px;">
                             <f:selectItem itemLabel="2hrs" itemValue="02:00"/>
+                            <f:selectItem itemLabel="4hrs" itemValue="04:00"/>
                             <f:selectItem itemLabel="6hrs" itemValue="06:00"/>
                             <f:selectItem itemLabel="8hrs" itemValue="08:00"/>
                             <p:ajax event="change" listener="#{timeSheetCtl.onChargeButtonClicked()}" update="timeSheetDlgForm:hour"/>
                         </p:selectOneButton>
+                        <p:focus rendered="#{timeSheetCtl.detail.sortOrder>1 or timeSheetCtl.detail.timeIn != timeSheetCtl.detail.timeOut}" for="hour"/>
                     </div>
+
+                    <div class="ui-g-12 ui-g-nopad">
+                        <p:outputLabel value="Description: " styleClass="ui-g-12"/><br/>
+                        <p:inputTextarea id="desc" value="#{timeSheetCtl.detail.description}"
+                                         styleClass="ui-g-12"
+                                         autoResize="false"/>
+                    </div>
+
                 </div>
 
-                <p:outputLabel value="Description: "/><br/>
-                <p:inputTextarea id="desc" value="#{timeSheetCtl.detail.description}" style="width: 100%"
-                                 autoResize="false"/>
+                <hr/>
 
                 <p:dataTable id="pjtTable" var="pjt" value="#{timeSheetCtl.projectTaskList}" rows="2"
-                             paginator="true" paginatorPosition="bottom" style="font-size: 12px">>
+                             paginator="true" paginatorPosition="bottom" style="font-size: 12px">
 
                     <f:facet name="header">
                         Tasks available under project
                     </f:facet>
 
-                    <p:column headerText="Task" style="width: 180px">
+                    <p:column headerText="Task" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
                         <h:outputText value="[#{pjt.task.code}] #{pjt.task.name}"/>
                     </p:column>
 
-                    <p:column headerText="Description" style="width: 200px">
+                    <p:column headerText="Description" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
                         <h:outputText value="#{pjt.description}"/>
                     </p:column>
 
-                    <p:column headerText="Plan MD" style="width: 80px">
+                    <p:column headerText="Plan MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
                         <h:outputText value="#{pjt.planMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.planMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Extend MD" style="width: 80px">
+                    <p:column headerText="Extend MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
                         <h:outputText value="#{pjt.extendMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.extendMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Total MD" style="width: 80px">
+                    <p:column headerText="Total MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
                         <h:outputText value="#{pjt.totalMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.totalMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Actual MD" style="width: 80px">
+                    <p:column headerText="Actual MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
                         <h:outputText value="#{pjt.actualMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.actualMD})"/></sup>
                     </p:column>
@@ -408,7 +429,7 @@
                         <p:commandButton value="Save" icon="fa fa-save"
                                          action="#{timeSheetCtl.onSaveDetail()}"
                                          update="mainForm,monthForm"/>
-                        <p:commandButton value="Cancel" icon="fa fa-ban"
+                        <p:commandButton icon="fa fa-ban" value="Cancel"
                                          onclick="PF('timeSheetDlg').hide()"/>
                     </div>
                 </div>

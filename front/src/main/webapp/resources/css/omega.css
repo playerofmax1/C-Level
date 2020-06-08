@@ -1,0 +1,18 @@
+/* Requires kudu.css */
+
+.ui-inputgroup .ui-inputgroup-addon {
+    border-color: silver;
+}
+
+.ui-inputgroup span.ui-inputgroup-addon:last-child {
+    -moz-border-radius: 0 5px 5px 0 !important;
+    -webkit-border-radius: 0 5px 5px 0 !important;
+    border-radius: 0 5px 5px 0 !important;
+    background-color: white !important;
+}
+
+.ui-inputgroup .ui-inputgroup-addon:first-child {
+    -moz-border-radius: 5px 0 0 5px !important;
+    -webkit-border-radius: 5px 0 0 5px !important;
+    border-radius: 5px 0 0 5px !important;
+}

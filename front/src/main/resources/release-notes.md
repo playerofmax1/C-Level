@@ -2,6 +2,33 @@
 
 
 
+## Kudu (Alpha) Version 1.3.1
+> From: Kudu (Alpha)(RC2) Version 1.2.4 build 29/5/2020 18:30
+> Marked: Main screen layout are changed from Bootstrap-CSS to Primefaces6.2.
+
+Fixed: KUDU-3: New Project Task need to send email after save.
+Fixed: KUDU-15: create new Admin Settings Screen.
+Fixed: KUDU-18: Need to remove BootstrapCSS
++   change title-bar from Bootstrap to Primefaces.
++   change side-bar(screen menu) from Bootstrap to Primefaces.
++   improve UI of Admin Setting Screen.
++   fix all impacts.
+Fixed: KUDU-24: User Management: Delete user still show on screens.
++   Time Sheet : User dropdown-list
++   Time Sheet Summary : User dropdown-list
++   User Management : Main user list
++   User Management : Main user list > V-button > User List in both sides
++   Project Management : Main list > M-button > New/Edit-button > User dropdown-list
++   Improve UI/UX & fix a bug in Timesheet Detail Dialog.
+Fixed: KUDU-29: Send email after extend task/MD for Employee.
++   Revise all 3 email-services to use one standard for content and subject, improve related UI.
+Fixed: KUDU-30: Employee need to see all Holidays in this year.
+Fixed: KUDU-31: Project Management : Closed Project need to lock timesheet.
++   Improve appearance: inputs on panelGrid (timesheet,project,manageProject,user).
+SQL: V6__email_templates.sql
+
+
+
 ## Kudu (Alpha) Version 1.2.3 (RC2)
 
 Fixed: KUDU-20: Duration display incorrectly

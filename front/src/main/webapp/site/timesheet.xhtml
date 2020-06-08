@@ -204,7 +204,7 @@
 
                             <p:column headerText="Project" exportFunction="#{timeSheetCtl.exportProject(timesheet)}">
                                 <h:outputText escape="false"
-                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name)}"/>
+                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?'(closed)':'')}"/>
                             </p:column>
 
                             <p:column headerText="Task" exportFunction="#{timeSheetCtl.exportTask(timesheet)}">
@@ -223,18 +223,18 @@
                             </p:column>
 
                             <p:column headerText="Actions" style="width: 5.5em" exportable="false">
-                                <p:commandButton id="editBtn" icon="ui-icon-pencil" disabled="#{timeSheetCtl.viewOnly}"
+                                <p:commandButton id="editBtn" icon="ui-icon-pencil" disabled="#{timeSheetCtl.viewOnly or timesheet.closedProject}"
                                                  action="#{timeSheetCtl.onPreEdit(timesheet)}"
                                                  update="timeSheetDlgForm"
                                                  onsuccess="PF('timeSheetDlg').show();PF('timeSheetDlg').initPosition();">
                                 </p:commandButton>
-                                <p:tooltip for="editBtn" value="Edit" position="top"/>
+                                <p:tooltip for="editBtn" value="Edit (Project-Status: '#{timesheet.project.status}')" position="top"/>
                                 <p:commandButton id="plusBtn" icon="ui-icon-plus" disabled="#{timeSheetCtl.viewOnly}"
                                                  action="#{timeSheetCtl.onAddRecord(timesheet)}"
                                                  update="monthForm,mainForm" rendered="#{timesheet.sortOrder==1}">
                                 </p:commandButton>
                                 <p:tooltip for="plusBtn" value="Add Project" position="top"/>
-                                <p:commandButton id="minusBtn" icon="ui-icon-minus" disabled="#{timeSheetCtl.viewOnly}"
+                                <p:commandButton id="minusBtn" icon="ui-icon-minus" disabled="#{timeSheetCtl.viewOnly or timesheet.closedProject}"
                                                  action="#{timeSheetCtl.onDeleteRecord(timesheet)}"
                                                  update="monthForm,mainForm" rendered="#{timesheet.sortOrder!=1}">
                                 </p:commandButton>

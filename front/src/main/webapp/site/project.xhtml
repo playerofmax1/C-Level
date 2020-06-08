@@ -106,8 +106,7 @@
                                 </p:commandButton>
                                 <p:tooltip for="editBtn" value="Edit Project" position="top"/>
 
-                                <p:commandButton id="manageBtn" value="M" action="#{projectCtl.onManageProject}"
-                                                 disabled="#{project.status=='CLOSE'}">
+                                <p:commandButton id="manageBtn" value="M" action="#{projectCtl.onManageProject}">
                                     <f:setPropertyActionListener value="#{project.id}"
                                                                  target="#{projectCtl.selectedProjectId}"/>
                                 </p:commandButton>
@@ -144,11 +143,12 @@
 
                     <h:outputLabel value="Code:" styleClass="require ui-outputlabel"/>
                     <p:inputText value="#{projectCtl.newProject.code}"
+                                 disabled="#{projectCtl.newProject.status == 'CLOSE'}"
                                  styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"
-                                 style="width:100%"/>
+                                 />
 
                     <h:outputLabel value="Customer:" styleClass="ui-outputlabel"/>
-                    <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" style="width:250px">
+                    <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" disabled="#{projectCtl.newProject.status == 'CLOSE'}" style="width:250px">
                         <f:selectItems value="#{projectCtl.customerList}" var="customer" itemLabel="[#{customer.code}] #{customer.name}"
                                        itemValue="#{customer.id}"/>
                         <p:ajax event="change" update="projectDlgForm" listener="#{projectCtl.onChangeCustomer}"/>
@@ -156,11 +156,12 @@
 
                     <h:outputLabel value="Name:" styleClass="require ui-outputlabel"/>
                     <p:inputText value="#{projectCtl.newProject.name}"
+                                 disabled="#{projectCtl.newProject.status == 'CLOSE'}"
                                  styleClass="#{projectCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"
-                                 style="width:100%"/>
+                                 />
 
                     <h:outputLabel value="Type:" styleClass="require ui-outputlabel"/>
-                    <p:selectOneMenu value="#{projectCtl.newProject.type}" style="width:250px">
+                    <p:selectOneMenu value="#{projectCtl.newProject.type}" disabled="#{projectCtl.newProject.status == 'CLOSE'}">
                         <f:selectItem itemLabel="Normal" itemValue="NORMAL"/>
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
@@ -169,15 +170,16 @@
                     <p:outputPanel styleClass="no-padding no-margin">
                         <div class="ui-inputgroup">
                             <p:inputNumber value="#{projectCtl.newProject.billableMDDuration}"
+                                           disabled="#{projectCtl.newProject.status == 'CLOSE'}"
                                            converter="durationManDayConverter"
                                            emptyValue="zero"/>
-                            <span class="ui-inputgroup-addon">mandays</span>
+                            <h:outputText styleClass="ui-inputgroup-addon#{projectCtl.newProject.status=='CLOSE'?' disabled':''}" value="mandays"/>
                         </div>
                     </p:outputPanel>
 
                     <!-- need to fulfill all cell in this table to avoid invalid DOM that make all dialogs after this point unstable -->
-                    <h:outputLabel value=" "/>
-                    <h:outputLabel value=" "/>
+                    <h:outputLabel value="Status:"/>
+                    <h:outputLabel value="#{projectCtl.newProject.status}" styleClass="#{(projectCtl.newProject.status == 'CLOSE')?'red-font':''}"/>
                 </p:panelGrid>
 
                 <br/>

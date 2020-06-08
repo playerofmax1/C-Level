@@ -361,6 +361,11 @@ label.require:after {
     margin: 0;
 }
 
+.ui-inputgroup span.ui-inputgroup-addon.disabled {
+    color: silver;
+    border-color: silver;
+}
+
 .ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
     border: 1px solid #e20034 !important;
     background: #ffffff !important;
@@ -433,6 +438,14 @@ hr.ui-separator {
 .ui-timepicker-div .ui_tpicker_time,
 .ui-datepicker-close {
     display: none;
+}
+
+.ui-panelgrid > tbody > tr > td > input[type=text] {
+    width: calc(100% - 12px);
+}
+
+.ui-panelgrid > tbody > tr > td > .ui-selectonemenu {
+    width: calc(100% - 29px);
 }
 
 .ui-datatable-header.ui-widget-header.ui-corner-top {

@@ -88,7 +88,8 @@
                                                              value="New Project Task"
                                                              action="#{managePrjCtl.onPreAddNew}"
                                                              onsuccess="PF('projectTaskDlg').show()"
-                                                             update="projectTaskDlgForm"/>
+                                                             update="projectTaskDlgForm"
+                                                             disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                             <p:tooltip position="right" value="Create new project task." for="newProjectTask"/>
                                         </div>
                                         <div class="ui-g-12 ui-md-6 alignRight">
@@ -146,23 +147,28 @@
                             <p:column headerText="Actions" style="width: 8.2em">
                                 <p:commandButton id="editBtn" icon="ui-icon-pencil" action="#{managePrjCtl.onPreEdit(task)}"
                                                  update="projectTaskDlgForm"
-                                                 onsuccess="PF('projectTaskDlg').show();"/>
+                                                 onsuccess="PF('projectTaskDlg').show();"
+                                                 disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                 <p:tooltip for="editBtn" value="Edit" position="top"/>
                                 <p:commandButton id="extendBtn" icon="ui-icon-arrowthick-2-e-w" action="#{managePrjCtl.onPreExtend(task)}"
                                                  update="extendMDDlgForm"
-                                                 onsuccess="PF('extendMDDlg').show();"/>
+                                                 onsuccess="PF('extendMDDlg').show();"
+                                                 disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                 <p:tooltip for="extendBtn" value="Extend MD" position="top"/>
                                 <p:commandButton id="deleteBtn" icon="ui-icon-trash" action="#{managePrjCtl.onPreDeleteProjectTask(task)}"
                                                  update="deleteDlgForm" rendered="#{task.actualMDMinute==0}"
-                                                 onsuccess="PF('deleteProjectTaskDlg').show();"/>
+                                                 onsuccess="PF('deleteProjectTaskDlg').show();"
+                                                 disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                 <p:tooltip for="deleteBtn" value="Delete" position="top"/>
                                 <p:commandButton id="lockBtn" icon="ui-icon-locked" action="#{managePrjCtl.onPreLockProjectTask(task)}"
                                                  update="lockDlgForm" rendered="#{task.actualMDMinute!=0 and task.status=='ACTIVE'}"
-                                                 onsuccess="PF('lockProjectTaskDlg').show();"/>
+                                                 onsuccess="PF('lockProjectTaskDlg').show();"
+                                                 disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                 <p:tooltip for="lockBtn" value="Lock" position="top"/>
                                 <p:commandButton id="unlockBtn" icon="ui-icon-unlocked" action="#{managePrjCtl.onPreLockProjectTask(task)}"
                                                  update="unlockDlgForm" rendered="#{task.actualMDMinute!=0 and task.status=='LOCK'}"
-                                                 onsuccess="PF('unlockProjectTaskDlg').show();"/>
+                                                 onsuccess="PF('unlockProjectTaskDlg').show();"
+                                                 disabled="#{managePrjCtl.project.status=='CLOSE'}"/>
                                 <p:tooltip for="unlockBtn" value="Unlock" position="top"/>
 
                             </p:column>

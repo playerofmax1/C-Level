@@ -122,55 +122,74 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="60%" resizable="false">
+        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="64em" resizable="false">
             <h:form id="userDlgForm">
                 <p:panelGrid columns="4" styleClass="no-border">
-                    <h:outputLabel value="Name" styleClass="require"/>
+                    <h:outputLabel value="Name:" styleClass="require" style="width:105px;display: inline-block;"/>
                     <p:inputText value="#{userCtl.newUser.name}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Lastname" styleClass="require"/>
-                    <p:inputText value="#{userCtl.newUser.lastName}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['lastName']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Login Name" styleClass="require"/>
+
+                    <h:outputLabel value="Lastname:" styleClass="require" style="width:105px;display: inline-block;"/>
+                    <p:inputText value="#{userCtl.newUser.lastName}" styleClass="#{userCtl.validator.failMap['lastName']==null?'ui-inputtext':'ui-state-error'}"/>
+
+                    <h:outputLabel value="Login Name:" styleClass="require"/>
                     <p:inputText value="#{userCtl.newUser.loginName}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['login']==null?'ui-inputtext':'ui-state-error'}"
                                  disabled="#{userCtl.editMode==true}"/>
-                    <h:outputLabel value="Email" styleClass="require"/>
-                    <p:inputText value="#{userCtl.newUser.email}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['email']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Phone Number" styleClass="require"/>
+
+                    <h:outputLabel value="Email:" styleClass="require"/>
+                    <p:inputText value="#{userCtl.newUser.email}" styleClass="#{userCtl.validator.failMap['email']==null?'ui-inputtext':'ui-state-error'}"/>
+
+                    <h:outputLabel value="Phone:" styleClass="require"/>
                     <p:inputText value="#{userCtl.newUser.phoneNumber}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['phone']==null?'ui-inputtext':'ui-state-error'}"
                                  maxlength="10"/>
 
-                    <h:outputLabel value="TimeSheet start date" styleClass="require"/>
+                    <h:outputLabel value="TimeSheet Start:" styleClass="require"/>
                     <p:outputPanel class="ui-inputgroup no-margin">
-                        <p:calendar id="popup" style="width:calc(100% - 6.3em);"
+                        <p:calendar id="popup"
                                     value="#{userCtl.newUser.tsStartDate}"
                                     pattern="dd/MM/yyyy"
                                     mask="true"/>
                         <span class="ui-inputgroup-addon">dd/mm/yyyy</span>
                     </p:outputPanel>
 
-                    <h:outputLabel value="Role"/>
-                    <p:selectOneMenu value="#{userCtl.selectedRoleId}" style="width: calc(100% - 2.2em);">
+                    <h:outputLabel value="Role:"/>
+                    <p:selectOneMenu value="#{userCtl.selectedRoleId}">
                         <f:selectItem itemLabel="-- Select Role --" itemValue="0"/>
                         <f:selectItems value="#{userCtl.roleList}" var="role" itemLabel="#{role.name}"
                                        itemValue="#{role.id}"/>
                     </p:selectOneMenu>
 
-                    <h:outputLabel value="Rate"/>
+                    <h:outputLabel value="Rate:"/>
                     <p:selectOneMenu value="#{userCtl.selectedRateId}" style="width: calc(100% - 2.2em);">
                         <f:selectItems value="#{userCtl.rateList}" var="rate" itemLabel="#{rate.name}"
                                        itemValue="#{rate.id}"/>
                     </p:selectOneMenu>
-
-                    <h:outputLabel value="Password" styleClass="require" rendered="#{userCtl.editMode==false}"/>
-                    <p:password value="#{userCtl.newUser.password}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                rendered="#{userCtl.editMode==false}"/>
-
-                    <h:outputLabel value="Confirm Password" styleClass="require" rendered="#{userCtl.editMode==false}"/>
-                    <p:password value="#{userCtl.confirmPwd}" style="width: 250px;" styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"
-                                rendered="#{userCtl.editMode==false}"/>
-
                 </p:panelGrid>
 
-                <p:outputPanel rendered="#{userCtl.editMode}"><hr/></p:outputPanel>
+                <p:outputPanel rendered="#{userCtl.editMode==false}">
+                    <hr/>
+                </p:outputPanel>
+
+                <p:panelGrid columns="4" styleClass="no-border" rendered="#{userCtl.editMode==false}">
+                    <h:outputLabel value="Password:"
+                                   styleClass="require"
+                                   style="width:105px;display: inline-block;"
+                                   rendered="#{userCtl.editMode==false}"/>
+                    <p:password value="#{userCtl.newUser.password}"
+                                style="width: 250px;"
+                                styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"/>
+
+                    <h:outputLabel value="Confirm:"
+                                   styleClass="require"
+                                   style="width:105px;display: inline-block;"
+                                   rendered="#{userCtl.editMode==false}"/>
+                    <p:password value="#{userCtl.confirmPwd}"
+                                style="width: 250px;"
+                                styleClass="#{userCtl.validator.failMap['pwd']==null?'ui-inputtext':'ui-state-error'}"/>
+                </p:panelGrid>
+
+                <p:outputPanel rendered="#{userCtl.editMode}">
+                    <hr/>
+                </p:outputPanel>
 
                 <p:dataTable var="performanceItem"
                              value="#{userCtl.newUser.userPerformanceList}"

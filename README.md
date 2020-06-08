@@ -177,7 +177,16 @@ The version.property is used in the front-end to show full version text on the b
 
 | Table Name    | Notes                                                        |
 | ------------- | ------------------------------------------------------------ |
-| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me) but not worry because of it's already work. |
+| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me, but not worry because of it's already work). |
+
+
+
+### Development Templates
+
+| Name                                                  | Template                                      | Remark           |
+| ----------------------------------------------------- | --------------------------------------------- | ---------------- |
+| + dialog<br />+ inputs on panelGrid<br />+ button set | screen: project.xhtml<br />dialog: projectDlg | styles: kudu.css |
+|                                                       |                                               |                  |
 
 
 

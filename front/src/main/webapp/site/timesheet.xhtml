@@ -180,8 +180,11 @@
                             </f:facet>
 
                             <p:column headerText="Date" style="width: 110px" styleClass="ui-datatable-holiday">
+                                <h:outputText value="#{timesheet.workDate}" rendered="#{timesheet.sortOrder==1}" style="display:inline-block;width:2.5em;">
+                                    <f:convertDateTime pattern="EE" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
                                 <h:outputText value="#{timesheet.workDate}" rendered="#{timesheet.sortOrder==1}">
-                                    <f:convertDateTime pattern="E dd/MM/yyyy" timeZone="Asia/Bangkok"/>
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
@@ -204,7 +207,7 @@
 
                             <p:column headerText="Project" exportFunction="#{timeSheetCtl.exportProject(timesheet)}">
                                 <h:outputText escape="false"
-                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?'(closed)':'')}"/>
+                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?' (closed)':'')}"/>
                             </p:column>
 
                             <p:column headerText="Task" exportFunction="#{timeSheetCtl.exportTask(timesheet)}">

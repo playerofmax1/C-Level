@@ -82,6 +82,21 @@
         <location>/signin.xhtml</location>
     </error-page>
 
+    <error-page>
+        <exception-type>java.lang.IllegalArgumentException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>java.lang.NullPointerException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>javax.el.PropertyNotFoundException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
     <!--<session-config>-->
     <!--<session-timeout>1</session-timeout>-->
     <!--<cookie-config>-->

@@ -22,6 +22,12 @@ public class Validator {
         }
     }
 
+    public void mustNotNull(String referenceName, Object field, String errorMessage) {
+        if (field == null) {
+            failMap.put(referenceName, errorMessage);
+        }
+    }
+
     public void mustValidLength(String referenceName, String field, int length, String errorMessage) {
         if (field.length() != length) {
             failMap.put(referenceName, errorMessage);
@@ -39,6 +45,18 @@ public class Validator {
 
     public void mustNumeric(String referenceName, String field, String errorMessage) {
         if (!StringUtils.isNumeric(field)) {
+            failMap.put(referenceName, errorMessage);
+        }
+    }
+
+    public void mustNotEquals(String referenceName, long value, long testValue, String errorMessage) {
+        if (value == testValue) {
+            failMap.put(referenceName, errorMessage);
+        }
+    }
+
+    public void mustInRange(String referenceName, double value, double min, double max, String errorMessage) {
+        if (value < min || value > max) {
             failMap.put(referenceName, errorMessage);
         }
     }

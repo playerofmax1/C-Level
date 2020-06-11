@@ -16,8 +16,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static com.clevel.kudu.util.LookupUtil.getObjById;
-
 @ViewScoped
 @Named("taskCtl")
 public class TaskController extends AbstractController {
@@ -45,7 +43,7 @@ public class TaskController extends AbstractController {
         TaskRequest taskRequest = new TaskRequest(false,false,true);
         ServiceRequest<TaskRequest> request = new ServiceRequest<>(taskRequest);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().getTaskList(request);
+        Response response = apiService.getTaskResource().getTaskList(request);
         if (response.getStatus() == 200) {
             ServiceResponse<List<TaskDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<TaskDTO>>>() {
             });
@@ -81,7 +79,7 @@ public class TaskController extends AbstractController {
         //validation pass
         ServiceRequest<TaskDTO> request = new ServiceRequest<>(newTask);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().newTask(request);
+        Response response = apiService.getTaskResource().newTask(request);
         if (response.getStatus() == 200) {
             ServiceResponse<TaskDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TaskDTO>>() {
             });
@@ -101,7 +99,7 @@ public class TaskController extends AbstractController {
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(selectedTaskId));
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().getTaskInfo(request);
+        Response response = apiService.getTaskResource().getTaskInfo(request);
         if (response.getStatus() == 200) {
             ServiceResponse<TaskDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TaskDTO>>() {
             });
@@ -138,7 +136,7 @@ public class TaskController extends AbstractController {
 
         ServiceRequest<TaskDTO> request = new ServiceRequest<>(newTask);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().updateTaskInfo(request);
+        Response response = apiService.getTaskResource().updateTaskInfo(request);
         if (response.getStatus() == 200) {
             ServiceResponse<TaskDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TaskDTO>>() {
             });
@@ -164,7 +162,7 @@ public class TaskController extends AbstractController {
 
         ServiceRequest<TaskDTO> request = new ServiceRequest<>(newTask);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().deleteTask(request);
+        Response response = apiService.getTaskResource().deleteTask(request);
         if (response.getStatus() == 200) {
             ServiceResponse<TaskDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TaskDTO>>() {
             });

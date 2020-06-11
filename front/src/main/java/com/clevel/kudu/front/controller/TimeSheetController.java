@@ -104,7 +104,6 @@ public class TimeSheetController extends AbstractController {
             for (UserTimeSheetDTO u : userTSList) {
                 userList.add(u.getTimeSheetUser());
             }
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
@@ -383,7 +382,7 @@ public class TimeSheetController extends AbstractController {
         TaskRequest taskRequest = new TaskRequest(false, true, false);
         ServiceRequest<TaskRequest> request = new ServiceRequest<>(taskRequest);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().getTaskList(request);
+        Response response = apiService.getTaskResource().getTaskList(request);
         if (response.getStatus() == 200) {
             ServiceResponse<List<TaskDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<TaskDTO>>>() {
             });

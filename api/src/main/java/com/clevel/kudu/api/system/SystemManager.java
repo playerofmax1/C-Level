@@ -41,11 +41,6 @@ public class SystemManager {
         return configMapper.toDTO(configDAO.findAll().stream());
     }
 
-    public List<ConfigDTO> saveConfigs(List<ConfigDTO> configs) {
-        /*TODO: need script to save all configurations*/
-        return configs;
-    }
-
     public void audit(String requestURL, String clientIP, String userAgent, String referer, String sessionId, String request) {
         SecurityAudit audit = new SecurityAudit(requestURL, clientIP, userAgent, referer, sessionId, request);
         securityAuditDAO.persist(audit);

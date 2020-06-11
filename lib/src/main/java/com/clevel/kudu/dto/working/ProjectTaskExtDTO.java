@@ -79,7 +79,7 @@ public class ProjectTaskExtDTO {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("parent", parent)
                 .append("extendMD", extendMD)
                 .append("extendMDDuration", extendMDDuration)
@@ -87,6 +87,7 @@ public class ProjectTaskExtDTO {
                 .append("description", description)
                 .append("status", status)
                 .append("createDate", createDate)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

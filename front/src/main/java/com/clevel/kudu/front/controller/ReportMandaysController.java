@@ -79,7 +79,6 @@ public class ReportMandaysController extends AbstractController {
             for (UserTimeSheetDTO u : userTSList) {
                 userList.add(u.getTimeSheetUser());
             }
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");

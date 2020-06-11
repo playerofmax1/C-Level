@@ -32,7 +32,7 @@
                 <ui:include src="../resources/menu.xhtml"/>
 
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                    <h1>Manage Project [#{managePrjCtl.project.code}:#{managePrjCtl.project.name}]</h1>
+                    <h1>Manage Project</h1>
                     <h:form id="mainForm">
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
@@ -61,14 +61,21 @@
                                 <h:outputText value="Back to project management"/>
                             </h:commandLink>
 
-                            <h:outputLabel value="Description:" style="width: 100px"/>
-                            <h:outputText value="#{(managePrjCtl.project.description=='')?'(none)':managePrjCtl.project.description}"/>
+                            <h:outputLabel value=" "/>
+                            <h:outputLabel value=" "/>
 
                             <h:outputLabel value="Customer:"/>
                             <h:outputText value="#{managePrjCtl.project.customer.name}"/>
 
-                            <h:outputLabel value=" "/>
-                            <h:outputLabel value=" "/>
+                            <h:outputLabel value="Project:" style="width: 100px"/>
+                            <p:outputPanel styleClass="no-margin">
+                                <b><h:outputText value="[#{managePrjCtl.project.code}] #{managePrjCtl.project.name}"/></b>
+                                <h:outputText value=" (CLOSED)" rendered="#{managePrjCtl.project.status=='CLOSE'}"/>
+                                <br/>
+                                <sup>
+                                    <h:outputText value="#{(managePrjCtl.project.description=='')?'(no-description)':managePrjCtl.project.description}"/>
+                                </sup>
+                            </p:outputPanel>
                         </p:panelGrid>
 
                         <hr/>

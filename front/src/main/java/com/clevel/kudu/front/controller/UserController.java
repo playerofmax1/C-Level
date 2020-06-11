@@ -106,7 +106,6 @@ public class UserController extends AbstractController {
             ServiceResponse<List<UserDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserDTO>>>() {
             });
             userList = serviceResponse.getResult();
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
@@ -163,7 +162,6 @@ public class UserController extends AbstractController {
             ServiceResponse<UserDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<UserDTO>>() {
             });
             FacesUtil.addInfo(serviceResponse.getApiResponse().description());
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
@@ -275,7 +273,6 @@ public class UserController extends AbstractController {
             ServiceResponse<UserDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<UserDTO>>() {
             });
             FacesUtil.addInfo(serviceResponse.getApiResponse().description());
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");

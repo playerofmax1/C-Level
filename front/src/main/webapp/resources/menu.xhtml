@@ -4,9 +4,9 @@
         xmlns:p="http://primefaces.org/ui">
 
     <p:outputPanel styleClass="hamburger-bar floatLeft alignLeft no-padding no-margin" id="hamburgerPanel">
-        <div class="hamburger-button">
+        <div class="hamburger-button" onclick="if (screenMenuActive){PF('screenMenu').hide();}else{PF('screenMenu').show();}">
             <script>var screenMenuActive = false;</script>
-            <p:outputLabel id="hamburgerButton" styleClass="fa fa-navicon" onclick="if (screenMenuActive){PF('screenMenu').hide();}else{PF('screenMenu').show();}"/>
+            <p:outputLabel id="hamburgerButton" styleClass="fa fa-navicon"/>
         </div>
         <p:tooltip position="right" value="Screen Menu." for="hamburgerButton"/>
     </p:outputPanel>
@@ -29,19 +29,20 @@
 
             <p:menu>
                 <p:submenu label="Employee" icon="fa fa-user" rendered="#{accessCtl.isVisible('S0007','S0009')}">
-                    <p:menuitem id="home" icon="fa fa-home" iconPos="right" value="Home" action="/site/welcome.jsf?faces-redirect=true"/>
-                    <p:menuitem id="timesheet" icon="fa fa-calendar" value="Time Sheet" action="/site/timesheet.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0007')}"/>
-                    <p:menuitem id="mandays" icon="fa fa-calendar" value="Time Sheet Summary" action="/site/reportMandays.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0009')}"/>
+                    <p:menuitem icon="fa fa-home" iconPos="right" value="Home" action="/site/welcome.jsf?faces-redirect=true"/>
+                    <p:menuitem icon="fa fa-calendar" value="Time Sheet" action="/site/timesheet.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0007')}"/>
+                    <p:menuitem icon="fa fa-calendar" value="Time Sheet Summary" action="/site/reportMandays.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0009')}"/>
+                    <p:menuitem icon="fa fa-send-o" value="Mandays Request" action="/site/mandaysRequest.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0011')}"/>
                 </p:submenu>
                 <p:submenu label="Administrator" icon="fa fa-user-md" rendered="#{accessCtl.isVisible('S0001','S0002','S0003','S0004','S0005','S0006','S0008','S0010')}">
-                    <p:menuitem id="customer" icon="fa fa-bank" value="Customer" action="/site/customer.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0001')}"/>
-                    <p:menuitem id="rate" icon="fa fa-money" value="Rate" action="/site/rate.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0002')}"/>
-                    <p:menuitem id="task" icon="fa fa-list" value="Task" action="/site/task.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0003')}"/>
-                    <p:menuitem id="project" icon="fa fa-flag-checkered" value="Project Management" action="/site/project.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0004')}"/>
-                    <p:menuitem id="user" icon="fa fa-users" value="User Management" action="/site/user.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0005')}"/>
-                    <p:menuitem id="role" icon="fa fa-toggle-on" value="Role Management" action="/site/role.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0006')}"/>
-                    <p:menuitem id="holiday" icon="fa fa-plane" value="Holiday" action="/site/holiday.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0008')}"/>
-                    <p:menuitem id="settings" icon="fa fa-cog" value="Admin Settings" action="/site/adminSettings.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0010')}"/>
+                    <p:menuitem icon="fa fa-bank" value="Customer" action="/site/customer.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0001')}"/>
+                    <p:menuitem icon="fa fa-money" value="Rate" action="/site/rate.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0002')}"/>
+                    <p:menuitem icon="fa fa-list" value="Task" action="/site/task.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0003')}"/>
+                    <p:menuitem icon="fa fa-flag-checkered" value="Project Management" action="/site/project.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0004')}"/>
+                    <p:menuitem icon="fa fa-users" value="User Management" action="/site/user.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0005')}"/>
+                    <p:menuitem icon="fa fa-toggle-on" value="Role Management" action="/site/role.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0006')}"/>
+                    <p:menuitem icon="fa fa-plane" value="Holiday" action="/site/holiday.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0008')}"/>
+                    <p:menuitem icon="fa fa-cog" value="Admin Settings" action="/site/adminSettings.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0010')}"/>
                 </p:submenu>
             </p:menu>
 

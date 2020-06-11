@@ -116,21 +116,9 @@ public class TaskResource implements TaskService {
         ServiceResponse<List<TaskDTO>> response = new ServiceResponse<>();
 
         try {
-            if (request.getRequest().isChargeable()) {
-                taskDTOList = taskManager.getTaskList(request.getUserId(),
-                        request.getRequest().isChargeable(),
-                        request.getRequest().isNonChargeAble(),request.getRequest().isAll());
-            }
-            if (request.getRequest().isNonChargeAble()) {
-                taskDTOList = taskManager.getTaskList(request.getUserId(),
-                        request.getRequest().isChargeable(),
-                        request.getRequest().isNonChargeAble(),request.getRequest().isAll());
-            }
-            if (request.getRequest().isAll()) {
-                taskDTOList = taskManager.getTaskList(request.getUserId(),
-                        request.getRequest().isChargeable(),
-                        request.getRequest().isNonChargeAble(),request.getRequest().isAll());
-            }
+            taskDTOList = taskManager.getTaskList(request.getUserId(),
+                    request.getRequest().isChargeable(),
+                    request.getRequest().isNonChargeAble(), request.getRequest().isAll());
             response.setResult(taskDTOList);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {

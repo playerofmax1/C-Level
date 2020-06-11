@@ -12,6 +12,7 @@ public enum Screen {
     S0008("Holiday", "Holiday", 80),
     S0009("TimeSheet Summary", "TimeSheet Summary", 90),
     S0010("Admin Settings", "Admin Settings", 100),
+    S0011("Mandays Request", "Mandays Request", 110),
     ;
 
     String nameEn;

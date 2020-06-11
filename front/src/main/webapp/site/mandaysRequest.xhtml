@@ -244,9 +244,12 @@
                                     update="taskDropdown"/>
                         </p:selectOneMenu>
 
-                        <h:outputLabel value="Hours:" styleClass="require ui-inputgroup-addon"/>
+                        <p:outputPanel>
+                            <h:outputLabel value="Hours:" styleClass="require ui-inputgroup-addon"/>
+                            <p:focus for="houstInput" rendered="#{mdRequestCtl.openByAttributes}"/>
+                        </p:outputPanel>
                         <p:outputPanel id="hours" styleClass="ui-inputgroup no-margin hours">
-                            <p:calendar value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
+                            <p:calendar id="houstInput" value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
                                         converter="durationConverter"
                                         showOn="focus"
                                         pattern="HH:mm"
@@ -295,6 +298,9 @@
 
                         <h:outputLabel value="AMD Calculation:" rendered="#{mdRequestCtl.approver}"/>
                         <p:selectBooleanButton value="#{mdRequestCtl.newMandaysRequest.amdCalculation}" onLabel="Yes" offLabel="No" rendered="#{mdRequestCtl.approver}"/>
+
+                        <h:outputLabel value=" " rendered="#{!mdRequestCtl.approver}"/>
+                        <h:outputLabel value=" " rendered="#{!mdRequestCtl.approver}"/>
                     </p:panelGrid>
 
                     <p:outputPanel class="ui-g no-margin">
@@ -361,6 +367,14 @@
                 }
             </script>
         </p:dialog>
+
+        <p:outputPanel rendered="#{mdRequestCtl.openByAttributes}">
+            <script>
+                $(document).ready(function () {
+                    PF('mdRequestDlg').show();
+                })
+            </script>
+        </p:outputPanel>
 
         <br/>
         <ui:include src="/resources/footer.xhtml">

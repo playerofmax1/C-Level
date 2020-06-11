@@ -46,11 +46,13 @@ public class ProjectTaskDAO extends GenericDAO<ProjectTask, Long> {
         log.debug("findByProjectIdAndUser. (projectId: {}, userId: {})",projectId,user.getId());
         CriteriaQuery<ProjectTask> criteria = createCriteriaQuery();
 
+        Join<ProjectTask, Task> taskJoin = root.join(ProjectTask_.task);
+
         criteria.where(
                 cb.equal(root.get(ProjectTask_.status), RecordStatus.ACTIVE),
                 cb.equal(root.get(ProjectTask_.project), projectId),
                 cb.equal(root.get(ProjectTask_.user), user)
-        );
+        ).orderBy(cb.asc(taskJoin.get(Task_.code)));
 
         Query query = em.createQuery(criteria);
         query.setHint(FETCH_GRAPH, graph);
@@ -71,7 +73,7 @@ public class ProjectTaskDAO extends GenericDAO<ProjectTask, Long> {
                 cb.equal(root.get(ProjectTask_.status), RecordStatus.ACTIVE),
                 cb.equal(root.get(ProjectTask_.user), user),
                 cb.equal(projectJoin.get(Project_.status),RecordStatus.ACTIVE)
-        );
+        ).orderBy(cb.asc(projectJoin.get(Project_.code)));
 
         Query query = em.createQuery(criteria);
         query.setHint(FETCH_GRAPH, graph);

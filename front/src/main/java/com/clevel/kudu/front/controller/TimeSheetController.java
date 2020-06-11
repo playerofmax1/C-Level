@@ -4,6 +4,8 @@ import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
+import com.clevel.kudu.front.attributes.MandaysRequestOpenAttributes;
+import com.clevel.kudu.front.model.SessionAttribute;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
 import com.clevel.kudu.model.TaskType;
@@ -16,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.time.Duration;
@@ -55,6 +58,9 @@ public class TimeSheetController extends AbstractController {
 
     @Inject
     PageAccessControl accessControl;
+
+    @Inject
+    HttpSession httpSession;
 
     public TimeSheetController() {
     }
@@ -662,6 +668,18 @@ public class TimeSheetController extends AbstractController {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
         }
+    }
+
+    public void onExtendMandays(ProjectTaskDTO selectedProjectTask) {
+        log.debug("onExtendMandays(selectedProjectTask: {})", selectedProjectTask);
+        /*TODO: may be need the confirm dialog for lost data on the Timesheet Detail dialog*/
+
+        /*TODO: create attributes for Open then redirect*/
+        MandaysRequestOpenAttributes openAttributes = new MandaysRequestOpenAttributes();
+        openAttributes.setProjectTask(selectedProjectTask);
+        httpSession.setAttribute(SessionAttribute.MANDAYS_REQUEST_OPEN.name(), openAttributes);
+
+        FacesUtil.redirect("/site/mandaysRequest.jsf");
     }
 
     private void updateViewRecord(TimeSheetDTO timeSheet) {

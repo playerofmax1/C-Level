@@ -4,6 +4,8 @@ import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
+import com.clevel.kudu.front.attributes.MandaysRequestOpenAttributes;
+import com.clevel.kudu.front.model.SessionAttribute;
 import com.clevel.kudu.front.validation.Validator;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
@@ -18,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
@@ -33,6 +36,9 @@ public class MandaysRequestController extends AbstractController {
 
     @Inject
     PageAccessControl accessControl;
+
+    @Inject
+    HttpSession httpSession;
 
     private boolean approver;
 
@@ -56,7 +62,8 @@ public class MandaysRequestController extends AbstractController {
     private String selectedTaskCode;
     private String comment;
 
-    private String br = "<br/>";
+    private String br = "<br />";
+    private boolean openByAttributes;
 
     @PostConstruct
     public void onCreation() {
@@ -78,6 +85,36 @@ public class MandaysRequestController extends AbstractController {
         resetMandaysRequestDialog();
 
         loadMandaysRequest();
+
+        onPostCreation();
+    }
+
+    private void onPostCreation() {
+        String openAttributeName = SessionAttribute.MANDAYS_REQUEST_OPEN.name();
+        MandaysRequestOpenAttributes openAttributes = (MandaysRequestOpenAttributes) httpSession.getAttribute(openAttributeName);
+        if (openAttributes != null) {
+            httpSession.removeAttribute(openAttributeName);
+
+            log.debug("onPostCreation.openAttributes = {}", openAttributes);
+            ProjectTaskDTO projectTask = openAttributes.getProjectTask();
+            ProjectDTO project = new ProjectDTO();
+            project.setId(projectTask.getProject().getId());
+
+            selectedTaskCode = projectTask.getTask().getCode();
+
+            newMandaysRequest.setType(MandaysRequestType.EXTEND);
+            newMandaysRequest.setProject(project);
+            newMandaysRequest.setProjectTask(projectTask);
+            newMandaysRequest.setTask(new TaskDTO());
+            newMandaysRequest.setUser(projectTask.getUser());
+
+            loadProjectTaskList();
+
+            openByAttributes = true;
+            return;
+        }
+
+        openByAttributes = false;
     }
 
     public void onSearch() {
@@ -654,6 +691,14 @@ public class MandaysRequestController extends AbstractController {
 
     public String getBr() {
         return br;
+    }
+
+    public boolean isOpenByAttributes() {
+        return openByAttributes;
+    }
+
+    public void setOpenByAttributes(boolean openByAttributes) {
+        this.openByAttributes = openByAttributes;
     }
 
     public ExcelOptions getExportExcelOptions() {

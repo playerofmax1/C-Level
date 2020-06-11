@@ -356,6 +356,10 @@ label.require:after {
     margin: 0 0 0 !important;
 }
 
+.ui-selectonemenu {
+    overflow: hidden;
+}
+
 .ui-inputgroup .ui-selectonemenu,
 .ui-inputgroup .ui-button {
     margin: 0;
@@ -583,10 +587,7 @@ hr.ui-separator {
     z-index: 90500 !important;
 }
 
-.main h1 {
-    z-index: 91000 !important;
-}
-
+.main h1,
 .hamburger-button {
     z-index: 91000 !important;
 }
@@ -595,10 +596,8 @@ hr.ui-separator {
     z-index: 98000 !important;
 }
 
-.ui-datepicker {
-    z-index: 98100 !important;
-}
-
+.ui-datepicker,
+.ui-tooltip,
 .ui-selectonemenu-panel {
     z-index: 98100 !important;
 }

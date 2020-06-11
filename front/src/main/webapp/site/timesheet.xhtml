@@ -389,32 +389,37 @@
                         Tasks available under project
                     </f:facet>
 
-                    <p:column headerText="Task" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
+                    <p:column headerText="Task">
                         <h:outputText value="[#{pjt.task.code}] #{pjt.task.name}"/>
                     </p:column>
 
-                    <p:column headerText="Description" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
+                    <p:column headerText="Description">
                         <h:outputText value="#{pjt.description}"/>
                     </p:column>
 
-                    <p:column headerText="Plan MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Plan MD" width="30">
                         <h:outputText value="#{pjt.planMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.planMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Extend MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Extend MD" width="30">
                         <h:outputText value="#{pjt.extendMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.extendMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Total MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Total MD" width="30">
                         <h:outputText value="#{pjt.totalMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.totalMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Actual MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Actual MD" width="30">
                         <h:outputText value="#{pjt.actualMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.actualMD})"/></sup>
+                    </p:column>
+
+                    <p:column headerText="Ext" width="30" rendered="#{!accessCtl.functionEnable('F0005') and accessCtl.isVisible('S0011')}">
+                        <p:commandButton id="extendMandays" icon="ui-icon-arrowthick-2-e-w" actionListener="#{timeSheetCtl.onExtendMandays(pjt)}"/>
+                        <p:tooltip for="extendMandays" position="left" value="Open screen for Extend Mandays Request"/>
                     </p:column>
 
                 </p:dataTable>

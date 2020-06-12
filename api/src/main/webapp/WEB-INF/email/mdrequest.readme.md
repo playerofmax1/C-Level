@@ -1,6 +1,6 @@
-# Assigned Task<br/><sup>Email Template</sup>
+# Manday Request<br/><sup>Email Template</sup>
 
->    **Template File Name:** assigned_task.html
+>    **Template File Name:** mdrequest.html
 >
 >    **Language:** Thai
 >
@@ -9,30 +9,26 @@
 >
 >    ----
 >
->    **Trigger 1:** Project Management  > M-button > New Project Task > Save
+>    **Trigger 1:**  Mandays Request > New Request (both NEW and EXTEND) > Save
 >
->    **Trigger 2:**  Mandays Request > Approve / Reject button (type=NEW) > Approve
->
->    **Send to:** Requester
+>    **Send to:** All Approvers for MD Request
 >
 >    **CC:** {AdminSetting:app.auto.email.cc}
 >
->    **Reply to:** {AdminSetting:app.auto.email.cc}
+>    **Reply to:** (none) (use reply to all on client instead)
 
 ----
 
-***เรียนคุณ ประสิทธิ์ จิตมโนโสต***
+***เรียน PMO Amin***
 
 
 
-ยินดีด้วย! คุณได้รับ Assigned Task ใหม่ ตามรายละเอียดดังต่อไปนี้
+Mandays Request ตามรายละเอียดนี้ ไม่ผ่านการพิจารณาค่ะ
 
-| หัวข้อ         | รายละเอียด                                       |
-| ------------ | ----------------------------------------------- |
-| Project      | [LH01] LH ETL Outsource                         |
-| Task         | [W40] Development & Unit Test                   |
-| Description  | Web Monitoring Implementation                   |
-| Plan Mandays | 20 Mandays<br /><sup>( 1manday = 8hours )</sup> |
++   Project:  [LH01] LH ETL Outsource
++   Task: [W40] Development & Unit Test
++   Mandays:   20 Mandays<br /><sup>( 1manday = 8hours )</sup>
++   Description: Web Monitoring Implementation<br/>Comment by praz: Test reject the mandays request.
 
 
 
@@ -62,12 +58,12 @@ Kudu Administrator
 | name                | sample value                  | remark                                         |
 | ------------------- | ----------------------------- | ---------------------------------------------- |
 | ${USER_NAME}        | ประสิทธิ์ จิตมโนโสต               | Full name or login name used to call receiver. |
+| ${TYPE}             | EXTEND                          |                                                |
 | ${PROJECT_CODE}     | LH01                          |                                                |
 | ${PROJECT_NAME}     | LH ETL Outsource              |                                                |
 | ${TASK_CODE}        | W40                           |                                                |
 | ${TASK_NAME}        | Development & Unit Test       |                                                |
 | ${TASK_DESCRIPTION} | Web Monitoring Implementation |                                                |
-| ${TASK_COMMENT}     | for Mandays request only      |                                                |
 | ${PLAN_MANDAYS}     | 20.00                         |                                                |
 
 

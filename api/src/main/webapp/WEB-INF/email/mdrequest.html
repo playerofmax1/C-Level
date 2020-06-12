@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width initial-scale=1'>
+    <title>mdrequest</title>
+    <style>
+        li b {
+            width: 5em;
+        }
+    </style>
+</head>
+<body class='typora-export os-windows' style='font-size:12px !important'>
+<div id='write' class='is-node'>
+    <p><strong><em><span>เรียน Approver ทุกท่าน</span></em></strong></p>
+    <p>&nbsp;</p>
+    <p><span>มี Mandays Request จากคุณ <b>${USER_NAME}</b> รายละเอียดดังนี้</span></p>
+    <ul>
+        <li><span><b>Request Type:</b>  ${TYPE}</span></li>
+        <li><span><b>Project:</b>  [${PROJECT_CODE}] ${PROJECT_NAME}</span></li>
+        <li><span><b>Task:</b> [${TASK_CODE}] ${TASK_NAME}<sup><br/>${TASK_DESCRIPTION}</sup></span></li>
+        <li><span><b>Mandays:</b> ${PLAN_MANDAYS} Mandays</span></li>
+    </ul>
+    <p>&nbsp;</p>
+    <p><i>คุณได้รับอีเมล์นี้เนื่องจากคุณอยู่ในรายชื่อผู้มีสิทธิ์อนุมัติรายการนี้.</i></p>
+    <p><i>สามารถอนุมัติได้ที่หน้าจอ Mandays Request บน Kudu Application.</i></p>
+    <p>&nbsp;</p>
+    <p><strong><em><span>Best Regards,</span></em></strong></p>
+    <p><span>Kudu Administrator</span></p>
+    <p><strong><span>The C-LEVEL Co., Ltd.</span></strong></p>
+    <hr/>
+</div>
+</body>
+</html>

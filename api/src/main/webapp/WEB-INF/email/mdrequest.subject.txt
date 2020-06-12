@@ -1,0 +1,1 @@
+${PROJECT_CODE}: มีรออนุมัติ ${PLAN_MANDAYS} Mandays จากคุณ${USER_NAME}

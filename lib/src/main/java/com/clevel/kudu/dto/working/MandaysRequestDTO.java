@@ -26,9 +26,11 @@ public class MandaysRequestDTO implements LookupList {
     private Duration extendMDDuration;
     private Long extendMDMinute;
     private String description;
+    private String comment;
     private boolean amdCalculation;
 
     private Date requestDate;
+    private UserDTO modifyBy;
 
     private long version;
 
@@ -121,6 +123,14 @@ public class MandaysRequestDTO implements LookupList {
         this.description = description;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public boolean isAmdCalculation() {
         return amdCalculation;
     }
@@ -145,6 +155,14 @@ public class MandaysRequestDTO implements LookupList {
         this.requestDate = requestDate;
     }
 
+    public UserDTO getModifyBy() {
+        return modifyBy;
+    }
+
+    public void setModifyBy(UserDTO modifyBy) {
+        this.modifyBy = modifyBy;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -159,8 +177,10 @@ public class MandaysRequestDTO implements LookupList {
                 .append("extendMDDuration", extendMDDuration)
                 .append("extendMDMinute", extendMDMinute)
                 .append("description", description)
+                .append("comment", comment)
                 .append("amdCalculation", amdCalculation)
                 .append("requestDate", requestDate)
+                .append("modifyBy", modifyBy)
                 .append("version", version)
                 .toString()
                 .replace('=', ':');

@@ -7,10 +7,7 @@ import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.front.attributes.MandaysRequestOpenAttributes;
 import com.clevel.kudu.front.model.SessionAttribute;
 import com.clevel.kudu.front.validation.Validator;
-import com.clevel.kudu.model.APIResponse;
-import com.clevel.kudu.model.Function;
-import com.clevel.kudu.model.MandaysRequestType;
-import com.clevel.kudu.model.RequestStatus;
+import com.clevel.kudu.model.*;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
 import com.clevel.kudu.util.LookupUtil;
@@ -60,7 +57,6 @@ public class MandaysRequestController extends AbstractController {
     private List<ProjectTaskDTO> projectTaskList;
     private List<TaskDTO> taskList;
     private String selectedTaskCode;
-    private String comment;
 
     private String br = "<br />";
     private boolean openByAttributes;
@@ -100,13 +96,22 @@ public class MandaysRequestController extends AbstractController {
             ProjectDTO project = new ProjectDTO();
             project.setId(projectTask.getProject().getId());
 
+            ProjectTaskDTO newProjectTask = new ProjectTaskDTO();
+            newProjectTask.setId(projectTask.getId());
+
+            UserDTO user = projectTask.getUser();
+            UserDTO newUser = new UserDTO();
+            newUser.setId(user.getId());
+            newUser.setName(user.getName());
+            newUser.setLastName(user.getLastName());
+
             selectedTaskCode = projectTask.getTask().getCode();
 
             newMandaysRequest.setType(MandaysRequestType.EXTEND);
             newMandaysRequest.setProject(project);
-            newMandaysRequest.setProjectTask(projectTask);
+            newMandaysRequest.setProjectTask(newProjectTask);
             newMandaysRequest.setTask(new TaskDTO());
-            newMandaysRequest.setUser(projectTask.getUser());
+            newMandaysRequest.setUser(newUser);
 
             loadProjectTaskList();
 
@@ -246,19 +251,18 @@ public class MandaysRequestController extends AbstractController {
         });
         log.debug("serviceResponse = {}", serviceResponse);
         if (serviceResponse.getApiResponse() != APIResponse.SUCCESS) {
-            String message = "loadMandaysRequest is failed! " + serviceResponse.getMessage();
+            String message = "save request is failed! " + serviceResponse.getMessage();
             log.debug(message);
             FacesUtil.actionFailed(message);
             return;
         }
 
         mandaysRequestDTOList.add(serviceResponse.getResult());
-        FacesUtil.actionSuccess();
+        FacesUtil.actionSuccess("Requested.");
     }
 
     public void onPreApprove() {
         log.debug("onPreApprove(selectedMandaysRequestId: {})", selectedMandaysRequestId);
-        comment = "";
 
         newMandaysRequest = LookupUtil.getObjById(mandaysRequestDTOList, selectedMandaysRequestId);
         if (newMandaysRequest == null) {
@@ -308,13 +312,6 @@ public class MandaysRequestController extends AbstractController {
         if (validator.isFailed()) {
             FacesUtil.actionFailed(validator.getMessage());
             return;
-        }
-
-        if (comment != null && !comment.isEmpty()) {
-            String desc = mandaysRequestDTO.getDescription();
-            desc += "\nComment by " + userDetail.getName() + ": " + comment.trim();
-            log.debug("description with comment = {}", desc);
-            mandaysRequestDTO.setDescription(desc);
         }
 
         mandaysRequestDTO.setStatus(requestStatus);
@@ -443,13 +440,15 @@ public class MandaysRequestController extends AbstractController {
         MandaysRequestType selectedType = newMandaysRequest.getType();
         log.debug("loadProjectList(selectedType:{}, selectedUserId:{})", selectedType, selectedUserId);
 
-        ServiceRequest<SimpleDTO> request;
         Response response;
         if (MandaysRequestType.NEW.equals(selectedType)) {
-            request = new ServiceRequest<>(new SimpleDTO());
+            SearchRequest searchRequest = new SearchRequest();
+            searchRequest.setStatus(RecordStatus.ACTIVE);
+            ServiceRequest<SearchRequest> request = new ServiceRequest<>(searchRequest);
             request.setUserId(userDetail.getUserId());
-            response = apiService.getProjectResource().getProjectList(request);
+            response = apiService.getProjectResource().searchProject(request);
         } else /*EXTEND*/ {
+            ServiceRequest<SimpleDTO> request;
             request = new ServiceRequest<>(new SimpleDTO(selectedUserId));
             request.setUserId(userDetail.getUserId());
             response = apiService.getTimeSheetResource().getProjectList(request);
@@ -541,6 +540,8 @@ public class MandaysRequestController extends AbstractController {
         MandaysRequestResult mandaysRequestResult = serviceResponse.getResult();
         mandaysRequestDTOList = mandaysRequestResult.getMandaysRequestList();
         currentYear = (int) mandaysRequestResult.getPerformanceYear().getYear();
+
+        log.debug("onSearch.mandaysRequestDTOList={}", mandaysRequestDTOList);
 
         checkNavigationButtonEnable();
     }
@@ -679,14 +680,6 @@ public class MandaysRequestController extends AbstractController {
 
     public void setSelectedStatus(RequestStatus selectedStatus) {
         this.selectedStatus = selectedStatus;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public String getBr() {

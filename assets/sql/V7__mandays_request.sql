@@ -18,6 +18,7 @@ CREATE TABLE `wrk_mandays_request`
     `extendMDDuration` varchar(255)   NULL,
     `extendMDMinute`   bigint         NULL,
     `description`      varchar(255)   NULL,
+    `comment`          varchar(1000)  NULL,
     `amdCalculation`   bit(1)         NULL,
 
     `createDate`       datetime(6) DEFAULT NULL,

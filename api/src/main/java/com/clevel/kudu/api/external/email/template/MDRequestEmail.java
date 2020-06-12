@@ -11,23 +11,24 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Stateless
-public class RejectedMDRequestEmail extends EmailManager {
+public class MDRequestEmail extends EmailManager {
     @Inject
     Logger log;
 
     @Inject
-    public RejectedMDRequestEmail() {
+    public MDRequestEmail() {
     }
 
     @PostConstruct
     public void onCreation() {
-        templateName = "reject_mdrequest";
+        templateName = "mdrequest";
     }
 
-    public void sendMail(MandaysRequestType type, MandaysRequest mandaysRequest) throws EmailException {
+    public void sendMail(MandaysRequestType type, MandaysRequest mandaysRequest, List<User> approverList) throws EmailException {
         Map<String, String> map = new HashMap<>();
         User user = mandaysRequest.getUser();
 
@@ -47,15 +48,6 @@ public class RejectedMDRequestEmail extends EmailManager {
 
         String projectCode = project.getCode();
 
-        String comment = mandaysRequest.getComment();
-        if (comment != null && !comment.isEmpty()) {
-            String modifiedUser = mandaysRequest.getModifyBy().getName();
-            comment = "Commented by " + modifiedUser + ": " + comment;
-        }
-        if (comment == null) {
-            comment = "";
-        }
-
         map.put("USER_NAME", user.getName() + " " + user.getLastName());
         map.put("TYPE", type.name());
         map.put("PROJECT_CODE", projectCode);
@@ -63,13 +55,18 @@ public class RejectedMDRequestEmail extends EmailManager {
         map.put("TASK_CODE", task.getCode());
         map.put("TASK_NAME", task.getName());
         map.put("TASK_DESCRIPTION", description);
-        map.put("TASK_COMMENT", comment);
         map.put("PLAN_MANDAYS", mandaysRequest.getExtendMD().toString());
         log.debug("sendMail.map = {}", map);
 
+        String to = "";
+        for (User approver : approverList) {
+            to += ","+ approver.getEmail();
+        }
+        to = to.substring(1);
+
         String cc = app.getConfig(SystemConfig.AUTO_EMAIL_CC, "");
 
-        super.sendMail(user.getEmail(), cc, map);
+        super.sendMail(to, cc, map);
     }
 
 }

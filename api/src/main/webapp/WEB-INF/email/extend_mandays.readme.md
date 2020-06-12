@@ -6,8 +6,18 @@
 >
 >    **Engine:** Apache Commons Text (org.apache.commons.text.StringSubstitutor)
 >    **Alternate Engine:** not required
-
-
+>
+>    ----
+>
+>    **Trigger 1:** Project Management  > M-button > Extend-button > Save
+>
+>    **Trigger 2:**  Mandays Request > Approve / Reject button (type=EXTEND) > Approve
+>
+>    **Send to:** Requester
+>
+>    **CC:** {AdminSetting:app.auto.email.cc}
+>
+>    **Reply to:**  {AdminSetting:app.auto.email.cc}
 
 ----
 
@@ -47,18 +57,19 @@ Kudu Administrator
 
 >   Using Map<String name, String value> **valuesMap** with required name below.
 
-| name                  | sample value                  | remark                                         |
-| --------------------- | ----------------------------- | ---------------------------------------------- |
-| ${USER_NAME}          | ประสิทธิ์ จิตมโนโสต               | Full name or login name used to call receiver. |
-| ${PROJECT_CODE}       | LH01                          |                                                |
-| ${PROJECT_NAME}       | LH ETL Outsource              |                                                |
-| ${TASK_CODE}          | W40                           |                                                |
-| ${TASK_NAME}          | Development & Unit Test       |                                                |
-| ${TASK_DESCRIPTION}   | Web Monitoring Implementation |                                                |
-| ${EXTEND_DESCRIPTION} | Request from Bank             | Description                                    |
-| ${PLAN_MANDAYS}       | 20.00                         |                                                |
-| ${EXTEND_MANDAYS}     | 5.00                          |                                                |
-| ${TOTAL_PLAN_MANDAYS} | 25.00                         |                                                |
+| name                    | sample value                  | remark                                         |
+| ----------------------- | ----------------------------- | ---------------------------------------------- |
+| ${USER_NAME}            | ประสิทธิ์ จิตมโนโสต               | Full name or login name used to call receiver. |
+| ${PROJECT_CODE}         | LH01                          |                                                |
+| ${PROJECT_NAME}         | LH ETL Outsource              |                                                |
+| ${TASK_CODE}            | W40                           |                                                |
+| ${TASK_NAME}            | Development & Unit Test       |                                                |
+| ${TASK_DESCRIPTION}     | Web Monitoring Implementation |                                                |
+| ${TASK_COMMENT}         | +20MD for maximum.            | Comment from approver                          |
+| ${EXTEND_MANDAYS}       | 5.00                          |                                                |
+| ${TOTAL_EXTEND_MANDAYS} | 5.00                          |                                                |
+| ${PLAN_MANDAYS}         | 20.00                         |                                                |
+| ${TOTAL_PLAN_MANDAYS}   | 25.00                         |                                                |
 
 
 

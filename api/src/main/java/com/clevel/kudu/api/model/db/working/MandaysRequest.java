@@ -49,6 +49,9 @@ public class MandaysRequest extends AbstractAuditEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Column(name = "amdCalculation")
     private boolean amdCalculation;
 
@@ -132,6 +135,14 @@ public class MandaysRequest extends AbstractAuditEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public boolean isAmdCalculation() {

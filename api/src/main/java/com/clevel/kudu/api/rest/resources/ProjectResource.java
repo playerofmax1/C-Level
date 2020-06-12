@@ -294,7 +294,7 @@ public class ProjectResource implements ProjectService {
         ProjectTaskDTO dto = request.getRequest();
 
         try {
-            ProjectTaskDTO projectTaskDTO = projectManager.createNewProjectTask(request.getUserId(), dto);
+            ProjectTaskDTO projectTaskDTO = projectManager.createNewProjectTask(request.getUserId(), dto, null);
             response.setResult(projectTaskDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -316,7 +316,7 @@ public class ProjectResource implements ProjectService {
         ProjectTaskExtRequest dto = request.getRequest();
 
         try {
-            ProjectTaskExtDTO projectTaskExtDTO = projectManager.createExtendProjectTask(request.getUserId(), dto.getProjectTaskDTO(), dto.getProjectTaskExtDTO());
+            ProjectTaskExtDTO projectTaskExtDTO = projectManager.createExtendProjectTask(request.getUserId(), dto.getProjectTaskDTO(), dto.getProjectTaskExtDTO(), null);
             response.setResult(projectTaskExtDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException el) {

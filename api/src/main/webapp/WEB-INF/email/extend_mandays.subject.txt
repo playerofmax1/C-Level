@@ -1,1 +1,1 @@
-${PROJECT_CODE}: คุณ${USER_NAME} ได้รับ mandays เพิ่มแล้ว
+${PROJECT_CODE}: คุณได้รับอนุมัติ Mandays แล้ว

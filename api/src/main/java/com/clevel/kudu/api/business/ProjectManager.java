@@ -1,12 +1,16 @@
 package com.clevel.kudu.api.business;
 
+import com.clevel.kudu.api.dao.relation.RelRoleFunctionDAO;
 import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.external.email.template.AssignedTaskEmail;
 import com.clevel.kudu.api.external.email.template.ExtendMandaysEmail;
+import com.clevel.kudu.api.external.email.template.MDRequestEmail;
 import com.clevel.kudu.api.external.email.template.RejectedMDRequestEmail;
+import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
+import com.clevel.kudu.api.model.db.security.Role;
 import com.clevel.kudu.api.model.db.working.MandaysRequest;
 import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.api.rest.mapper.MandaysRequestMapper;
@@ -16,10 +20,7 @@ import com.clevel.kudu.api.rest.mapper.ProjectTaskMapper;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.MDUtil;
 import com.clevel.kudu.dto.working.*;
-import com.clevel.kudu.model.APIResponse;
-import com.clevel.kudu.model.MandaysRequestType;
-import com.clevel.kudu.model.RecordStatus;
-import com.clevel.kudu.model.RequestStatus;
+import com.clevel.kudu.model.*;
 import com.clevel.kudu.util.DateTimeUtil;
 import org.slf4j.Logger;
 
@@ -28,6 +29,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -62,11 +64,15 @@ public class ProjectManager {
     @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
+    private RelRoleFunctionDAO relRoleFunctionDAO;
+    @Inject
     private AssignedTaskEmail assignedTaskEmail;
     @Inject
     private ExtendMandaysEmail extendMandaysEmail;
     @Inject
     private RejectedMDRequestEmail rejectedMDRequestEmail;
+    @Inject
+    private MDRequestEmail mdRequestEmail;
 
     @Inject
     public ProjectManager() {
@@ -211,7 +217,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId, user).stream());
     }
 
-    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException, EmailException {
+    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
@@ -244,12 +250,12 @@ public class ProjectManager {
 
         newProjectTask = projectTaskDAO.persist(newProjectTask);
 
-        assignedTaskEmail.sendMail(newProjectTask);
+        assignedTaskEmail.sendMail(newProjectTask, mandaysRequest);
 
         return projectTaskMapper.toDTO(newProjectTask);
     }
 
-    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO) throws RecordNotFoundException, EmailException {
+    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})", userId, projectTaskDTO, projectTaskExtDTO);
         User user = userDAO.findById(userId);
 
@@ -277,7 +283,7 @@ public class ProjectManager {
         parentProjectTask.setExtendMD(DateTimeUtil.getManDays(parentProjectTask.getExtendMDMinute()));
         projectTaskDAO.persist(parentProjectTask);
 
-        extendMandaysEmail.sendMail(parentProjectTask, ext);
+        extendMandaysEmail.sendMail(parentProjectTask, ext, mandaysRequest);
 
         return projectTaskExtMapper.toDTO(ext);
     }
@@ -416,7 +422,7 @@ public class ProjectManager {
         return mandaysRequestMapper.toDTO(mandaysRequestDAO.findByStatus(userId, status, startDate, endDate).stream());
     }
 
-    public MandaysRequestDTO createMandaysRequest(long userId, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException {
+    public MandaysRequestDTO createMandaysRequest(long userId, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
         log.debug("createMandaysRequest(userId: {}, mandaysRequestDTO: {})", userId, mandaysRequestDTO);
         User user = userDAO.findById(userId);
 
@@ -434,6 +440,20 @@ public class ProjectManager {
         newMandaysRequest.setModifyBy(user);
 
         newMandaysRequest = mandaysRequestDAO.persist(newMandaysRequest);
+
+        List<RelRoleFunction> relRoleFunctionList = relRoleFunctionDAO.findByFunction(Function.F0005);
+        List<Role> roleList = new ArrayList<>();
+        Role role;
+        for (RelRoleFunction relRoleFunction : relRoleFunctionList) {
+            role = relRoleFunction.getRole();
+            roleList.add(role);
+            log.debug("found F0005 on role({})", role.getName());
+        }
+        List<User> approverList = userDAO.findByRoleList(roleList);
+        for (User approver : approverList) {
+            log.debug("found F0005 approver([{}]{}:{})", approver.getRole().getName(), approver.getName(), approver.getEmail());
+        }
+        mdRequestEmail.sendMail(mandaysRequestDTO.getType(), newMandaysRequest, approverList);
 
         return mandaysRequestMapper.toDTO(newMandaysRequest);
     }
@@ -505,7 +525,7 @@ public class ProjectManager {
             projectTaskDTO.setDescription(mandaysRequestDTO.getDescription());
             projectTaskDTO.setAmdCalculation(mandaysRequestDTO.isAmdCalculation());
 
-            createNewProjectTask(user.getId(), projectTaskDTO);
+            createNewProjectTask(user.getId(), projectTaskDTO, newMandaysRequest);
 
         } else /*EXTEND*/ {
             /*call same function with the extend mandays of project task to use the same business logic and same email template*/
@@ -516,7 +536,7 @@ public class ProjectManager {
             projectTaskExtDTO.setExtendMDDuration(mandaysRequestDTO.getExtendMDDuration());
             projectTaskExtDTO.setDescription(mandaysRequestDTO.getDescription());
 
-            createExtendProjectTask(user.getId(), projectTaskDTO, projectTaskExtDTO);
+            createExtendProjectTask(user.getId(), projectTaskDTO, projectTaskExtDTO, newMandaysRequest);
         }
 
         return mandaysRequestMapper.toDTO(newMandaysRequest);

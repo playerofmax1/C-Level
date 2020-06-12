@@ -237,7 +237,8 @@
                     <hr/>
 
                     <div class="alignRight">
-                        <p:commandButton id="addNew" value="Save" action="#{managePrjCtl.onAddNew}"
+                        <p:commandButton id="addNew"
+                                         icon="fa fa-save"  value="Save" action="#{managePrjCtl.onAddNew}"
                                          rendered="#{managePrjCtl.editMode==false}"
                                          update="mainForm,projectTaskDlgForm"
                                          onclick="PF('blockProjectTaskDlgButtons').show();"/>

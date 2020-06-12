@@ -6,6 +6,16 @@
 >
 >    **Engine:** Apache Commons Text (org.apache.commons.text.StringSubstitutor)
 >    **Alternate Engine:** not required
+>
+>    ----
+>
+>    **Trigger 1:** Mandays Request > Approve / Reject button (type=EXTEND) > Reject
+>
+>    **Send to:** Requester
+>
+>    **CC:** {AdminSetting:app.auto.email.cc}
+>
+>    **Reply to:**  {AdminSetting:app.auto.email.cc}
 
 ----
 
@@ -54,7 +64,7 @@ Kudu Administrator
 | ${TASK_CODE}        | W40                           |                                                |
 | ${TASK_NAME}        | Development & Unit Test       |                                                |
 | ${TASK_DESCRIPTION} | Web Monitoring Implementation |                                                |
-| ${DESCRIPTION}      | Request Description / Comment |                                                |
+| ${TASK_COMMENT} |  | comment from reject-man. |
 | ${PLAN_MANDAYS}     | 20.00                         |                                                |
 
 

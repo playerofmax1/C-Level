@@ -1,1 +1,1 @@
-${PROJECT_CODE}: คุณ${USER_NAME} mandays request ไม่ผ่านการพิจารณาค่ะ
+${PROJECT_CODE}: คำขอเรื่อง Mandays ของคุณไม่ผ่านการพิจารณาค่ะ

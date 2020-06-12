@@ -92,6 +92,7 @@ public final class LoginBean implements Serializable {
         userDetail.setUserName(result.getUserName());
         userDetail.setName(result.getName());
         userDetail.setLastName(result.getLastName());
+        userDetail.setTsStartDate(result.getTsStartDate());
         userDetail.setScreenList(result.getScreenList());
         userDetail.setFunctionList(result.getFunctionList());
 

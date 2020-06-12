@@ -11,6 +11,7 @@ import com.clevel.kudu.model.Function;
 import com.clevel.kudu.model.TaskType;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
+import com.clevel.kudu.util.LookupUtil;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.export.ExcelOptions;
 
@@ -72,21 +73,34 @@ public class TimeSheetController extends AbstractController {
         currentMonth = DateTimeUtil.now();
         nextEnable = false;
         previousEnable = true;
-        timeSheetUserId = userDetail.getUserId();
         utilization = new UtilizationDTO();
-
-        loadUserInfo();
-        loadTask();
-        loadTimeSheet();
 
         if (accessControl.functionEnable(Function.F0002)) {
             loadUserList();
         }
+
+        timeSheetUserId = userDetail.getUserId();
+        onChangeUser();
+        /*loadTsStartDate();*/
+        /*loadTimeSheet();*/
+
+        loadTask();
+
     }
 
     public void onChangeUser() {
-        log.debug("onChangeUser. (timeSheetUserId: {})", timeSheetUserId);
+        log.debug("onChangeUser.timeSheetUserId: {}", timeSheetUserId);
         currentMonth = DateTimeUtil.now();
+
+        if (userList == null) {
+            tsStartDate = loadTsStartDate();
+        } else {
+            UserDTO selectedUser = LookupUtil.getObjById(userList, timeSheetUserId);
+            log.debug("onChangeUser.selectedUser: {}", selectedUser);
+            tsStartDate = selectedUser.getTsStartDate();
+        }
+        log.debug("onChangeUser.tsStartDate: {}", tsStartDate);
+
         loadTimeSheet();
     }
 
@@ -105,6 +119,7 @@ public class TimeSheetController extends AbstractController {
             currentUser.setId(userDetail.getUserId());
             currentUser.setName(userDetail.getName());
             currentUser.setLastName(userDetail.getLastName());
+            currentUser.setTsStartDate(userDetail.getTsStartDate());
             userList.add(currentUser);
             timeSheetUserId = userDetail.getUserId();
             for (UserTimeSheetDTO u : userTSList) {
@@ -177,11 +192,13 @@ public class TimeSheetController extends AbstractController {
 
         // check previous
         Date pre = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
+        /*TODO: remove debug log*/
+        log.debug("checkNavigationButtonEnable(): currentMonth={}, previousMonth={}, tsStartDate={}", currentMonth, pre, tsStartDate);
         previousEnable = !pre.before(tsStartDate);
     }
 
-    private void loadUserInfo() {
-        log.debug("loadUserInfo.");
+    private Date loadTsStartDate() {
+        log.debug("loadTsStartDate.");
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(userDetail.getUserId()));
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getSecurityResource().getUserInfo(request);
@@ -190,11 +207,12 @@ public class TimeSheetController extends AbstractController {
             });
             UserDTO user = serviceResponse.getResult();
             log.debug("user: {}", user);
-            tsStartDate = user.getTsStartDate();
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            return user.getTsStartDate();
         }
+
+        log.debug("wrong response status! (status: {})", response.getStatus());
+        FacesUtil.addError("wrong response from server!");
+        return null;
     }
 
     private void checkViewOnly(TimeSheetResult result) {

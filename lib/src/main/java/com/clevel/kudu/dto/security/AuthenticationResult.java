@@ -5,6 +5,7 @@ import com.clevel.kudu.model.Screen;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.Date;
 import java.util.List;
 
 public class AuthenticationResult {
@@ -13,6 +14,7 @@ public class AuthenticationResult {
     private String name;
     private String lastName;
     private String role;
+    private Date tsStartDate;
     private List<Screen> screenList;
     private List<Function> functionList;
 
@@ -59,6 +61,14 @@ public class AuthenticationResult {
         this.role = role;
     }
 
+    public Date getTsStartDate() {
+        return tsStartDate;
+    }
+
+    public void setTsStartDate(Date tsStartDate) {
+        this.tsStartDate = tsStartDate;
+    }
+
     public List<Screen> getScreenList() {
         return screenList;
     }
@@ -83,6 +93,7 @@ public class AuthenticationResult {
                 .append("name", name)
                 .append("lastName", lastName)
                 .append("role", role)
+                .append("tsStartDate", tsStartDate)
                 .append("screenList", screenList)
                 .append("functionList", functionList)
                 .toString();

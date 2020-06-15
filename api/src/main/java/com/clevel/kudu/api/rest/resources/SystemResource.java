@@ -1,6 +1,7 @@
 package com.clevel.kudu.api.rest.resources;
 
 import com.clevel.kudu.api.SystemService;
+import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.system.SystemManager;
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
@@ -18,6 +19,9 @@ public class SystemResource implements SystemService {
 
     @Inject
     private Logger log;
+
+    @Inject
+    private Application app;
 
     @Inject
     private SystemManager systemManager;
@@ -50,6 +54,7 @@ public class SystemResource implements SystemService {
 
         try {
             configDTOList = systemManager.saveConfigList(configDTOList);
+            app.loadConfiguration();
 
             response.setResult(configDTOList);
             response.setApiResponse(APIResponse.SUCCESS);

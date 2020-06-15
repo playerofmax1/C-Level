@@ -26,7 +26,7 @@
             <h:form id="loginForm" styleClass="form-signin alignCenter">
                 <p:growl id="msg" showDetail="true"/>
 
-                <div class="alignCenter" style="width: 100%;">
+                <div class="alignCenter login-panel-container" style="width: 100%;">
                     <p:panel styleClass="login-panel">
 
                         <div class="ui-g ui-g-12">
@@ -60,17 +60,20 @@
                                              style="width:100%"
                                              action="#{loginBean.login()}" update="loginForm"/>
                         </div>
+
+
                     </p:panel>
+
+                    <footer style="z-index: 1000;">
+                        <h:outputText value="#{accessCtl.applicationVersionString}"/><br/>
+                        &#169; 2020 <a href="http://www.the-c-level.com/" target="_blank">C-Level Co., Ltd.</a> All rights reserved.
+                    </footer>
                 </div>
 
                 <p:focus for="username"/>
             </h:form>
 
         </div>
-
-        <ui:include src="/resources/footer.xhtml">
-            <ui:param name="controller" value="#{systemCtl}"/>
-        </ui:include>
     </h:body>
 </f:view>
 </html>

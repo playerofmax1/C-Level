@@ -29,6 +29,16 @@ body {
     vertical-align: bottom;
 }
 
+.login-panel-container footer {
+    margin: 0 !important;
+    padding-top: 10px;
+    margin-bottom: -20px;
+
+    text-align: center;
+    font-size: 9px;
+    color: #786e68;
+}
+
 .container-fluid {
 }
 
@@ -98,10 +108,6 @@ body {
     display: inline-block;
 }
 
-.button-bar {
-
-}
-
 .button-bar.ui-sticky {
     right: 0 !important;
     -moz-border-radius: 7px 0 0 7px !important;
@@ -132,6 +138,18 @@ body {
     padding: 0 !important;
     border: 0 !important;
     box-shadow: silver 1px 7px 5px 3px !important;
+}
+
+.left-side-bar .ui-scrollpanel-container {
+    background-color: rgb(196, 196, 196);
+}
+
+.left-side-bar .ui-scrollpanel-vbar {
+    margin-right: -16px;
+}
+
+.left-side-bar .ui-scrollpanel-content {
+    width: 100% !important
 }
 
 .left-side-bar .ui-sidebar-close {
@@ -167,7 +185,6 @@ body {
 
 .left-side-bar .ui-menu {
     width: 100%;
-    height: 5000px;
     padding: 0;
     border: 0;
     margin: 0 !important;
@@ -217,6 +234,23 @@ body {
     margin-left: 10px;
 }
 
+.left-side-bar footer {
+    position: fixed;
+    left: 0px;
+    bottom: 68px;
+    margin: 0 !important;
+    border: gray solid 1px;
+    padding: 5px;
+    width: calc(100% - 12px);
+    height: 20px;
+
+    text-align: center;
+    font-size: 9px;
+    color: #786e68;
+
+    background-color: rgb(196, 196, 196);
+}
+
 .ui-sidebar-mask {
     margin-top: 68px !important;
 }
@@ -240,22 +274,6 @@ body {
 
 .gridInputRow {
     height: 42px;
-}
-
-footer {
-    position: fixed;
-    font-family: sans-serif;
-    bottom: 0;
-    left: auto;
-    right: auto;
-    text-align: center;
-    font-size: 10px;
-    color: #786e68;
-    width: 350px;
-    margin-left: calc(50% - 188px) !important;
-    background-color: white;
-    padding: 5px;
-    border-radius: 40px 40px 0 0;
 }
 
 .version {
@@ -293,7 +311,8 @@ footer {
 }
 
 .gray-font {
-    color: gray; !important;
+    color: gray;
+!important;
 }
 
 .silver-font {

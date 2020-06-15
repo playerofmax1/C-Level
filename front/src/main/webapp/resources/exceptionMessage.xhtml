@@ -3,27 +3,21 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:p="http://primefaces.org/ui">
 
-    <p:sidebar position="top"
+    <p:sidebar position="bottom"
                rendered="#{pfExceptionHandler != null}"
                visible="true"
                baseZIndex="99999"
                styleClass="exceptionMsg no-margin"
-               style="height: 250px"
+               style="height: 100px"
                onHide="$('.exceptionMsg').attr('style','display:none');">
         <p:outputPanel rendered="#{pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}">
             <h3>View Expired</h3>
             <h4>The session is timed out, please login again to confirm this is your.</h4>
         </p:outputPanel>
 
-        <p:outputPanel rendered="#{pfExceptionHandler.type == 'java.lang.IllegalArgumentException'}">
-            <h3>Illegal Argument Exception</h3>
+        <p:outputPanel rendered="#{pfExceptionHandler.type != 'javax.faces.application.ViewExpiredException'}">
+            <h3>Exception: #{pfExceptionHandler.type}</h3>
             <h4>#{pfExceptionHandler.message}.</h4>
-        </p:outputPanel>
-
-        <p:outputPanel rendered="#{pfExceptionHandler.type == 'java.lang.NullPointerException'}">
-            <h3>Null Pointer Exception</h3>
-            <h4>#{pfExceptionHandler.message}.</h4>
-            <!--<p:inputTextarea value="#{pfExceptionHandler.formattedStackTrace}" scrollHeight="100" style="height: 100px;"/>-->
         </p:outputPanel>
     </p:sidebar>
 

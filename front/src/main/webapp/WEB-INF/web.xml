@@ -97,6 +97,11 @@
         <location>/site/exception.xhtml</location>
     </error-page>
 
+    <error-page>
+        <exception-type>java.lang.ClassCastException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
     <!--<session-config>-->
     <!--<session-timeout>1</session-timeout>-->
     <!--<cookie-config>-->

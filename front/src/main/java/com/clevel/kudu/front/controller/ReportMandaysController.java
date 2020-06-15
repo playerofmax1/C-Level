@@ -148,7 +148,15 @@ public class ReportMandaysController extends AbstractController {
         totalUserMandays = mandaysResult.getTotalMandaysDTO();
         utilization = mandaysResult.getUtilization();
         currentYear = (int) utilization.getYear();
-        targetUtilization = (userMandaysDTOList.size() == 0) ? BigDecimal.ZERO : userMandaysDTOList.get(0).getTargetPercentCU();
+        if (userMandaysDTOList.size() > 0) {
+            UserMandaysDTO firstUserMandaysDTO = userMandaysDTOList.get(0);
+            targetUtilization = firstUserMandaysDTO.getTargetPercentCU();
+            log.debug("targetUtilization = {}", targetUtilization);
+            log.debug("firstUserMandaysDTO = {}", firstUserMandaysDTO);
+        } else {
+            targetUtilization = BigDecimal.ZERO;
+            log.debug("userMandaysDTOList is empty.");
+        }
         holidayList = mandaysResult.getHolidayList();
 
         normalize(totalUserMandays, userMandaysDTOList);

@@ -6,8 +6,13 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * Used as a Session Object to store logged-in user information.
+ * All variables needed for the Session can put here without any changes to the Authentication.
+ */
 public class UserDetail implements Serializable {
     private long userId;
     private String userName;
@@ -15,6 +20,8 @@ public class UserDetail implements Serializable {
     private String lastName;
     private String email;
     private String role;
+    private Date tsStartDate;
+
     private List<Screen> screenList;
     private List<Function> functionList;
 
@@ -76,6 +83,14 @@ public class UserDetail implements Serializable {
         this.role = role;
     }
 
+    public Date getTsStartDate() {
+        return tsStartDate;
+    }
+
+    public void setTsStartDate(Date tsStartDate) {
+        this.tsStartDate = tsStartDate;
+    }
+
     public List<Screen> getScreenList() {
         return screenList;
     }
@@ -101,6 +116,7 @@ public class UserDetail implements Serializable {
                 .append("lastName", lastName)
                 .append("email", email)
                 .append("role", role)
+                .append("tsStartDate", tsStartDate)
                 .append("screenList", screenList)
                 .append("functionList", functionList)
                 .toString();

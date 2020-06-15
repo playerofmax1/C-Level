@@ -4,6 +4,7 @@ import com.clevel.kudu.api.dao.GenericDAO;
 import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
 import com.clevel.kudu.api.model.db.relation.RelRoleFunction_;
 import com.clevel.kudu.api.model.db.security.Role;
+import com.clevel.kudu.model.Function;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -22,7 +23,7 @@ public class RelRoleFunctionDAO extends GenericDAO<RelRoleFunction, Long> {
 
     @SuppressWarnings("unchecked")
     public List<RelRoleFunction> getListByRole(Role role) {
-        log.debug("getListByRole. (roleId: {})",role.getId());
+        log.debug("getListByRole. (roleId: {})", role.getId());
         CriteriaQuery<RelRoleFunction> criteria = createCriteriaQuery();
 
         criteria.where(
@@ -33,6 +34,22 @@ public class RelRoleFunctionDAO extends GenericDAO<RelRoleFunction, Long> {
         List<RelRoleFunction> result = query.getResultList();
 
         log.debug("getListByRole. (result: {})", result.size());
+        return result;
+    }
+
+
+    public List<RelRoleFunction> findByFunction(Function function) {
+        log.debug("findByFunction. (function: {})", function);
+        CriteriaQuery<RelRoleFunction> criteria = createCriteriaQuery();
+
+        criteria.where(
+                cb.equal(root.get(RelRoleFunction_.function), function)
+        ).orderBy(cb.asc(root.get(RelRoleFunction_.role)));
+
+        Query query = em.createQuery(criteria);
+        List<RelRoleFunction> result = query.getResultList();
+
+        log.debug("findByFunction. (result: {})", result.size());
         return result;
     }
 
@@ -50,4 +67,5 @@ public class RelRoleFunctionDAO extends GenericDAO<RelRoleFunction, Long> {
 
         log.debug("deleteRole. (result: {})", result);
     }
+
 }

@@ -33,7 +33,7 @@ public class AdminSettingsController extends AbstractController {
 
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO());
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getSystemService().getConfigList(request);
+        Response response = apiService.getSystemResource().getConfigList(request);
         if (response.getStatus() == 200) {
             ServiceResponse<List<ConfigDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<ConfigDTO>>>() {
             });
@@ -56,7 +56,7 @@ public class AdminSettingsController extends AbstractController {
         ServiceRequest<List<ConfigDTO>> request = new ServiceRequest<>(configList);
         request.setUserId(userDetail.getUserId());
 
-        Response response = apiService.getSystemService().saveConfigList(request);
+        Response response = apiService.getSystemResource().saveConfigList(request);
         if (response.getStatus() == 200) {
             ServiceResponse<List<ConfigDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<ConfigDTO>>>() {
             });

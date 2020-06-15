@@ -2,10 +2,7 @@ package com.clevel.kudu.api;
 
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.SimpleDTO;
-import com.clevel.kudu.dto.working.ProjectDTO;
-import com.clevel.kudu.dto.working.ProjectTaskDTO;
-import com.clevel.kudu.dto.working.ProjectTaskExtRequest;
-import com.clevel.kudu.dto.working.SearchRequest;
+import com.clevel.kudu.dto.working.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -120,6 +117,7 @@ public interface ProjectService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response updateProjectTaskInfo(@Parameter(description = "request: ProjectTaskDTO, result: ProjectTaskDTO", required = true)
                                        ServiceRequest<ProjectTaskDTO> request);
+
     @POST
     @Path("/cost")
     @Operation(summary = "get project cost", description = "get project cost")
@@ -152,5 +150,26 @@ public interface ProjectService {
     @Path("/special/task/recal/amd")
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response reCalculatePercentAMD(ServiceRequest<SimpleDTO> request);
+
+    @POST
+    @Path("/mdrequest/list")
+    @Operation(summary = "list mandays request by user and status", description = "list mandays request by user and status")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response getMandaysRequestList(@Parameter(description = "request: UserStatusRequest, result: MandaysRequestResult", required = true)
+                                       ServiceRequest<UserStatusRequest> request);
+
+    @POST
+    @Path("/mdrequest/new")
+    @Operation(summary = "create mandays request", description = "create mandays request")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response newMandaysRequest(@Parameter(description = "request: MandaysRequestDTO, result: MandaysRequestDTO", required = true)
+                                       ServiceRequest<MandaysRequestDTO> request);
+
+    @POST
+    @Path("/mdrequest/accept")
+    @Operation(summary = "approve, reject or something depends on the request status", description = "accept the mandays request")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response acceptMandaysRequest(@Parameter(description = "request: MandaysRequestDTO, result: MandaysRequestDTO", required = true)
+                                       ServiceRequest<MandaysRequestDTO> request);
 
 }

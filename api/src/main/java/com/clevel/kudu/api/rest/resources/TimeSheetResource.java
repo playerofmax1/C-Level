@@ -5,8 +5,6 @@ import com.clevel.kudu.api.business.HolidayManager;
 import com.clevel.kudu.api.business.TimeSheetManager;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
-import com.clevel.kudu.model.SystemConfig;
-import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.system.SystemManager;
 import com.clevel.kudu.dto.ServiceRequest;
@@ -14,6 +12,7 @@ import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.Util;
 import org.slf4j.Logger;
@@ -141,7 +140,7 @@ public class TimeSheetResource implements TimeSheetService {
             UserMandaysDTO totalMandaysDTO = timeSheetManager.getTotalMandays(userMandaysDTOList);
             mandaysResult.setTotalMandaysDTO(totalMandaysDTO);
 
-            PerformanceYear performanceYear = timeSheetManager.getPerformanceYear(year);
+            PerformanceYearDTO performanceYear = timeSheetManager.getPerformanceYear(year);
             long AMDMinutes = DateTimeUtil.mandaysToMinutes(totalMandaysDTO.getAMD());
             UtilizationDTO utilization = timeSheetManager.getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), AMDMinutes);
             utilization.setYear(year);

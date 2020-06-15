@@ -175,18 +175,20 @@ The version.property is used in the front-end to show full version text on the b
 
 ### Database Table Notes
 
-| Table Name    | Notes                                                        |
-| ------------- | ------------------------------------------------------------ |
-| wrk_timesheet | for the column 'Project Task' with Chargable Flag = false, will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me, but not worry because of it's already work). |
+| Table Name          | Notes                                                        |
+| ------------------- | ------------------------------------------------------------ |
+| wrk_timesheet       | for the column 'Project Task' with Chargable Flag = false (A00X), will use column 'Task' instead and leave null for both columns 'Project' and 'Project Task', @2020.05.21 found this technique controlled by the UI of Timesheet Detail Dialog (not recommended by me, but not worry because of it's already work). |
+| wrk_mandays_request | column 'Project Task' is used for Extend Request<br />column 'Project', 'Task', 'User' are used for New Assignment Request |
 
 
 
 ### Development Templates
 
-| Name                                                  | Template                                      | Remark           |
-| ----------------------------------------------------- | --------------------------------------------- | ---------------- |
-| + dialog<br />+ inputs on panelGrid<br />+ button set | screen: project.xhtml<br />dialog: projectDlg | styles: kudu.css |
-|                                                       |                                               |                  |
+| Name                                                  | Pattern / Template / Tag                                     | Remark           |
+| ----------------------------------------------------- | ------------------------------------------------------------ | ---------------- |
+| + dialog<br />+ inputs on panelGrid<br />+ button set | screen: project.xhtml<br />dialog: projectDlg                | styles: kudu.css |
+| + input label                                         | <h:outputLabel>                                              |                  |
+| + email                                               | subject-template: \api\src\main\webapp\WEB-INF\email\\<name>.subject.txt<br />email-template: \api\src\main\webapp\WEB-INF\email\\<name>.html<br />template-parameters: \api\src\main\webapp\WEB-INF\email\\<name>.readme.md<br />producer: \ |                  |
 
 
 

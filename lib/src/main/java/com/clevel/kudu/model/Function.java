@@ -1,12 +1,13 @@
 package com.clevel.kudu.model;
 
 public enum Function {
-    F0000("Test Function", "ทดสอบ Function", 0),
 
     F0001("Add/Edit", "Add/Edit", 10),
     F0002("View other person time sheet", "View other person time sheet", 20),
     F0003("Edit other person time sheet", "Edit other person time sheet", 30),
-    F0004("Lock/unlock time sheet", "Lock/unlock time sheet", 40),
+    F0004("Lock/unlock time sheet (ViewOnly/Editable)", "Lock/unlock time sheet (ViewOnly/Editable)", 40),
+
+    F0005("Approve mandays request", "Approve mandays request", 50),
     ;
 
     String nameEn;

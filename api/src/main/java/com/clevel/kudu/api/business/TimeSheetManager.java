@@ -44,6 +44,8 @@ public class TimeSheetManager {
     @Inject
     private PerformanceYearDAO performanceYearDAO;
     @Inject
+    private PerformanceYearMapper performanceYearMapper;
+    @Inject
     private TaskDAO taskDAO;
     @Inject
     private HolidayDAO holidayDAO;
@@ -504,8 +506,12 @@ public class TimeSheetManager {
         return totalUserMandays;
     }
 
-    public PerformanceYear getPerformanceYear(int year) throws RecordNotFoundException {
-        return performanceYearDAO.findByYear(year);
+    public PerformanceYearDTO getPerformanceYear(int year) throws RecordNotFoundException {
+        PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
+        if (performanceYear == null) {
+            return null;
+        }
+        return performanceYearMapper.toDTO(performanceYear);
     }
 
     public UtilizationDTO getUtilization(Date startDate, Date endDate, long chargeMinutes) {

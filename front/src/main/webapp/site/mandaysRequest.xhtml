@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:event type="preRenderView" listener="#{accessCtl.checkAccess('S0011')}"/>
+
+    <h:head>
+        <title>Mandays Request</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Custom styles for this template -->
+        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <style>
+            .hours input {
+                width: 3em;
+            }
+            .ui-datatable sup {
+                color: silver;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1>Mandays Request#{(mdRequestCtl.approver)?' (approver)':''}</h1>
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+
+                        <p:panelGrid id="searchBlock" columns="#{mdRequestCtl.approver?5:3}" styleClass="no-border">
+                            <h:outputText value="User: " rendered="#{mdRequestCtl.approver}"/>
+                            <p:selectOneMenu value="#{mdRequestCtl.selectedUserId}" rendered="#{mdRequestCtl.approver}" style="width:300px">
+                                <f:selectItem itemLabel="ALL" itemValue="0"/>
+                                <p:separator/>
+                                <f:selectItems value="#{mdRequestCtl.userList}" var="user"
+                                               itemLabel="#{user.name} #{user.lastName}"
+                                               itemValue="#{user.id}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputText value="Status:"/>
+                            <p:selectOneMenu value="#{mdRequestCtl.selectedStatus}">
+                                <f:selectItem itemLabel="ALL"/>
+                                <p:separator/>
+                                <f:selectItems value="#{mdRequestCtl.requestStatusList}" var="status" itemLabel="#{status.name()}" itemValue="#{status}"/>
+                            </p:selectOneMenu>
+
+                            <p:commandButton icon="fa fa-search"
+                                             value="Search"
+                                             action="#{mdRequestCtl.onSearch()}"
+                                             onstart="PF('blockSearchBlock').show();"
+                                             update="mainForm,requestForm"/>
+                        </p:panelGrid>
+
+                        <p:blockUI block="searchBlock" widgetVar="blockSearchBlock" styleClass="ui-corner-all">
+                            <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                            <br/>Searching please wait ...
+                        </p:blockUI>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+
+                    <hr/>
+
+                    <h:form id="requestForm">
+                        <p:dataTable var="mandaysRequest"
+                                     widgetVar="mandaysRequest"
+                                     value="#{mdRequestCtl.mandaysRequestDTOList}"
+                                     rows="10"
+                                     sortBy="#{mandaysRequest.requestDate}"
+                                     sortOrder="descending"
+                                     paginator="true"
+                                     paginatorPosition="bottom"
+                                     style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newRequest" icon="fa fa-plus" value="New Request"
+                                                             rendered="#{!mdRequestCtl.approver}"
+                                                             action="#{mdRequestCtl.onPreNewRequest}"
+                                                             oncomplete="if(args.isActionSuccess)PF('mdRequestDlg').show()"
+                                                             update="mdRequestDlgForm"/>
+                                            <p:tooltip rendered="#{!mdRequestCtl.approver}"
+                                                       position="right"
+                                                       value="Create new request with BillableMD."
+                                                       for="newRequest"/>
+                                        </div>
+                                        <div class="ui-g-6 alignCenter alignBottom">
+                                            <p:commandButton id="previousYear" icon="fa fa-chevron-left" disabled="#{!mdRequestCtl.previousEnable}"
+                                                             action="#{mdRequestCtl.onPrevious}"
+                                                             update="requestForm,mainForm">
+                                            </p:commandButton>
+                                            <p:spacer width="5px"/>
+                                            <p:outputLabel value="Year #{mdRequestCtl.currentYear}"/>
+                                            <p:spacer width="5px"/>
+                                            <p:commandButton id="nextYear" icon="fa fa-chevron-right" disabled="#{!mdRequestCtl.nextEnable}"
+                                                             action="#{mdRequestCtl.onNext}"
+                                                             update="requestForm,mainForm">
+                                            </p:commandButton>
+                                            <p:tooltip for="previousYear" value="Previous Year" position="left"/>
+                                            <p:tooltip for="nextYear" value="Next Year" position="right"/><br/>
+                                        </div>
+                                        <div class="ui-g-3 alignRight">
+                                            <p:outputLabel value="#{mdRequestCtl.mandaysRequestDTOList.size()} Request#{mdRequestCtl.mandaysRequestDTOList.size()>0?'s':''}"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <!-- TODO: The Mandays Request need document-number as reference later-->
+
+                            <p:column headerText="Date" sortBy="#{mandaysRequest.requestDate}" style="width: 70px" styleClass="alignCenter">
+                                <h:outputText value="#{mandaysRequest.requestDate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Type" sortBy="#{mandaysRequest.type}" style="width: 70px" styleClass="alignCenter">
+                                <h:outputText value="#{mandaysRequest.type}"/>
+                            </p:column>
+
+                            <p:column headerText="User" sortBy="#{mandaysRequest.user.name}" style="width: 70px" styleClass="alignCenter" rendered="#{mdRequestCtl.approver}">
+                                <h:outputText value="#{mandaysRequest.user.name} #{mandaysRequest.user.lastName}"/>
+                            </p:column>
+
+                            <p:column headerText="Project" sortBy="#{mandaysRequest.project.code}">
+                                <p:outputPanel rendered="#{mandaysRequest.type=='NEW'}">
+                                    <b><h:outputText value="[#{mandaysRequest.project.code}] "/></b>
+                                    <h:outputText value="#{mandaysRequest.project.name}"/><br/>
+                                    <sup>
+                                        <h:outputText value="#{(mandaysRequest.project.description=='')?'(no-description)':mandaysRequest.project.description}"/>
+                                    </sup>
+                                </p:outputPanel>
+                                <p:outputPanel rendered="#{mandaysRequest.type=='EXTEND'}">
+                                    <b><h:outputText value="[#{mandaysRequest.projectTask.project.code}] "/></b>
+                                    <h:outputText value="#{mandaysRequest.projectTask.project.name}"/><br/>
+                                    <sup>
+                                        <h:outputText value="#{(mandaysRequest.projectTask.project.description=='')?'(no-description)':mandaysRequest.projectTask.project.description}"/>
+                                    </sup>
+                                </p:outputPanel>
+                            </p:column>
+
+                            <p:column headerText="Task" sortBy="#{mandaysRequest.task.code}">
+                                <p:outputPanel rendered="#{mandaysRequest.type=='NEW'}">
+                                    <b><h:outputText value="[#{mandaysRequest.task.code}] "/></b>
+                                    <h:outputText value="#{mandaysRequest.task.name}"/><br/>
+                                    <sup>
+                                        <h:outputText value="#{(mandaysRequest.task.description=='')?'(no-description)':mandaysRequest.task.description}"/>
+                                    </sup>
+                                </p:outputPanel>
+                                <p:outputPanel rendered="#{mandaysRequest.type=='EXTEND'}">
+                                    <b><h:outputText value="[#{mandaysRequest.projectTask.task.code}] "/></b>
+                                    <h:outputText value="#{mandaysRequest.projectTask.task.name}"/><br/>
+                                    <sup>
+                                        <h:outputText value="#{(mandaysRequest.projectTask.description=='')?'(no-description)':mandaysRequest.projectTask.description}"/>
+                                    </sup>
+                                </p:outputPanel>
+                            </p:column>
+
+                            <p:column headerText="Description" sortBy="#{mandaysRequest.description}">
+                                <h:outputText value="#{mandaysRequest.description}"/>
+                                <p:outputPanel rendered="#{mandaysRequest.comment != null}">
+                                    <sup>#{mandaysRequest.comment}</sup>
+                                </p:outputPanel>
+                            </p:column>
+
+                            <p:column headerText="Hours#{mdRequestCtl.br}(mandays)" sortBy="#{mandaysRequest.extendMD}" style="width: 100px" styleClass="alignCenter">
+                                <h:outputText value="#{mandaysRequest.extendMDDuration}" converter="durationConverter"/><br/>
+                                <sup><h:outputText value="(#{mandaysRequest.extendMD})"/></sup>
+                            </p:column>
+
+                            <p:column headerText="Status" sortBy="#{mandaysRequest.status}" style="width: 70px" styleClass="alignCenter">
+                                <h:outputText value="#{mandaysRequest.status}"/>
+                                <p:outputPanel rendered="#{mandaysRequest.status != 'REQUESTED'}">
+                                    <sup>by #{mandaysRequest.modifyBy.name}</sup>
+                                </p:outputPanel>
+                            </p:column>
+
+                            <p:column headerText="Actions" style="width: 11.5em" rendered="#{mdRequestCtl.approver}">
+                                <p:commandButton id="preApproveButton" icon="fa fa-check" value="Approve / Reject"
+                                                 disabled="#{mandaysRequest.status != 'REQUESTED'}"
+                                                 action="#{mdRequestCtl.onPreApprove}"
+                                                 oncomplete="if(args.isActionSuccess)PF('mdRequestDlg').show()"
+                                                 update="mdRequestDlgForm">
+                                    <f:setPropertyActionListener value="#{mandaysRequest.id}"
+                                                                 target="#{mdRequestCtl.selectedMandaysRequestId}"/>
+                                </p:commandButton>
+                                <p:tooltip for="preApproveButton" value="Approve/reject with some comments" position="top"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog header="Mandays Request" widgetVar="mdRequestDlg" modal="true" resizable="false" closable="false">
+            <h:form id="mdRequestDlgForm">
+                <p:outputPanel id="mdRequestDlg">
+                    <p:panelGrid columns="4" styleClass="no-border no-margin">
+
+                        <h:outputLabel value="Type:" styleClass="require" style="width:3em;display:inline-block"/>
+                        <p:outputPanel id="mdRequestType" styleClass="no-margin" style="width: 279px">
+                            <p:selectOneButton value="#{mdRequestCtl.newMandaysRequest.type}"
+                                               rendered="#{!mdRequestCtl.approver}"
+                                               required="true" requiredMessage="Request Type is required!"
+                                               valueChangeListener="#{mdRequestCtl.onChangeRequestType()}">
+                                <f:selectItems value="#{mdRequestCtl.mandaysRequestTypeList}"
+                                               var="requestType"
+                                               itemLabel="#{requestType.name()}"
+                                               itemValue="#{requestType}"/>
+                                <p:ajax event="change"
+                                        listener="#{mdRequestCtl.onChangeRequestType()}"
+                                        onstart="PF('blockProjectDropdown').show();"
+                                        update="mdRequestType,projectDropdown,taskDropdown"/>
+                            </p:selectOneButton>
+                            <p:outputLabel value="#{mdRequestCtl.newMandaysRequest.type}" rendered="#{mdRequestCtl.approver}"/>
+                            <br/><p:outputLabel styleClass="superscript silver-font" value="Request for new project task." rendered="#{mdRequestCtl.newMandaysRequest.type=='NEW'}"/>
+                            <p:outputLabel styleClass="superscript silver-font" value="Extend PlanMD for existing project task." rendered="#{mdRequestCtl.newMandaysRequest.type=='EXTEND'}"/>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="User:"/>
+                        <h:outputLabel value="#{mdRequestCtl.newMandaysRequest.user.name} #{mdRequestCtl.newMandaysRequest.user.lastName}"/>
+
+                    </p:panelGrid>
+
+                    <hr/>
+
+                    <p:panelGrid columns="4" styleClass="no-border no-margin">
+
+                        <h:outputLabel value="Project:" styleClass="require ui-inputgroup-addon" style="width:3em;display:inline-block"/>
+                        <p:selectOneMenu id="projectDropdown"
+                                         value="#{mdRequestCtl.newMandaysRequest.project.id}"
+                                         disabled="#{mdRequestCtl.approver}"
+                                         style="width: 250px">
+                            <f:selectItem itemLabel="-- No Project --" itemValue="0"/>
+                            <f:selectItems value="#{mdRequestCtl.projectList}" var="project"
+                                           itemLabel="[#{project.code}] #{project.name}"
+                                           itemValue="#{project.id}"/>
+                            <p:ajax event="change"
+                                    listener="#{mdRequestCtl.onChangeProject()}"
+                                    onstart="PF('blockTaskDropdown').show();"
+                                    update="taskDropdown"/>
+                        </p:selectOneMenu>
+
+                        <p:outputPanel>
+                            <h:outputLabel value="Hours:" styleClass="require ui-inputgroup-addon"/>
+                            <p:focus for="houstInput" rendered="#{mdRequestCtl.openByAttributes}"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="hours" styleClass="ui-inputgroup no-margin hours">
+                            <p:calendar id="houstInput" value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
+                                        converter="durationConverter"
+                                        showOn="focus"
+                                        pattern="HH:mm"
+                                        timeOnly="true"
+                                        maxHour="80"
+                                        mask="true">
+                                <p:ajax event="change" listener="#{mdRequestCtl.onChangeMDDuration}" update="mandays"/>
+                            </p:calendar>
+                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon"/>
+                            <h:outputLabel id="mandays"
+                                           value="#{mdRequestCtl.newMandaysRequest.extendMD} MD#{mdRequestCtl.newMandaysRequest.extendMD>1?'s':''}"
+                                           style="color:silver"
+                                           styleClass="ui-inputgroup-addon"/>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="Task:" styleClass="require"/>
+                        <p:outputPanel id="taskDropdown" styleClass="no-margin">
+                            <p:selectOneMenu value="#{mdRequestCtl.newMandaysRequest.task.id}" style="width: 250px"
+                                             rendered="#{mdRequestCtl.newMandaysRequest.type=='NEW'}">
+                                <f:selectItem itemLabel="-- No Task --" itemValue="0"/>
+                                <f:selectItems value="#{mdRequestCtl.taskList}" var="task"
+                                               itemLabel="[#{task.code}] #{task.name} (#{task.description})"
+                                               itemValue="#{task.id}"/>
+                                <p:ajax event="change" update="taskDropdown" listener="#{mdRequestCtl.onChangeTask}"/>
+                            </p:selectOneMenu>
+
+                            <p:selectOneMenu value="#{mdRequestCtl.newMandaysRequest.projectTask.id}" style="width: 250px"
+                                             rendered="#{mdRequestCtl.newMandaysRequest.type=='EXTEND'}">
+                                <f:selectItem itemLabel="-- No Task --" itemValue="0"/>
+                                <f:selectItems value="#{mdRequestCtl.projectTaskList}" var="pjtask"
+                                               itemLabel="[#{pjtask.task.code}] #{pjtask.task.name} (#{pjtask.description})"
+                                               itemValue="#{pjtask.id}"/>
+                                <p:ajax event="change" update="taskDropdown" listener="#{mdRequestCtl.onChangeProjectTask}"/>
+                            </p:selectOneMenu>
+
+                            <p:blockUI block="projectDropdown" widgetVar="blockProjectDropdown" styleClass="ui-corner-all">
+                                <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                                <br/>Loading...
+                            </p:blockUI>
+
+                            <p:blockUI block="taskDropdown" widgetVar="blockTaskDropdown" styleClass="ui-corner-all">
+                                <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                                <br/>Loading...
+                            </p:blockUI>
+                        </p:outputPanel>
+
+                        <h:outputLabel value="AMD Calculation:" rendered="#{mdRequestCtl.approver}"/>
+                        <p:selectBooleanButton value="#{mdRequestCtl.newMandaysRequest.amdCalculation}" onLabel="Yes" offLabel="No" rendered="#{mdRequestCtl.approver}"/>
+
+                        <h:outputLabel value=" " rendered="#{!mdRequestCtl.approver}"/>
+                        <h:outputLabel value=" " rendered="#{!mdRequestCtl.approver}"/>
+                    </p:panelGrid>
+
+                    <p:outputPanel class="ui-g no-margin">
+                        <h:outputLabel value="Description:" styleClass="ui-g-12"/><br/>
+                        <p:inputTextarea value="#{mdRequestCtl.newMandaysRequest.description}"
+                                         styleClass="ui-g-12"
+                                         autoResize="false"
+                                         readonly="#{mdRequestCtl.approver and mdRequestCtl.newMandaysRequest.type == 'EXTEND'}"/>
+                    </p:outputPanel>
+
+                    <p:outputPanel rendered="#{mdRequestCtl.approver}">
+                        <hr/>
+                    </p:outputPanel>
+
+                    <p:outputPanel class="ui-g no-margin" rendered="#{mdRequestCtl.approver}">
+                        <h:outputLabel value="Comment by #{mdRequestCtl.userDetail.name}:" styleClass="ui-g-12"/><br/>
+                        <p:inputTextarea id="comment" value="#{mdRequestCtl.newMandaysRequest.comment}"
+                                         styleClass="ui-g-12"
+                                         autoResize="false"/>
+                        <p:focus for="comment"/>
+                    </p:outputPanel>
+
+                    <hr/>
+
+                    <div class="alignRight">
+                        <p:commandButton id="saveButton" icon="fa fa-save" value="Save"
+                                         rendered="#{!mdRequestCtl.approver}"
+                                         actionListener="#{mdRequestCtl.onSaveRequest}"
+                                         update="mainForm,requestForm"
+                                         onstart="PF('blockMDRequestDlg').show();"
+                                         oncomplete="if(args.isActionSuccess)approveSuccess();else approveFailed()"/>
+                        <p:commandButton id="approveButton" icon="fa fa-check" value="Approve"
+                                         rendered="#{mdRequestCtl.approver}"
+                                         actionListener="#{mdRequestCtl.onApprove}"
+                                         update="mainForm,requestForm"
+                                         onstart="PF('blockMDRequestDlg').show();"
+                                         oncomplete="if(args.isActionSuccess)approveSuccess();else approveFailed()"/>
+                        <p:commandButton id="rejectButton" icon="fa fa-remove" value="Reject"
+                                         rendered="#{mdRequestCtl.approver}"
+                                         actionListener="#{mdRequestCtl.onReject}"
+                                         update="mainForm,requestForm"
+                                         onstart="PF('blockMDRequestDlg').show();"
+                                         oncomplete="if(args.isActionSuccess)approveSuccess();else approveFailed()"/>
+                        <p:commandButton id="cancelButton" icon="fa fa-ban" value="Cancel"
+                                         onclick="PF('mdRequestDlg').hide()"/>
+                    </div>
+
+                    <p:blockUI block="mdRequestDlg" widgetVar="blockMDRequestDlg" styleClass="ui-corner-all">
+                        <p:graphicImage name="img/ajaxloadingbar.gif"/>
+                        <br/>Sending email please wait ...
+                    </p:blockUI>
+
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </p:outputPanel>
+            </h:form>
+
+            <script>
+                function approveSuccess() {
+                    PF('blockMDRequestDlg').hide();
+                    PF('mdRequestDlg').hide();
+                }
+
+                function approveFailed() {
+                    PF('blockMDRequestDlg').hide();
+                }
+            </script>
+        </p:dialog>
+
+        <p:outputPanel rendered="#{mdRequestCtl.openByAttributes}">
+            <script>
+                $(document).ready(function () {
+                    PF('mdRequestDlg').show();
+                })
+            </script>
+        </p:outputPanel>
+
+    </h:body>
+</f:view>
+</html>

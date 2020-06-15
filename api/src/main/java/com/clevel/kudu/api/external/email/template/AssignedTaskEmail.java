@@ -2,11 +2,8 @@ package com.clevel.kudu.api.external.email.template;
 
 import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.external.email.EmailManager;
+import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.model.SystemConfig;
-import com.clevel.kudu.api.model.db.working.Project;
-import com.clevel.kudu.api.model.db.working.ProjectTask;
-import com.clevel.kudu.api.model.db.working.Task;
-import com.clevel.kudu.api.model.db.working.User;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -29,23 +26,37 @@ public class AssignedTaskEmail extends EmailManager {
         templateName = "assigned_task";
     }
 
-    public void sendMail(ProjectTask projectTask) throws EmailException {
+    public void sendMail(ProjectTask projectTask, MandaysRequest mandaysRequest) throws EmailException {
         Map<String, String> map = new HashMap<>();
         User user = projectTask.getUser();
         Project project = projectTask.getProject();
         Task task = projectTask.getTask();
         String projectCode = project.getCode();
 
+        String description = projectTask.getDescription();
+        String comment = null;
+        if (mandaysRequest != null) {
+            comment = mandaysRequest.getComment();
+            if (comment != null && !comment.isEmpty()) {
+                String modifiedUser = mandaysRequest.getModifyBy().getName();
+                comment = "Commented by " + modifiedUser + ": " + comment;
+            }
+        }
+        if (comment == null) {
+            comment = "";
+        }
+
         map.put("USER_NAME", user.getName() + " " + user.getLastName());
         map.put("PROJECT_CODE", projectCode);
         map.put("PROJECT_NAME", project.getName());
         map.put("TASK_CODE", task.getCode());
         map.put("TASK_NAME", task.getName());
-        map.put("TASK_DESCRIPTION", projectTask.getDescription());
+        map.put("TASK_DESCRIPTION", description);
+        map.put("TASK_COMMENT", comment);
         map.put("PLAN_MANDAYS", projectTask.getPlanMD().toString());
         log.debug("sendMail.map = {}", map);
 
-        String cc = app.getConfig(SystemConfig.AUTO_EMAIL_CC,"");
+        String cc = app.getConfig(SystemConfig.AUTO_EMAIL_CC, "");
 
         super.sendMail(user.getEmail(), cc, map);
     }

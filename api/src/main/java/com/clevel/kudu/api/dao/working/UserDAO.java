@@ -3,16 +3,17 @@ package com.clevel.kudu.api.dao.working;
 import com.clevel.kudu.api.dao.GenericDAO;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.model.db.security.Role;
-import com.clevel.kudu.api.model.db.working.Project_;
 import com.clevel.kudu.api.model.db.working.User;
-import com.clevel.kudu.api.model.db.working.UserTimeSheet_;
 import com.clevel.kudu.api.model.db.working.User_;
 import com.clevel.kudu.model.RecordStatus;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.persistence.Query;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,29 @@ public class UserDAO extends GenericDAO<User, Long> {
         query.setHint(FETCH_GRAPH, graph);
 
         List<User> users = query.getResultList();
-        log.debug("findAll. (result: {})",users.size());
+        log.debug("findAll. (result: {})", users.size());
+        return users;
+    }
+
+    public List<User> findByRoleList(List<Role> roleList) {
+        log.debug("findByRoleList.");
+        CriteriaQuery<User> criteria = createCriteriaQuery();
+
+        Expression<Role> parentExpression = root.get(User_.role);
+        Predicate roleListPredicate = parentExpression.in(roleList);
+
+        criteria.where(
+                cb.and(
+                        cb.equal(root.get(User_.status), RecordStatus.ACTIVE),
+                        roleListPredicate
+                )
+        ).orderBy(cb.asc(root.get(User_.role)));
+
+        Query query = em.createQuery(criteria);
+        query.setHint(FETCH_GRAPH, graph);
+
+        List<User> users = query.getResultList();
+        log.debug("findByRoleList. (result: {})", users.size());
         return users;
     }
 
@@ -176,7 +199,7 @@ public class UserDAO extends GenericDAO<User, Long> {
 
     @SuppressWarnings("unchecked")
     public long getUserByRoleCount(Role role) {
-        log.debug("getUserByRoleCount. (roleId: {})",role.getId());
+        log.debug("getUserByRoleCount. (roleId: {})", role.getId());
 
         CriteriaQuery<Long> criteria = createCriteriaCount();
 
@@ -213,4 +236,5 @@ public class UserDAO extends GenericDAO<User, Long> {
         log.debug("delete. (delete record: {})", rows);
         return rows;
     }
+
 }

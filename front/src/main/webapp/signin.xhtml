@@ -21,16 +21,12 @@
     </h:head>
     <h:body style="background-color: #eee">
         <div class="container">
-            <p:panel header="View Expired"
-                     rendered="#{pfExceptionHandler != null and pfExceptionHandler.type == 'javax.faces.application.ViewExpiredException'}"
-                     baseZIndex="10000">
-                <h4>The session is timed out, please login again to confirm this is your.</h4>
-            </p:panel>
+            <ui:include src="resources/exceptionMessage.xhtml"/>
 
             <h:form id="loginForm" styleClass="form-signin alignCenter">
                 <p:growl id="msg" showDetail="true"/>
 
-                <div class="alignCenter" style="width: 100%;">
+                <div class="alignCenter login-panel-container" style="width: 100%;">
                     <p:panel styleClass="login-panel">
 
                         <div class="ui-g ui-g-12">
@@ -64,17 +60,20 @@
                                              style="width:100%"
                                              action="#{loginBean.login()}" update="loginForm"/>
                         </div>
+
+
                     </p:panel>
+
+                    <footer style="z-index: 1000;">
+                        <h:outputText value="#{accessCtl.applicationVersionString}"/><br/>
+                        &#169; 2020 <a href="http://www.the-c-level.com/" target="_blank">C-Level Co., Ltd.</a> All rights reserved.
+                    </footer>
                 </div>
 
                 <p:focus for="username"/>
             </h:form>
 
         </div>
-
-        <ui:include src="/resources/footer.xhtml">
-            <ui:param name="controller" value="#{systemCtl}"/>
-        </ui:include>
     </h:body>
 </f:view>
 </html>

@@ -30,7 +30,7 @@ public class APIService implements Serializable {
         return client.target(context.getInitParameter(restAPIUrl)).proxy(CustomerService.class);
     }
 
-    public TaskService getTaskService() {
+    public TaskService getTaskResource() {
         ResteasyClient client = new ResteasyClientBuilder().build();
         return client.target(context.getInitParameter(restAPIUrl)).proxy(TaskService.class);
     }
@@ -55,7 +55,7 @@ public class APIService implements Serializable {
         return client.target(context.getInitParameter(restAPIUrl)).proxy(HolidayService.class);
     }
 
-    public SystemService getSystemService() {
+    public SystemService getSystemResource() {
         ResteasyClient client = new ResteasyClientBuilder().build();
         return client.target(context.getInitParameter(restAPIUrl)).proxy(SystemService.class);
     }

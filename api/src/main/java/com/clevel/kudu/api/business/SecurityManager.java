@@ -109,6 +109,7 @@ public class SecurityManager {
         result.setUserName(user.getLoginName());
         result.setName(user.getName());
         result.setLastName(user.getLastName());
+        result.setTsStartDate(user.getTsStartDate());
 
         List<Screen> screens = new ArrayList<>();
         List<Function> functions = new ArrayList<>();

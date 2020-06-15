@@ -141,13 +141,13 @@
             <h:form id="projectDlgForm">
                 <p:panelGrid columns="4" styleClass="no-border no-margin">
 
-                    <h:outputLabel value="Code:" styleClass="require ui-outputlabel"/>
+                    <h:outputLabel value="Code:" styleClass="require"/>
                     <p:inputText value="#{projectCtl.newProject.code}"
                                  disabled="#{projectCtl.newProject.status == 'CLOSE'}"
                                  styleClass="#{projectCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"
                                  />
 
-                    <h:outputLabel value="Customer:" styleClass="ui-outputlabel"/>
+                    <h:outputLabel value="Customer:"/>
                     <p:selectOneMenu value="#{projectCtl.selectedCustomerId}" disabled="#{projectCtl.newProject.status == 'CLOSE'}" style="width:250px">
                         <f:selectItems value="#{projectCtl.customerList}" var="customer" itemLabel="[#{customer.code}] #{customer.name}"
                                        itemValue="#{customer.id}"/>
@@ -230,10 +230,6 @@
             <ui:param name="update" value="mainForm"/>
         </ui:include>
 
-        <br/>
-        <ui:include src="/resources/footer.xhtml">
-            <ui:param name="controller" value="#{projectCtl}"/>
-        </ui:include>
     </h:body>
 </f:view>
 </html>

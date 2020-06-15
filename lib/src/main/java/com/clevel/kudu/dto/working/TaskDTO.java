@@ -87,7 +87,7 @@ public class TaskDTO implements LookupList {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("id", id)
                 .append("code", code)
                 .append("name", name)
@@ -96,6 +96,7 @@ public class TaskDTO implements LookupList {
                 .append("type", type)
                 .append("status", status)
                 .append("version", version)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

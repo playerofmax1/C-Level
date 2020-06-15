@@ -4,11 +4,14 @@ import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
+import com.clevel.kudu.front.attributes.MandaysRequestOpenAttributes;
+import com.clevel.kudu.front.model.SessionAttribute;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
 import com.clevel.kudu.model.TaskType;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
+import com.clevel.kudu.util.LookupUtil;
 import org.primefaces.PrimeFaces;
 import org.primefaces.component.export.ExcelOptions;
 
@@ -16,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.time.Duration;
@@ -56,6 +60,9 @@ public class TimeSheetController extends AbstractController {
     @Inject
     PageAccessControl accessControl;
 
+    @Inject
+    HttpSession httpSession;
+
     public TimeSheetController() {
     }
 
@@ -66,21 +73,34 @@ public class TimeSheetController extends AbstractController {
         currentMonth = DateTimeUtil.now();
         nextEnable = false;
         previousEnable = true;
-        timeSheetUserId = userDetail.getUserId();
         utilization = new UtilizationDTO();
-
-        loadUserInfo();
-        loadTask();
-        loadTimeSheet();
 
         if (accessControl.functionEnable(Function.F0002)) {
             loadUserList();
         }
+
+        timeSheetUserId = userDetail.getUserId();
+        onChangeUser();
+        /*loadTsStartDate();*/
+        /*loadTimeSheet();*/
+
+        loadTask();
+
     }
 
     public void onChangeUser() {
-        log.debug("onChangeUser. (timeSheetUserId: {})", timeSheetUserId);
+        log.debug("onChangeUser.timeSheetUserId: {}", timeSheetUserId);
         currentMonth = DateTimeUtil.now();
+
+        if (userList == null) {
+            tsStartDate = loadTsStartDate();
+        } else {
+            UserDTO selectedUser = LookupUtil.getObjById(userList, timeSheetUserId);
+            log.debug("onChangeUser.selectedUser: {}", selectedUser);
+            tsStartDate = selectedUser.getTsStartDate();
+        }
+        log.debug("onChangeUser.tsStartDate: {}", tsStartDate);
+
         loadTimeSheet();
     }
 
@@ -99,12 +119,12 @@ public class TimeSheetController extends AbstractController {
             currentUser.setId(userDetail.getUserId());
             currentUser.setName(userDetail.getName());
             currentUser.setLastName(userDetail.getLastName());
+            currentUser.setTsStartDate(userDetail.getTsStartDate());
             userList.add(currentUser);
             timeSheetUserId = userDetail.getUserId();
             for (UserTimeSheetDTO u : userTSList) {
                 userList.add(u.getTimeSheetUser());
             }
-            log.debug("userList: {}", userList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
@@ -172,11 +192,13 @@ public class TimeSheetController extends AbstractController {
 
         // check previous
         Date pre = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
+        /*TODO: remove debug log*/
+        log.debug("checkNavigationButtonEnable(): currentMonth={}, previousMonth={}, tsStartDate={}", currentMonth, pre, tsStartDate);
         previousEnable = !pre.before(tsStartDate);
     }
 
-    private void loadUserInfo() {
-        log.debug("loadUserInfo.");
+    private Date loadTsStartDate() {
+        log.debug("loadTsStartDate.");
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(userDetail.getUserId()));
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getSecurityResource().getUserInfo(request);
@@ -185,11 +207,12 @@ public class TimeSheetController extends AbstractController {
             });
             UserDTO user = serviceResponse.getResult();
             log.debug("user: {}", user);
-            tsStartDate = user.getTsStartDate();
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
+            return user.getTsStartDate();
         }
+
+        log.debug("wrong response status! (status: {})", response.getStatus());
+        FacesUtil.addError("wrong response from server!");
+        return null;
     }
 
     private void checkViewOnly(TimeSheetResult result) {
@@ -383,7 +406,7 @@ public class TimeSheetController extends AbstractController {
         TaskRequest taskRequest = new TaskRequest(false, true, false);
         ServiceRequest<TaskRequest> request = new ServiceRequest<>(taskRequest);
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTaskService().getTaskList(request);
+        Response response = apiService.getTaskResource().getTaskList(request);
         if (response.getStatus() == 200) {
             ServiceResponse<List<TaskDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<TaskDTO>>>() {
             });
@@ -663,6 +686,18 @@ public class TimeSheetController extends AbstractController {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
         }
+    }
+
+    public void onExtendMandays(ProjectTaskDTO selectedProjectTask) {
+        log.debug("onExtendMandays(selectedProjectTask: {})", selectedProjectTask);
+        /*TODO: may be need the confirm dialog for lost data on the Timesheet Detail dialog*/
+
+        /*TODO: create attributes for Open then redirect*/
+        MandaysRequestOpenAttributes openAttributes = new MandaysRequestOpenAttributes();
+        openAttributes.setProjectTask(selectedProjectTask);
+        httpSession.setAttribute(SessionAttribute.MANDAYS_REQUEST_OPEN.name(), openAttributes);
+
+        FacesUtil.redirect("/site/mandaysRequest.jsf");
     }
 
     private void updateViewRecord(TimeSheetDTO timeSheet) {

@@ -6,6 +6,18 @@
 >
 >    **Engine:** Apache Commons Text (org.apache.commons.text.StringSubstitutor)
 >    **Alternate Engine:** not required
+>
+>    ----
+>
+>    **Trigger 1:** Project Management  > M-button > New Project Task > Save
+>
+>    **Trigger 2:**  Mandays Request > Approve / Reject button (type=NEW) > Approve
+>
+>    **Send to:** Requester
+>
+>    **CC:** {AdminSetting:app.auto.email.cc}
+>
+>    **Reply to:** {AdminSetting:app.auto.email.cc}
 
 ----
 
@@ -55,6 +67,7 @@ Kudu Administrator
 | ${TASK_CODE}        | W40                           |                                                |
 | ${TASK_NAME}        | Development & Unit Test       |                                                |
 | ${TASK_DESCRIPTION} | Web Monitoring Implementation |                                                |
+| ${TASK_COMMENT}     | for Mandays request only      |                                                |
 | ${PLAN_MANDAYS}     | 20.00                         |                                                |
 
 

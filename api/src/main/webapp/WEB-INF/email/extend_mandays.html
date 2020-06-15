@@ -60,7 +60,7 @@
 <body class='typora-export os-windows'>
 <p><strong><em><span>เรียนคุณ ${USER_NAME}</span></em></strong></p>
 <p>&nbsp;</p>
-<p><span>ยินดีด้วย! คุณได้รับ Mandays เพิ่มแล้ว ตามรายละเอียดดังต่อไปนี้</span></p>
+<p><span>ยินดีด้วย! คุณได้รับอนุมัติ Mandays แล้ว ตามรายละเอียดดังต่อไปนี้</span></p>
 <table>
     <thead>
     <tr>
@@ -75,16 +75,8 @@
     </tr>
     <tr>
         <td><span>Task</span></td>
-        <td><span>[${TASK_CODE}] ${TASK_NAME}<br/><sup>${TASK_DESCRIPTION}</sup></span>
+        <td><span>[${TASK_CODE}] ${TASK_NAME}<br/><sup>${TASK_DESCRIPTION}</sup><br/><sup>${TASK_COMMENT}</sup></span>
         </td>
-    </tr>
-    <tr>
-        <td><span>Description</span></td>
-        <td><span>${EXTEND_DESCRIPTION}</span></td>
-    </tr>
-    <tr>
-        <td><span>Plan Mandays</span></td>
-        <td><span>${PLAN_MANDAYS} Mandays</span><br><sup><span>( 1manday = 8hours )</span></sup></td>
     </tr>
     <tr>
         <td><span><b>Extend Mandays</b><br /><sup>(this time)</sup></span></td>
@@ -93,6 +85,10 @@
     <tr>
         <td><span>Total Extend Mandays</sup></span></td>
         <td><span>${TOTAL_EXTEND_MANDAYS} Mandays</span><br><sup><span>( 1manday = 8hours )</span></sup></td>
+    </tr>
+    <tr>
+        <td><span>Plan Mandays</span></td>
+        <td><span>${PLAN_MANDAYS} Mandays</span><br><sup><span>( 1manday = 8hours )</span></sup></td>
     </tr>
     <tr>
         <td><span>Total Plan Mandays<br /><sup>( Plan Mandays + Total Extend Mandays )</sup></span></td>

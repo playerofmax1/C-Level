@@ -2,6 +2,8 @@ package com.clevel.kudu.api.rest.resources;
 
 import com.clevel.kudu.api.ProjectService;
 import com.clevel.kudu.api.business.ProjectManager;
+import com.clevel.kudu.api.business.TimeSheetManager;
+import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.system.Application;
@@ -10,6 +12,7 @@ import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
+import com.clevel.kudu.model.SystemConfig;
 import org.slf4j.Logger;
 
 import javax.ejb.EJBException;
@@ -27,6 +30,8 @@ public class ProjectResource implements ProjectService {
 
     @Inject
     private ProjectManager projectManager;
+    @Inject
+    private TimeSheetManager timeSheetManager;
 
     @Override
     public Response newProject(ServiceRequest<ProjectDTO> request) {
@@ -289,7 +294,7 @@ public class ProjectResource implements ProjectService {
         ProjectTaskDTO dto = request.getRequest();
 
         try {
-            ProjectTaskDTO projectTaskDTO = projectManager.createNewProjectTask(request.getUserId(), dto);
+            ProjectTaskDTO projectTaskDTO = projectManager.createNewProjectTask(request.getUserId(), dto, null);
             response.setResult(projectTaskDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
@@ -311,7 +316,7 @@ public class ProjectResource implements ProjectService {
         ProjectTaskExtRequest dto = request.getRequest();
 
         try {
-            ProjectTaskExtDTO projectTaskExtDTO = projectManager.createExtendProjectTask(request.getUserId(), dto.getProjectTaskDTO(), dto.getProjectTaskExtDTO());
+            ProjectTaskExtDTO projectTaskExtDTO = projectManager.createExtendProjectTask(request.getUserId(), dto.getProjectTaskDTO(), dto.getProjectTaskExtDTO(), null);
             response.setResult(projectTaskExtDTO);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException el) {
@@ -452,6 +457,88 @@ public class ProjectResource implements ProjectService {
         try {
             projectManager.reCalculationPercentAMD();
             response.setApiResponse(APIResponse.SUCCESS);
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    public Response getMandaysRequestList(ServiceRequest<UserStatusRequest> request) {
+        log.debug("getMandaysRequestList(request: {})", request);
+
+        ServiceResponse<MandaysRequestResult> response = new ServiceResponse<>();
+        UserStatusRequest userStatusRequest = request.getRequest();
+        try {
+            MandaysRequestResult mandaysRequestResult = new MandaysRequestResult();
+            int year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
+            PerformanceYearDTO performanceYear = timeSheetManager.getPerformanceYear(year);
+            mandaysRequestResult.setPerformanceYear(performanceYear);
+
+            List<MandaysRequestDTO> mandaysRequestDTOList = projectManager.getMandaysRequestList(userStatusRequest.getUserId(), userStatusRequest.getStatus(), performanceYear.getStartDate(), performanceYear.getEndDate());
+            mandaysRequestResult.setMandaysRequestList(mandaysRequestDTOList);
+
+            response.setResult(mandaysRequestResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    public Response newMandaysRequest(ServiceRequest<MandaysRequestDTO> request) {
+        log.debug("newMandaysRequest(request: {})", request);
+
+        ServiceResponse<MandaysRequestDTO> response = new ServiceResponse<>();
+        MandaysRequestDTO newMandaysRequest = request.getRequest();
+        try {
+            MandaysRequestDTO mandaysRequestResult = projectManager.createMandaysRequest(request.getUserId(), newMandaysRequest);
+            if (mandaysRequestResult == null) {
+                response.setApiResponse(APIResponse.FAILED);
+                response.setMessage("Incompatible data, please check Type and ProjectTask!");
+            }else {
+                response.setResult(mandaysRequestResult);
+                response.setApiResponse(APIResponse.SUCCESS);
+            }
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    public Response acceptMandaysRequest(ServiceRequest<MandaysRequestDTO> request) {
+        log.debug("acceptMandaysRequest(request: {})", request);
+
+        ServiceResponse<MandaysRequestDTO> response = new ServiceResponse<>();
+        MandaysRequestDTO newMandaysRequest = request.getRequest();
+        try {
+            StringBuffer message = new StringBuffer();
+            MandaysRequestDTO mandaysRequestResult = projectManager.acceptMandaysRequest(request.getUserId(), newMandaysRequest, message);
+            if (mandaysRequestResult == null) {
+                response.setApiResponse(APIResponse.FAILED);
+                response.setMessage(message.toString());
+            } else {
+                response.setResult(mandaysRequestResult);
+                response.setApiResponse(APIResponse.SUCCESS);
+                response.setMessage(message.toString());
+            }
+        } catch (RecordNotFoundException | EmailException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
         } catch (Exception e) {
             log.error("", e);
             response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());

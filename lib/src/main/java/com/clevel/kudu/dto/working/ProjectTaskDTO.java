@@ -219,7 +219,7 @@ public class ProjectTaskDTO implements LookupList {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
                 .append("id", id)
                 .append("project", project)
                 .append("task", task)
@@ -241,6 +241,7 @@ public class ProjectTaskDTO implements LookupList {
                 .append("percentAMD", percentAMD)
                 .append("status", status)
                 .append("version", version)
-                .toString();
+                .toString()
+                .replace('=', ':');
     }
 }

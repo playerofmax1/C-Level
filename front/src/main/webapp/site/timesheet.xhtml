@@ -96,7 +96,8 @@
                                             <p:tooltip position="right" value="Download as Excel(xlsx)" for="xlsx"/>
                                         </div>
                                         <div class="ui-g-6 alignCenter alignBottom">
-                                            <p:commandButton id="previousMonth" icon="fa fa-chevron-left" disabled="#{!timeSheetCtl.previousEnable}"
+                                            <p:commandButton id="previousMonth" icon="fa fa-chevron-left"
+                                                             disabled="#{!timeSheetCtl.previousEnable}"
                                                              action="#{timeSheetCtl.onPrevious}"
                                                              update="monthForm,mainForm">
                                             </p:commandButton>
@@ -180,8 +181,11 @@
                             </f:facet>
 
                             <p:column headerText="Date" style="width: 110px" styleClass="ui-datatable-holiday">
+                                <h:outputText value="#{timesheet.workDate}" rendered="#{timesheet.sortOrder==1}" style="display:inline-block;width:2.5em;">
+                                    <f:convertDateTime pattern="EE" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
                                 <h:outputText value="#{timesheet.workDate}" rendered="#{timesheet.sortOrder==1}">
-                                    <f:convertDateTime pattern="E dd/MM/yyyy" timeZone="Asia/Bangkok"/>
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
@@ -204,7 +208,7 @@
 
                             <p:column headerText="Project" exportFunction="#{timeSheetCtl.exportProject(timesheet)}">
                                 <h:outputText escape="false"
-                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?'(closed)':'')}"/>
+                                              value="#{(timesheet.project==null)?'-- No Project --':'&lt;b&gt;['.concat(timesheet.project.code).concat(']&lt;/b&gt; ').concat(timesheet.project.name).concat((timesheet.closedProject)?' (closed)':'')}"/>
                             </p:column>
 
                             <p:column headerText="Task" exportFunction="#{timeSheetCtl.exportTask(timesheet)}">
@@ -386,32 +390,37 @@
                         Tasks available under project
                     </f:facet>
 
-                    <p:column headerText="Task" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
+                    <p:column headerText="Task">
                         <h:outputText value="[#{pjt.task.code}] #{pjt.task.name}"/>
                     </p:column>
 
-                    <p:column headerText="Description" styleClass="ui-sm-4 ui-md-4 ui-lg-4">
+                    <p:column headerText="Description">
                         <h:outputText value="#{pjt.description}"/>
                     </p:column>
 
-                    <p:column headerText="Plan MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Plan MD" width="30">
                         <h:outputText value="#{pjt.planMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.planMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Extend MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Extend MD" width="30">
                         <h:outputText value="#{pjt.extendMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.extendMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Total MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Total MD" width="30">
                         <h:outputText value="#{pjt.totalMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.totalMD})"/></sup>
                     </p:column>
 
-                    <p:column headerText="Actual MD" styleClass="ui-sm-1 ui-md-1 ui-lg-1">
+                    <p:column headerText="Actual MD" width="30">
                         <h:outputText value="#{pjt.actualMDDuration}" converter="durationConverter"/>
                         <br/><sup><h:outputText value="(#{pjt.actualMD})"/></sup>
+                    </p:column>
+
+                    <p:column headerText="Ext" width="30" rendered="#{!accessCtl.functionEnable('F0005') and accessCtl.isVisible('S0011')}">
+                        <p:commandButton id="extendMandays" icon="ui-icon-arrowthick-2-e-w" actionListener="#{timeSheetCtl.onExtendMandays(pjt)}"/>
+                        <p:tooltip for="extendMandays" position="left" value="Open screen for Extend Mandays Request"/>
                     </p:column>
 
                 </p:dataTable>
@@ -438,10 +447,6 @@
             </h:form>
         </p:dialog>
 
-        <br/>
-        <ui:include src="/resources/footer.xhtml">
-            <ui:param name="controller" value="#{timeSheetCtl}"/>
-        </ui:include>
     </h:body>
 </f:view>
 </html>

@@ -6,11 +6,11 @@ import com.clevel.kudu.api.dao.working.UserDAO;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.model.db.working.Holiday;
-import com.clevel.kudu.api.model.db.working.PerformanceYear;
 import com.clevel.kudu.api.model.db.working.User;
 import com.clevel.kudu.api.rest.mapper.HolidayMapper;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.dto.working.HolidayDTO;
+import com.clevel.kudu.dto.working.PerformanceYearDTO;
 import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.util.DateTimeUtil;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class HolidayManager {
         return holidayMapper.toDTO(holidayDAO.findAll().stream());
     }
 
-    public List<HolidayDTO> getHolidaysByPerformanceYear(PerformanceYear performanceYear)throws RecordNotFoundException {
+    public List<HolidayDTO> getHolidaysByPerformanceYear(PerformanceYearDTO performanceYear)throws RecordNotFoundException {
         log.debug("getHolidaysByYear(performanceYear:{})", performanceYear.getYear());
 
         List<Holiday> holidayList = holidayDAO.findByStartEnd(performanceYear.getStartDate(),performanceYear.getEndDate());

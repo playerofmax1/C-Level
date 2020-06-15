@@ -1,20 +1,26 @@
 package com.clevel.kudu.api.business;
 
+import com.clevel.kudu.api.dao.relation.RelRoleFunctionDAO;
 import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
 import com.clevel.kudu.api.external.email.template.AssignedTaskEmail;
 import com.clevel.kudu.api.external.email.template.ExtendMandaysEmail;
+import com.clevel.kudu.api.external.email.template.MDRequestEmail;
+import com.clevel.kudu.api.external.email.template.RejectedMDRequestEmail;
+import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
+import com.clevel.kudu.api.model.db.security.Role;
+import com.clevel.kudu.api.model.db.working.MandaysRequest;
 import com.clevel.kudu.api.model.db.working.*;
+import com.clevel.kudu.api.rest.mapper.MandaysRequestMapper;
 import com.clevel.kudu.api.rest.mapper.ProjectMapper;
 import com.clevel.kudu.api.rest.mapper.ProjectTaskExtMapper;
 import com.clevel.kudu.api.rest.mapper.ProjectTaskMapper;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.MDUtil;
 import com.clevel.kudu.dto.working.*;
-import com.clevel.kudu.model.APIResponse;
-import com.clevel.kudu.model.RecordStatus;
+import com.clevel.kudu.model.*;
 import com.clevel.kudu.util.DateTimeUtil;
 import org.slf4j.Logger;
 
@@ -23,6 +29,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,19 +50,29 @@ public class ProjectManager {
     @Inject
     private ProjectTaskExtDAO projectTaskExtDAO;
     @Inject
+    private MandaysRequestDAO mandaysRequestDAO;
+    @Inject
     private ProjectMapper projectMapper;
     @Inject
     private ProjectTaskMapper projectTaskMapper;
     @Inject
     private ProjectTaskExtMapper projectTaskExtMapper;
     @Inject
+    private MandaysRequestMapper mandaysRequestMapper;
+    @Inject
     private CustomerDAO customerDAO;
     @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
+    private RelRoleFunctionDAO relRoleFunctionDAO;
+    @Inject
     private AssignedTaskEmail assignedTaskEmail;
     @Inject
     private ExtendMandaysEmail extendMandaysEmail;
+    @Inject
+    private RejectedMDRequestEmail rejectedMDRequestEmail;
+    @Inject
+    private MDRequestEmail mdRequestEmail;
 
     @Inject
     public ProjectManager() {
@@ -166,7 +183,7 @@ public class ProjectManager {
         log.debug("searchProject. (userId: {}, searchRequest: {})", userId, searchRequest);
 
         // validate user
-        User user = userDAO.findById(userId);
+        userDAO.findById(userId);
 
         return projectMapper.toDTO(projectDAO.searchProject(searchRequest.getCode(), searchRequest.getName(), searchRequest.getStatus()).stream());
     }
@@ -176,7 +193,7 @@ public class ProjectManager {
         log.debug("getProjectTaskList. (userId: {}, projectId: {})", userId, projectId);
 
         // validate user
-        User user = userDAO.findById(userId);
+        userDAO.findById(userId);
         Project project = projectDAO.findById(projectId);
 
         return projectTaskMapper.toDTO(projectTaskDAO.findByProject(project).stream());
@@ -186,7 +203,7 @@ public class ProjectManager {
         log.debug("getProjectTaskExtList. (userId: {}, projectId: {})", userId, projectId);
 
         // validate user
-        User user = userDAO.findById(userId);
+        userDAO.findById(userId);
 
         return projectTaskExtMapper.toDTO(projectTaskExtDAO.findByProjectTaskId(projectId).stream());
     }
@@ -200,7 +217,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId, user).stream());
     }
 
-    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO) throws RecordNotFoundException, EmailException {
+    public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
         User user = userDAO.findById(userId);
@@ -217,6 +234,8 @@ public class ProjectManager {
         newProjectTask.setActualMDDuration(Duration.ZERO);
         newProjectTask.setActualMDMinute(0L);
 
+        newProjectTask.setPercentAMD(BigDecimal.ZERO);
+
         newProjectTask.setProject(projectDAO.findById(projectTaskDTO.getProject().getId()));
         newProjectTask.setTask(taskDAO.findById(projectTaskDTO.getTask().getId()));
         newProjectTask.setUser(userDAO.findById(projectTaskDTO.getUser().getId()));
@@ -231,12 +250,12 @@ public class ProjectManager {
 
         newProjectTask = projectTaskDAO.persist(newProjectTask);
 
-        assignedTaskEmail.sendMail(newProjectTask);
+        assignedTaskEmail.sendMail(newProjectTask, mandaysRequest);
 
         return projectTaskMapper.toDTO(newProjectTask);
     }
 
-    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO) throws RecordNotFoundException, EmailException {
+    public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})", userId, projectTaskDTO, projectTaskExtDTO);
         User user = userDAO.findById(userId);
 
@@ -264,7 +283,7 @@ public class ProjectManager {
         parentProjectTask.setExtendMD(DateTimeUtil.getManDays(parentProjectTask.getExtendMDMinute()));
         projectTaskDAO.persist(parentProjectTask);
 
-        extendMandaysEmail.sendMail(parentProjectTask, ext);
+        extendMandaysEmail.sendMail(parentProjectTask, ext, mandaysRequest);
 
         return projectTaskExtMapper.toDTO(ext);
     }
@@ -303,7 +322,8 @@ public class ProjectManager {
         log.debug("getProjectCost. (userId: {}, projectId: {})", userId, projectId);
 
         // validate user
-        User user = userDAO.findById(userId);
+        userDAO.findById(userId);
+
         Project project = projectDAO.findById(projectId);
 
         CostDTO costDTO = new CostDTO();
@@ -383,7 +403,6 @@ public class ProjectManager {
         projectTaskDAO.persist(projectTask);
     }
 
-
     // special method for re calculation %AMD
     public void reCalculationPercentAMD() {
         log.debug("reCalculationPercentAMD. (start)");
@@ -395,6 +414,186 @@ public class ProjectManager {
 
         projectTaskDAO.persist(projectTaskList);
         log.debug("reCalculationPercentAMD. (finish)");
+    }
+
+    public List<MandaysRequestDTO> getMandaysRequestList(long userId, RequestStatus status, Date startDate, Date endDate) throws RecordNotFoundException {
+        log.debug("getMandaysRequestList(userId: {}, status: {})", userId, status);
+
+        return mandaysRequestMapper.toDTO(mandaysRequestDAO.findByStatus(userId, status, startDate, endDate).stream());
+    }
+
+    public MandaysRequestDTO createMandaysRequest(long userId, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
+        log.debug("createMandaysRequest(userId: {}, mandaysRequestDTO: {})", userId, mandaysRequestDTO);
+        User user = userDAO.findById(userId);
+
+        MandaysRequest newMandaysRequest = mandaysRequestMapper.toEntity(mandaysRequestDTO);
+
+        if (!normalizeMandaysRequest(mandaysRequestDTO, newMandaysRequest)) {
+            return null;
+        }
+
+        newMandaysRequest.setStatus(RequestStatus.REQUESTED);
+
+        newMandaysRequest.setCreateDate(DateTimeUtil.now());
+        newMandaysRequest.setCreateBy(user);
+        newMandaysRequest.setModifyDate(DateTimeUtil.now());
+        newMandaysRequest.setModifyBy(user);
+
+        newMandaysRequest = mandaysRequestDAO.persist(newMandaysRequest);
+
+        List<RelRoleFunction> relRoleFunctionList = relRoleFunctionDAO.findByFunction(Function.F0005);
+        List<Role> roleList = new ArrayList<>();
+        Role role;
+        for (RelRoleFunction relRoleFunction : relRoleFunctionList) {
+            role = relRoleFunction.getRole();
+            roleList.add(role);
+            log.debug("found F0005 on role({})", role.getName());
+        }
+        List<User> approverList = userDAO.findByRoleList(roleList);
+        for (User approver : approverList) {
+            log.debug("found F0005 approver([{}]{}:{})", approver.getRole().getName(), approver.getName(), approver.getEmail());
+        }
+        mdRequestEmail.sendMail(mandaysRequestDTO.getType(), newMandaysRequest, approverList);
+
+        return mandaysRequestMapper.toDTO(newMandaysRequest);
+    }
+
+    /**
+     * Approve, reject or something depend on the mandaysRequestDTO.status.
+     *
+     * @return return null when failed, otherwise return the saved mandaysRequestDTO.
+     */
+    public MandaysRequestDTO acceptMandaysRequest(long userId, MandaysRequestDTO mandaysRequestDTO, StringBuffer message) throws RecordNotFoundException, EmailException {
+        log.debug("acceptMandaysRequest(userId: {}, mandaysRequestDTO: {})", userId, mandaysRequestDTO);
+        User user = userDAO.findById(userId);
+
+        MandaysRequestDTO result;
+        switch (mandaysRequestDTO.getStatus()) {
+            case APPROVED:
+                result = approveMandaysRequest(user, mandaysRequestDTO);
+                if (result == null) {
+                    message.append("Incompatible data, please check Type and ProjectTask!");
+                } else {
+                    message.append("Approved.");
+                }
+                return result;
+
+            case REJECTED:
+                result = rejectMandaysRequest(user, mandaysRequestDTO);
+                if (result == null) {
+                    message.append("Incompatible data, please check Type and ProjectTask!");
+                } else {
+                    message.append("Rejected.");
+                }
+                return result;
+
+            default:
+                //case CANCELLED:
+                //case REQUESTED:
+                message.append("Can't accept status(").append(mandaysRequestDTO.getStatus()).append(") now support only for APPROVED and REJECTED.");
+                return null;
+        }
+    }
+
+    private MandaysRequestDTO approveMandaysRequest(User user, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
+        log.debug("approveMandaysRequest().");
+        long mandaysRequestDTOId = mandaysRequestDTO.getId();
+        MandaysRequest newMandaysRequest = mandaysRequestDAO.findById(mandaysRequestDTOId);
+        if (newMandaysRequest == null) {
+            log.warn("approveMandaysRequest mandaysRequestID({}) not found!", mandaysRequestDTOId);
+            return null;
+        }
+
+        newMandaysRequest = mandaysRequestMapper.updateFromDTO(mandaysRequestDTO, newMandaysRequest);
+        if (!normalizeMandaysRequest(mandaysRequestDTO, newMandaysRequest)) {
+            return null;
+        }
+
+        newMandaysRequest.setStatus(RequestStatus.APPROVED);
+        newMandaysRequest.setModifyDate(DateTimeUtil.now());
+        newMandaysRequest.setModifyBy(user);
+
+        newMandaysRequest = mandaysRequestDAO.persist(newMandaysRequest);
+
+        if (MandaysRequestType.NEW.equals(mandaysRequestDTO.getType())) {
+            /*call same function with the create new project task to use the same business logic and same email template*/
+            ProjectTaskDTO projectTaskDTO = new ProjectTaskDTO();
+            projectTaskDTO.setProject(mandaysRequestDTO.getProject());
+            projectTaskDTO.setTask(mandaysRequestDTO.getTask());
+            projectTaskDTO.setUser(mandaysRequestDTO.getUser());
+            projectTaskDTO.setPlanMDDuration(mandaysRequestDTO.getExtendMDDuration());
+            projectTaskDTO.setDescription(mandaysRequestDTO.getDescription());
+            projectTaskDTO.setAmdCalculation(mandaysRequestDTO.isAmdCalculation());
+
+            createNewProjectTask(user.getId(), projectTaskDTO, newMandaysRequest);
+
+        } else /*EXTEND*/ {
+            /*call same function with the extend mandays of project task to use the same business logic and same email template*/
+            ProjectTaskDTO projectTaskDTO = new ProjectTaskDTO();
+            projectTaskDTO.setId(mandaysRequestDTO.getProjectTask().getId());
+
+            ProjectTaskExtDTO projectTaskExtDTO = new ProjectTaskExtDTO();
+            projectTaskExtDTO.setExtendMDDuration(mandaysRequestDTO.getExtendMDDuration());
+            projectTaskExtDTO.setDescription(mandaysRequestDTO.getDescription());
+
+            createExtendProjectTask(user.getId(), projectTaskDTO, projectTaskExtDTO, newMandaysRequest);
+        }
+
+        return mandaysRequestMapper.toDTO(newMandaysRequest);
+    }
+
+    private MandaysRequestDTO rejectMandaysRequest(User user, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
+        log.debug("rejectMandaysRequest().");
+        long mandaysRequestDTOId = mandaysRequestDTO.getId();
+        MandaysRequest newMandaysRequest = mandaysRequestDAO.findById(mandaysRequestDTOId);
+        if (newMandaysRequest == null) {
+            log.warn("rejectMandaysRequest mandaysRequestID({}) not found!", mandaysRequestDTOId);
+            return null;
+        }
+
+        newMandaysRequest = mandaysRequestMapper.updateFromDTO(mandaysRequestDTO, newMandaysRequest);
+        if (!normalizeMandaysRequest(mandaysRequestDTO, newMandaysRequest)) {
+            return null;
+        }
+
+        newMandaysRequest.setStatus(RequestStatus.REJECTED);
+        newMandaysRequest.setModifyDate(DateTimeUtil.now());
+        newMandaysRequest.setModifyBy(user);
+
+        newMandaysRequest = mandaysRequestDAO.persist(newMandaysRequest);
+
+        rejectedMDRequestEmail.sendMail(mandaysRequestDTO.getType(), newMandaysRequest);
+
+        return mandaysRequestMapper.toDTO(newMandaysRequest);
+    }
+
+    private boolean normalizeMandaysRequest(MandaysRequestDTO mandaysRequestDTO, MandaysRequest newMandaysRequest) throws RecordNotFoundException {
+        if (MandaysRequestType.NEW.equals(mandaysRequestDTO.getType())) {
+            ProjectDTO projectDTO = mandaysRequestDTO.getProject();
+            TaskDTO taskDTO = mandaysRequestDTO.getTask();
+            if (projectDTO == null || taskDTO == null) {
+                log.warn("normalizeMandaysRequest: incompatible NEW type and project + task.");
+                return false;
+            }
+
+            newMandaysRequest.setProjectTask(null);
+            newMandaysRequest.setProject(projectDAO.findById(projectDTO.getId()));
+            newMandaysRequest.setTask(taskDAO.findById(taskDTO.getId()));
+
+        } else /*EXTEND*/ {
+            ProjectTaskDTO projectTaskDTO = mandaysRequestDTO.getProjectTask();
+            if (projectTaskDTO == null) {
+                log.warn("normalizeMandaysRequest: incompatible EXTEND type and project task.");
+                return false;
+            }
+
+            newMandaysRequest.setProject(null);
+            newMandaysRequest.setTask(null);
+            newMandaysRequest.setProjectTask(projectTaskDAO.findById(projectTaskDTO.getId()));
+        }
+
+        newMandaysRequest.setUser(userDAO.findById(mandaysRequestDTO.getUser().getId()));
+        return true;
     }
 
 }

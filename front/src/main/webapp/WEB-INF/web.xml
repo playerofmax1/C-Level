@@ -83,6 +83,11 @@
     </error-page>
 
     <error-page>
+        <exception-type>javax.faces.view.facelets.FaceletException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
         <exception-type>java.lang.IllegalArgumentException</exception-type>
         <location>/site/exception.xhtml</location>
     </error-page>

@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.util.Comparator;
 import java.util.List;
 
 @ViewScoped
@@ -38,6 +39,7 @@ public class AdminSettingsController extends AbstractController {
             ServiceResponse<List<ConfigDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<ConfigDTO>>>() {
             });
             configList = serviceResponse.getResult();
+            configList.sort(Comparator.comparing(ConfigDTO::getDescription));
             log.debug("configList: {}", configList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
@@ -62,6 +64,7 @@ public class AdminSettingsController extends AbstractController {
             });
             changed = false;
             configList = serviceResponse.getResult();
+            configList.sort(Comparator.comparing(ConfigDTO::getDescription));
             log.debug("configList: {}", configList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());

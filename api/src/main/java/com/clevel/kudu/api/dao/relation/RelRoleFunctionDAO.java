@@ -37,7 +37,7 @@ public class RelRoleFunctionDAO extends GenericDAO<RelRoleFunction, Long> {
         return result;
     }
 
-
+    @SuppressWarnings("unchecked")
     public List<RelRoleFunction> findByFunction(Function function) {
         log.debug("findByFunction. (function: {})", function);
         CriteriaQuery<RelRoleFunction> criteria = createCriteriaQuery();

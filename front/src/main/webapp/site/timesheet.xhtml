@@ -19,7 +19,7 @@
         <!--<link rel="icon" href="../../favicon.ico">-->
 
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
         <style>
             .ui-calendar {
                 display: inline-block;
@@ -86,14 +86,14 @@
                                         <div class="ui-g-3 alignLeft">
                                             <p:commandButton id="xlsx"
                                                              icon="fa fa-file-excel-o"
-                                                             value="Excel(xlsx)"
+                                                             value="Excel (xlsx)"
                                                              ajax="false">
                                                 <p:dataExporter target="ts"
                                                                 fileName="#{timeSheetCtl.dataExportFileName()}"
                                                                 type="xlsx"
                                                                 options="#{timeSheetCtl.exportExcelOptions}"/>
                                             </p:commandButton>
-                                            <p:tooltip position="right" value="Download as Excel(xlsx)" for="xlsx"/>
+                                            <p:tooltip position="right" value="Download as Excel File (xlsx)" for="xlsx"/>
                                         </div>
                                         <div class="ui-g-6 alignCenter alignBottom">
                                             <p:commandButton id="previousMonth" icon="fa fa-chevron-left"
@@ -102,9 +102,16 @@
                                                              update="monthForm,mainForm">
                                             </p:commandButton>
                                             <p:spacer width="5px"/>
-                                            <p:outputLabel value="#{timeSheetCtl.currentMonth}">
-                                                <f:convertDateTime pattern=" MMMM yyyy " timeZone="Asia/Bangkok"/>
-                                            </p:outputLabel>
+                                            <p:outputPanel styleClass="no-margin alignMiddle" style="display:inline-block;">
+                                                <p:outputLabel value="#{timeSheetCtl.currentMonth}" ondblclick="onToday();">
+                                                    <f:convertDateTime pattern=" MMMM yyyy " timeZone="Asia/Bangkok"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <sup>
+                                                    <p:outputLabel id="pfYear" value="(PF)Year #{timeSheetCtl.utilization.year}" ondblclick="onToday();" styleClass="gray-font"/>
+                                                </sup>
+                                                <p:remoteCommand name="onToday" actionListener="#{timeSheetCtl.onToday}" update="monthForm,mainForm"/>
+                                            </p:outputPanel>
                                             <p:spacer width="5px"/>
                                             <p:commandButton id="nextMonth" icon="fa fa-chevron-right" disabled="#{!timeSheetCtl.nextEnable}"
                                                              action="#{timeSheetCtl.onNext}"
@@ -174,8 +181,9 @@
                                     </div>
                                 </p:outputPanel>
 
-                                <p:blockUI block="tsHeader" trigger="ts:previousMonth,ts:nextMonth" styleClass="ui-corner-all">
+                                <p:blockUI block="tsHeader" trigger="ts:previousMonth,ts:nextMonth,ts:viewOnlySwitch" styleClass="ui-corner-all">
                                     <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
+                                    <br/>please wait ...
                                 </p:blockUI>
 
                             </f:facet>

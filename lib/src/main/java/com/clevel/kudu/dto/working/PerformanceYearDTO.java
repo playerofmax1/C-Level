@@ -1,5 +1,6 @@
 package com.clevel.kudu.dto.working;
 
+import com.clevel.kudu.util.DateTimeUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -32,6 +33,10 @@ public class PerformanceYearDTO {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getDisplayString() {
+        return "Performance Year : " + year + " from " + DateTimeUtil.getDateStr(startDate) + " to " + DateTimeUtil.getDateStr(endDate);
     }
 
     @Override

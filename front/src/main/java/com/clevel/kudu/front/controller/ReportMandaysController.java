@@ -8,6 +8,7 @@ import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
 import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
+import com.clevel.kudu.util.LookupUtil;
 import org.primefaces.component.export.ExcelOptions;
 
 import javax.annotation.PostConstruct;
@@ -32,9 +33,12 @@ public class ReportMandaysController extends AbstractController {
     private List<UserDTO> userList;
     private long selectedUserId;
 
-    private int currentYear;
+    private PerformanceYearDTO currentYear;
     private boolean previousEnable;
     private boolean nextEnable;
+    private boolean hasNextYear;
+    private boolean hasPreviousYear;
+    private Date tsStartDate;
     private List<HolidayDTO> holidayList;
 
     private List<UserMandaysDTO> userMandaysDTOList;
@@ -48,14 +52,29 @@ public class ReportMandaysController extends AbstractController {
     public void onCreation() {
         log.debug("onCreation.");
 
-        loadMandays();
+        currentYear = new PerformanceYearDTO();
+        selectedUserId = userDetail.getUserId();
+
         if (accessControl.functionEnable(Function.F0002)) {
             loadUserList();
         }
+
+        onChangeUser();
     }
 
     public void onChangeUser() {
-        log.debug("onChangeUser. (timeSheetUserId: {})", selectedUserId);
+        log.debug("onChangeUser. (selectedUserId: {})", selectedUserId);
+        currentYear.setYear(0);
+
+        if (userList == null) {
+            tsStartDate = userDetail.getTsStartDate();
+        } else {
+            UserDTO selectedUser = LookupUtil.getObjById(userList, selectedUserId);
+            log.debug("onChangeUser.selectedUser: {}", selectedUser);
+            tsStartDate = selectedUser.getTsStartDate();
+        }
+        log.debug("onChangeUser.tsStartDate: {}", tsStartDate);
+
         loadMandays();
     }
 
@@ -68,14 +87,17 @@ public class ReportMandaysController extends AbstractController {
         if (response.getStatus() == 200) {
             ServiceResponse<List<UserTimeSheetDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserTimeSheetDTO>>>() {
             });
-            List<UserTimeSheetDTO> userTSList = serviceResponse.getResult();
-            userList = new ArrayList<>();
+
             UserDTO currentUser = new UserDTO();
-            currentUser.setId(userDetail.getUserId());
+            currentUser.setId(selectedUserId);
             currentUser.setName(userDetail.getName());
             currentUser.setLastName(userDetail.getLastName());
+            currentUser.setTsStartDate(userDetail.getTsStartDate());
+
+            userList = new ArrayList<>();
             userList.add(currentUser);
-            selectedUserId = userDetail.getUserId();
+
+            List<UserTimeSheetDTO> userTSList = serviceResponse.getResult();
             for (UserTimeSheetDTO u : userTSList) {
                 userList.add(u.getTimeSheetUser());
             }
@@ -88,28 +110,28 @@ public class ReportMandaysController extends AbstractController {
 
     public void onPrevious() {
         log.debug("onPrevious.");
+        currentYear.setYear(currentYear.getYear() - 1);
+        loadMandays();
+    }
+
+    public void onToDay() {
+        log.debug("onToDay.");
+        currentYear.setYear(0);
         loadMandays();
     }
 
     public void onNext() {
         log.debug("onNext.");
+        currentYear.setYear(currentYear.getYear() + 1);
         loadMandays();
     }
 
     public void checkNavigationButtonEnable() {
-        Date lastDate = DateTimeUtil.getLastDateOfMonth(DateTimeUtil.now());
+        nextEnable = hasNextYear;
 
-        /*TODO: when time sheet has more than one year @2021++ */
-
-        // check next
-        //Date next = DateTimeUtil.getDatePlusMonths(currentMonth, 1);
-        //nextEnable = !next.after(lastDate);
-        nextEnable = false;
-
-        // check previous
-        //Date pre = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
-        //previousEnable = !pre.before(tsStartDate);
-        previousEnable = false;
+        long previousYear = currentYear.getYear() - 1;
+        Date firstDateOfMonth = DateTimeUtil.getLastDateOfYear((int) previousYear);
+        previousEnable = hasPreviousYear && tsStartDate.before(firstDateOfMonth);
     }
 
     private void loadMandays() {
@@ -120,7 +142,7 @@ public class ReportMandaysController extends AbstractController {
 
         MandaysRequest mandaysRequest = new MandaysRequest();
         mandaysRequest.setUserId(selectedUserId);
-        mandaysRequest.setYear(currentYear);
+        mandaysRequest.setYear((int) currentYear.getYear());
 
         ServiceRequest<MandaysRequest> request = new ServiceRequest<>(mandaysRequest);
         request.setUserId(userDetail.getUserId());
@@ -147,7 +169,11 @@ public class ReportMandaysController extends AbstractController {
         userMandaysDTOList = mandaysResult.getUserMandaysDTOList();
         totalUserMandays = mandaysResult.getTotalMandaysDTO();
         utilization = mandaysResult.getUtilization();
-        currentYear = (int) utilization.getYear();
+
+        currentYear.setYear(utilization.getYear());
+        currentYear.setStartDate(utilization.getStartDate());
+        currentYear.setEndDate(utilization.getEndDate());
+
         if (userMandaysDTOList.size() > 0) {
             UserMandaysDTO firstUserMandaysDTO = userMandaysDTOList.get(0);
             targetUtilization = firstUserMandaysDTO.getTargetPercentCU();
@@ -161,8 +187,9 @@ public class ReportMandaysController extends AbstractController {
 
         normalize(totalUserMandays, userMandaysDTOList);
 
+        hasNextYear = mandaysResult.isHasNextYear();
+        hasPreviousYear = mandaysResult.isHasPreviousYear();
         checkNavigationButtonEnable();
-
     }
 
     private void normalize(UserMandaysDTO totalUserMandays, List<UserMandaysDTO> userMandaysDTOList) {
@@ -196,11 +223,11 @@ public class ReportMandaysController extends AbstractController {
         this.selectedUserId = selectedUserId;
     }
 
-    public int getCurrentYear() {
+    public PerformanceYearDTO getCurrentYear() {
         return currentYear;
     }
 
-    public void setCurrentYear(int currentYear) {
+    public void setCurrentYear(PerformanceYearDTO currentYear) {
         this.currentYear = currentYear;
     }
 
@@ -294,7 +321,7 @@ public class ReportMandaysController extends AbstractController {
     public void onSaveTargetUtilization() {
         TargetUtilizationRequest targetUtilizationRequest = new TargetUtilizationRequest();
         targetUtilizationRequest.setUserId(selectedUserId);
-        targetUtilizationRequest.setYear(currentYear);
+        targetUtilizationRequest.setYear((int) currentYear.getYear());
         targetUtilizationRequest.setTargetUtilization(targetUtilization);
         log.debug("onSaveTargetUtilization.targetUtilizationRequest = {}", targetUtilizationRequest);
 

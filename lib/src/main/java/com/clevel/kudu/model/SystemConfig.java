@@ -4,30 +4,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum SystemConfig {
-    AUTO_EMAIL_CC("app.auto.email.cc", InputType.TEXT, false),
-    EMAIL_PASSWORD("app.external.mail.password", InputType.TEXT, false),
-    EMAIL_PORT("app.external.mail.port", InputType.INTEGER, false),
-    EMAIL_SENDER_NAME("app.external.mail.sender.name", InputType.TEXT, false),
-    EMAIL_SERVER("app.external.mail.server", InputType.TEXT, false),
-    EMAIL_SMTP_AUTH("app.external.mail.smtp.auth", InputType.YESNO, false),
-    EMAIL_TLS_ENABLE("app.external.mail.tls.enable", InputType.YESNO, false),
-    EMAIL_USERNAME("app.external.mail.username", InputType.TEXT, false),
+    AUTO_EMAIL_CC("app.auto.email.cc", InputType.TEXT),
+    EMAIL_PASSWORD("app.external.mail.password", InputType.TEXT),
+    EMAIL_PORT("app.external.mail.port", InputType.INTEGER),
+    EMAIL_SENDER_NAME("app.external.mail.sender.name", InputType.TEXT),
+    EMAIL_SERVER("app.external.mail.server", InputType.TEXT),
+    EMAIL_SMTP_AUTH("app.external.mail.smtp.auth", InputType.YESNO),
+    EMAIL_TLS_ENABLE("app.external.mail.tls.enable", InputType.ENABLED),
+    EMAIL_USERNAME("app.external.mail.username", InputType.TEXT),
 
-    DEFAULT_TARGET_UTILIZATION("app.pf.default.target.utilization", InputType.PERCENT, true),
-    PF_YEAR("app.pf.year", InputType.INTEGER, false),
+    DEFAULT_TARGET_UTILIZATION("app.pf.default.target.utilization", InputType.PERCENT),
+    PF_YEAR("app.pf.year", InputType.INTEGER),
 
-    TS_CUTOFF_DATE("app.ts.cutoff.date", InputType.INTEGER, true),
-    TS_CUTOFF_DATE_ENABLE("app.ts.cutoff.date.enable", InputType.YESNO, false),
+    TS_CUTOFF_DATE("app.ts.cutoff.date", InputType.INTEGER),
+    TS_CUTOFF_DATE_ENABLE("app.ts.cutoff.date.enable", InputType.ENABLED),
+
+    FORCE_RELOAD_CSS("app.force.reload.css", InputType.YESNO),
     ;
 
     private String code;
-    private boolean generateAsNewGroup;
     private InputType inputType;
 
-    SystemConfig(String code, InputType inputType, boolean generateAsNewGroup) {
+    SystemConfig(String code, InputType inputType) {
         this.code = code;
         this.inputType = inputType;
-        this.generateAsNewGroup = generateAsNewGroup;
     }
 
     public String getCode() {
@@ -36,10 +36,6 @@ public enum SystemConfig {
 
     public InputType getInputType() {
         return inputType;
-    }
-
-    public boolean isGenerateAsNewGroup() {
-        return generateAsNewGroup;
     }
 
     public static SystemConfig lookup(String value) {

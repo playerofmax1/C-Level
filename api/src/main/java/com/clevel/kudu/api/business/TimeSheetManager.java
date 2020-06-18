@@ -506,8 +506,26 @@ public class TimeSheetManager {
         return totalUserMandays;
     }
 
-    public PerformanceYearDTO getPerformanceYear(int year) throws RecordNotFoundException {
-        PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
+    public PerformanceYearDTO getPerformanceYear(int year) {
+        PerformanceYear performanceYear = null;
+        try {
+            performanceYear = performanceYearDAO.findByYear(year);
+        } catch (RecordNotFoundException e) {
+            return null;
+        }
+        if (performanceYear == null) {
+            return null;
+        }
+        return performanceYearMapper.toDTO(performanceYear);
+    }
+
+    public PerformanceYearDTO getPerformanceYear(Date date) {
+        PerformanceYear performanceYear = null;
+        try {
+            performanceYear = performanceYearDAO.findByDate(date);
+        } catch (RecordNotFoundException e) {
+            return null;
+        }
         if (performanceYear == null) {
             return null;
         }
@@ -644,4 +662,5 @@ public class TimeSheetManager {
 
         return userPerformanceMapper.toDTO(userPerformanceDAO.persist(userPerformance));
     }
+
 }

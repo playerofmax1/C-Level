@@ -13,6 +13,8 @@ public class ConfigDTO implements LookupList {
     private String value;
     private String description;
 
+    private boolean needSeparatorBefore;
+
     @Override
     public long getId() {
         return id;
@@ -54,6 +56,14 @@ public class ConfigDTO implements LookupList {
         this.description = description;
     }
 
+    public boolean isNeedSeparatorBefore() {
+        return needSeparatorBefore;
+    }
+
+    public void setNeedSeparatorBefore(boolean needSeparatorBefore) {
+        this.needSeparatorBefore = needSeparatorBefore;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -62,6 +72,7 @@ public class ConfigDTO implements LookupList {
                 .append("name", name)
                 .append("value", value)
                 .append("description", description)
+                .append("needSeparatorBefore", needSeparatorBefore)
                 .toString()
                 .replace('=', ':');
     }

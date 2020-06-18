@@ -8,6 +8,7 @@ import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.ConfigDTO;
 import com.clevel.kudu.model.APIResponse;
+import com.clevel.kudu.model.SystemConfig;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -35,6 +36,27 @@ public class SystemResource implements SystemService {
 
         try {
             configDTOList = systemManager.getConfigList();
+            response.setResult(configDTOList);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    public Response getSpecifiedConfigList(ServiceRequest<List<SystemConfig>> request) {
+        log.debug("getSpecifiedConfigList(request: {})", request);
+
+        List<ConfigDTO> configDTOList = Collections.emptyList();
+        ServiceResponse<List<ConfigDTO>> response = new ServiceResponse<>();
+
+        try {
+            List<SystemConfig> systemConfigList = request.getRequest();
+            configDTOList = systemManager.getConfigList(systemConfigList);
+
             response.setResult(configDTOList);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (Exception e) {

@@ -14,6 +14,9 @@ public class MandaysResult {
 
     private List<HolidayDTO> holidayList;
 
+    private boolean hasPreviousYear;
+    private boolean hasNextYear;
+
     public List<UserMandaysDTO> getUserMandaysDTOList() {
         return userMandaysDTOList;
     }
@@ -46,6 +49,22 @@ public class MandaysResult {
         this.holidayList = holidayList;
     }
 
+    public boolean isHasPreviousYear() {
+        return hasPreviousYear;
+    }
+
+    public void setHasPreviousYear(boolean hasPreviousYear) {
+        this.hasPreviousYear = hasPreviousYear;
+    }
+
+    public boolean isHasNextYear() {
+        return hasNextYear;
+    }
+
+    public void setHasNextYear(boolean hasNextYear) {
+        this.hasNextYear = hasNextYear;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -53,6 +72,8 @@ public class MandaysResult {
                 .append("totalMandaysDTO", totalMandaysDTO)
                 .append("utilization", utilization)
                 .append("holidayList", holidayList)
+                .append("hasPreviousYear", hasPreviousYear)
+                .append("hasNextYear", hasNextYear)
                 .toString()
                 .replace('=', ':');
     }

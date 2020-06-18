@@ -19,7 +19,7 @@
         <!--<link rel="icon" href="../../favicon.ico">-->
 
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
         <style>
             .ui-datalist {
                 font-size: 12px;
@@ -44,65 +44,87 @@
                                              value="Save"
                                              disabled="#{!adminSettingsCtl.changed}"
                                              actionListener="#{adminSettingsCtl.onSave}"
-                                             update="mainForm:buttonPanel"/>
+                                             update="mainForm:buttonPanel,mainForm:configurationList"/>
                             <p:tooltip position="left" value="Save changes." for="saveButton"/>
                             <p:sticky target="buttonPanel" margin="75"/>
                         </p:outputPanel>
 
                         <p:growl id="msg" showDetail="true" escape="false"/>
 
-                        <p:dataList value="#{adminSettingsCtl.configList}" var="setting" type="definition"
+                        <p:dataList id="configurationList" value="#{adminSettingsCtl.configList}" var="setting" type="definition"
                                     styleClass="alignMiddle no-margin" itemStyleClass="ui-g alignMiddle" style="font-size:12px;width:100%;">
-
-                            <p:outputPanel rendered="#{setting.systemConfig != null and setting.systemConfig.generateAsNewGroup}" styleClass="ui-sm-12 ui-md-12 ui-lg-12">
-                                <hr/>
-                            </p:outputPanel>
 
                             <p:outputLabel styleClass="fa fa-cog" style="font-size: 2.5em"/>
 
                             <p:outputPanel style="display: inline-block" styleClass="ui-sm-4 ui-md-4 ui-lg-4 alignMiddle">
                                 <div>
-                                    #{setting.name}<br/>
+                                    <p:inputText value="#{setting.description}" styleClass="no-border no-padding transparent" style="width:100%">
+                                        <p:ajax event="change"
+                                                listener="#{adminSettingsCtl.onChanged}"
+                                                update="mainForm:buttonPanel"/>
+                                    </p:inputText>
+                                    <br/>
                                     <sup>
-                                        <p:inputText value="#{setting.description}" styleClass="no-border no-padding transparent" style="width:100%">
-                                            <p:ajax event="change"
-                                                    listener="#{adminSettingsCtl.onChanged}"
-                                                    update="mainForm:buttonPanel"/>
-                                        </p:inputText>
+                                        #{setting.name}
                                     </sup>
                                 </div>
                             </p:outputPanel>
 
-                            <p:outputPanel styleClass="ui-sm-6 ui-md-6 ui-lg-6">
+                            <p:outputPanel styleClass="ui-sm-6 ui-md-6 ui-lg-6 no-padding no-margin">
                                 <p:inputText value="#{setting.value}" style="width:100%" rendered="#{setting.systemConfig.inputType=='TEXT'}">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputText>
 
-                                <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='INTEGER'}" emptyValue="0" decimalPlaces="0" thousandSeparator="">
-                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
-                                </p:inputNumber>
+                                <p:inplace rendered="#{setting.systemConfig.inputType=='PASSWORD'}">
+                                    <f:facet name="output">
+                                        <p:outputLabel value="*******"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:password value="#{setting.value}" style="width:100%">
+                                            <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
+                                        </p:password>
+                                    </f:facet>
+                                </p:inplace>
 
                                 <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='DECIMAL'}" emptyValue="0.00" decimalPlaces="2">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputNumber>
 
-                                <p:outputPanel rendered="#{setting.systemConfig.inputType=='PERCENT'}">
+                                <p:outputPanel styleClass="no-margin" rendered="#{setting.systemConfig.inputType=='INTEGER'}">
+                                    <div class="ui-inputgroup">
+                                        <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='INTEGER'}" emptyValue="0" decimalPlaces="0" thousandSeparator="">
+                                            <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
+                                        </p:inputNumber>
+                                        <h:outputText id="inputNumber" value=" # " class="ui-inputgroup-addon"/>
+                                    </div>
+                                </p:outputPanel>
+                                <p:tooltip value="Number" position="top" for="inputNumber" rendered="#{setting.systemConfig.inputType=='INTEGER'}"/>
+
+                                <p:outputPanel styleClass="no-margin" rendered="#{setting.systemConfig.inputType=='PERCENT'}">
                                     <div class="ui-inputgroup">
                                         <p:inputNumber value="#{setting.value}" emptyValue="0.00" decimalPlaces="2">
                                             <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                         </p:inputNumber>
-                                        <span class="ui-inputgroup-addon"> % </span>
+                                        <h:outputText id="inputPercent" value=" % " class="ui-inputgroup-addon"/>
                                     </div>
                                 </p:outputPanel>
-                                <p:inputSwitch value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='YESNO'}"
+                                <p:tooltip value="Percent" position="top" for="inputPercent" rendered="#{setting.systemConfig.inputType=='PERCENT'}"/>
+
+                                <p:inputSwitch id="yesNoInput" styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='YESNO'}"
                                                onLabel="YES" offLabel="NO">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputSwitch>
+                                <p:tooltip for="yesNoInput" value="YES or NO" position="top" rendered="#{setting.systemConfig.inputType=='YESNO'}"/>
+
+                                <p:inputSwitch id="enabledInput" styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='ENABLED'}"
+                                               onLabel="Enabled" offLabel="Disabled">
+                                    <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
+                                </p:inputSwitch>
+                                <p:tooltip for="enabledInput" value="Enabled or Disabled" position="top" rendered="#{setting.systemConfig.inputType=='ENABLED'}"/>
                             </p:outputPanel>
                         </p:dataList>
 
-                        <hr/>
-                        <br/>
+
                         <p:blockUI block="mainForm:buttonPanel" trigger="mainForm:saveButton" styleClass="ui-corner-all">
                             <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
                         </p:blockUI>

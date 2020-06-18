@@ -8,6 +8,7 @@ import java.math.RoundingMode;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateTimeUtil {
     private static final Logger log = LoggerFactory.getLogger(DateTimeUtil.class);
@@ -78,9 +79,22 @@ public class DateTimeUtil {
         return Date.from(initial.withDayOfMonth(initial.lengthOfMonth()).atStartOfDay(ZoneId.of(DEFAULT_ZONE)).toInstant());
     }
 
+    public static Date getFirstDateOfYear(Date year) {
+        LocalDate initial = year.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDate();
+        return Date.from(initial.withDayOfYear(1).atStartOfDay(ZoneId.of(DEFAULT_ZONE)).toInstant());
+    }
+
     public static Date getLastDateOfYear(Date year) {
         LocalDate initial = year.toInstant().atZone(ZoneId.of(DEFAULT_ZONE)).toLocalDate();
         return Date.from(initial.withDayOfYear(initial.lengthOfYear()).atStartOfDay(ZoneId.of(DEFAULT_ZONE)).toInstant());
+    }
+
+    public static Date getFirstDateOfYear(int year) {
+        return Date.from(new GregorianCalendar(year + 1900, 1, 1).toInstant());
+    }
+
+    public static Date getLastDateOfYear(int year) {
+        return Date.from(new GregorianCalendar(year + 1900, 31, 12).toInstant());
     }
 
     public static boolean isSameDate(Date date1, Date date2) {

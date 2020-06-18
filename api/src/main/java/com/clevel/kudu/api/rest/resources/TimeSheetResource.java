@@ -70,6 +70,8 @@ public class TimeSheetResource implements TimeSheetService {
             Date monthStartDate = DateTimeUtil.getFirstDateOfMonth(monthDate);
             Date monthEndDate = DateTimeUtil.getLastDateOfMonth(monthDate);
             UtilizationDTO utilization = timeSheetManager.getUtilization(monthStartDate, monthEndDate, totalChargedMinutes);
+            PerformanceYearDTO performanceYearForCurrentMonth = timeSheetManager.getPerformanceYear(monthDate);
+            utilization.setYear(performanceYearForCurrentMonth.getYear());
             timeSheetResult.setUtilization(utilization);
 
             timeSheetResult.setCutoffEnable(Util.isTrue(app.getConfig(SystemConfig.TS_CUTOFF_DATE_ENABLE)));
@@ -78,6 +80,12 @@ public class TimeSheetResource implements TimeSheetService {
 
             List<TimeSheetLockDTO> timeSheetLockDTOList = timeSheetManager.getTimeSheetLock(request.getRequest().getTimeSheetUserId(), monthDate);
             timeSheetResult.setTimeSheetLockList(timeSheetLockDTOList);
+
+            PerformanceYearDTO performanceYearForNextMonth = timeSheetManager.getPerformanceYear(DateTimeUtil.getDatePlusMonths(monthDate, 1));
+            timeSheetResult.setHasNextMonth(performanceYearForNextMonth != null);
+
+            PerformanceYearDTO performanceYearForPreviousMonth = timeSheetManager.getPerformanceYear(DateTimeUtil.getDatePlusMonths(monthDate, -1));
+            timeSheetResult.setHasPreviousMonth(performanceYearForPreviousMonth != null);
 
             response.setResult(timeSheetResult);
             response.setApiResponse(APIResponse.SUCCESS);
@@ -149,6 +157,12 @@ public class TimeSheetResource implements TimeSheetService {
 
             List<HolidayDTO> holidayDTOList = holidayManager.getHolidaysByPerformanceYear(performanceYear);
             mandaysResult.setHolidayList(holidayDTOList);
+
+            PerformanceYearDTO nextPerformanceYearDTO = timeSheetManager.getPerformanceYear(year + 1);
+            mandaysResult.setHasNextYear(nextPerformanceYearDTO != null);
+
+            PerformanceYearDTO prePerformanceYearDTO = timeSheetManager.getPerformanceYear(year - 1);
+            mandaysResult.setHasPreviousYear(prePerformanceYearDTO != null);
 
             response.setResult(mandaysResult);
             response.setApiResponse(APIResponse.SUCCESS);

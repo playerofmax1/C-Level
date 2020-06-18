@@ -68,6 +68,7 @@ public class UserDAO extends GenericDAO<User, Long> {
         return users;
     }
 
+    @SuppressWarnings("unchecked")
     public List<User> findByRoleList(List<Role> roleList) {
         log.debug("findByRoleList.");
         CriteriaQuery<User> criteria = createCriteriaQuery();

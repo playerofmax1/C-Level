@@ -23,6 +23,7 @@
     <property name="current.ver.building" location="out/production/front/version.property"/>
     <property name="copy.to.lib" value="out/production/pjt-lib"/>
     <property name="copy.to.api" value="api/src/main/resources"/>
+    <property name="kudu.css.path" value="front/src/main/webapp/resources/css"/>
     <property file="${current.ver}"/>
 
     <target name="increment version.number">
@@ -94,6 +95,7 @@
     </target>
 
     <target name="stamp build.date">
+        <delete file="${kudu.css.path}/kudu.${version.number}.${revision.number}.${build.number}.css"/>
         <replaceregexp file="${current.ver}"
                        match="build\.number\=.*"
                        replace="build.number=${build.number}"
@@ -123,4 +125,7 @@
         <copy file="${current.ver}" todir="${copy.to.api}"/>
     </target>
 
+    <target name="alias kudu.css">
+        <copy overwrite="true" file="${kudu.css.path}/kudu.css" tofile="${kudu.css.path}/kudu.${version.number}.${revision.number}.${build.number}.css"/>
+    </target>
 </project>

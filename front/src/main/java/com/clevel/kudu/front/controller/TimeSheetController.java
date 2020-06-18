@@ -51,6 +51,8 @@ public class TimeSheetController extends AbstractController {
     private Date currentMonth;
     private boolean previousEnable;
     private boolean nextEnable;
+    private boolean hasNextMonth;
+    private boolean hasPreviousMonth;
     private Date tsStartDate;
 
     private UtilizationDTO utilization;
@@ -71,7 +73,7 @@ public class TimeSheetController extends AbstractController {
         log.debug("onCreation.");
 
         currentMonth = DateTimeUtil.now();
-        nextEnable = false;
+        nextEnable = true;
         previousEnable = true;
         utilization = new UtilizationDTO();
 
@@ -81,11 +83,7 @@ public class TimeSheetController extends AbstractController {
 
         timeSheetUserId = userDetail.getUserId();
         onChangeUser();
-        /*loadTsStartDate();*/
-        /*loadTimeSheet();*/
-
         loadTask();
-
     }
 
     public void onChangeUser() {
@@ -93,7 +91,7 @@ public class TimeSheetController extends AbstractController {
         currentMonth = DateTimeUtil.now();
 
         if (userList == null) {
-            tsStartDate = loadTsStartDate();
+            tsStartDate = userDetail.getTsStartDate();
         } else {
             UserDTO selectedUser = LookupUtil.getObjById(userList, timeSheetUserId);
             log.debug("onChangeUser.selectedUser: {}", selectedUser);
@@ -135,6 +133,12 @@ public class TimeSheetController extends AbstractController {
     public void onPrevious() {
         log.debug("onPrevious.");
         currentMonth = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
+        loadTimeSheet();
+    }
+
+    public void onToday() {
+        log.debug("onToday.");
+        currentMonth = DateTimeUtil.now();
         loadTimeSheet();
     }
 
@@ -184,17 +188,10 @@ public class TimeSheetController extends AbstractController {
     }
 
     private void checkNavigationButtonEnable() {
-        Date lastDate = DateTimeUtil.getLastDateOfMonth(DateTimeUtil.now());
+        nextEnable = hasNextMonth;
 
-        // check next
-        Date next = DateTimeUtil.getDatePlusMonths(currentMonth, 1);
-        nextEnable = !next.after(lastDate);
-
-        // check previous
-        Date pre = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
-        /*TODO: remove debug log*/
-        log.debug("checkNavigationButtonEnable(): currentMonth={}, previousMonth={}, tsStartDate={}", currentMonth, pre, tsStartDate);
-        previousEnable = !pre.before(tsStartDate);
+        Date previousMonth = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
+        previousEnable = hasPreviousMonth && !previousMonth.before(tsStartDate);
     }
 
     private Date loadTsStartDate() {
@@ -298,9 +295,11 @@ public class TimeSheetController extends AbstractController {
         timeSheetSummaryList = sumHoursOfProject(timeSheetList);
         utilization = result.getUtilization();
 
+        hasNextMonth = result.isHasNextMonth();
+        hasPreviousMonth = result.isHasPreviousMonth();
+
         checkNavigationButtonEnable();
         checkViewOnly(result);
-
     }
 
     private void loadTimeSheetInfo(TimeSheetDTO timeSheet) {

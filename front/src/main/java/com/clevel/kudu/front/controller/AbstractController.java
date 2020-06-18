@@ -1,5 +1,6 @@
 package com.clevel.kudu.front.controller;
 
+import com.clevel.dconvers.conf.VersionConfigFile;
 import com.clevel.kudu.front.system.Application;
 import com.clevel.kudu.model.CurrentUser;
 import com.clevel.kudu.model.UserDetail;
@@ -31,7 +32,15 @@ public class AbstractController implements Serializable {
         this.userDetail = userDetail;
     }
 
+    public VersionConfigFile getApplicationVersion() {
+        return application.getVersion();
+    }
+
     public String getApplicationVersionString() {
         return application.getVersionString();
+    }
+
+    public String getCssFileName() {
+        return application.getCssFileName();
     }
 }

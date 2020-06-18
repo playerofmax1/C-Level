@@ -35,8 +35,13 @@ body {
     margin-bottom: -20px;
 
     text-align: center;
+}
+
+.login-panel-container footer,
+.login-panel-container footer a {
     font-size: 9px;
-    color: #786e68;
+    color: silver;
+    text-decoration: none;
 }
 
 .container-fluid {

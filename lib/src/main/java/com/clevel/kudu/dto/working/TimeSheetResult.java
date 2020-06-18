@@ -12,6 +12,9 @@ public class TimeSheetResult {
     private boolean cutoffEnable;
     private int cutoffDate;
 
+    private boolean hasPreviousMonth;
+    private boolean hasNextMonth;
+
     public TimeSheetResult() {
     }
 
@@ -55,6 +58,22 @@ public class TimeSheetResult {
         this.cutoffDate = cutoffDate;
     }
 
+    public boolean isHasNextMonth() {
+        return hasNextMonth;
+    }
+
+    public void setHasNextMonth(boolean hasNextMonth) {
+        this.hasNextMonth = hasNextMonth;
+    }
+
+    public boolean isHasPreviousMonth() {
+        return hasPreviousMonth;
+    }
+
+    public void setHasPreviousMonth(boolean hasPreviousMonth) {
+        this.hasPreviousMonth = hasPreviousMonth;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -63,6 +82,8 @@ public class TimeSheetResult {
                 .append("utilization", utilization)
                 .append("cutoffEnable", cutoffEnable)
                 .append("cutoffDate", cutoffDate)
+                .append("hasPreviousMonth", hasPreviousMonth)
+                .append("hasNextMonth", hasNextMonth)
                 .toString()
                 .replace('=', ':');
     }

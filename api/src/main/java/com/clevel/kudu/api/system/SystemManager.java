@@ -6,6 +6,7 @@ import com.clevel.kudu.api.model.db.system.Config;
 import com.clevel.kudu.api.model.db.system.SecurityAudit;
 import com.clevel.kudu.api.rest.mapper.ConfigMapper;
 import com.clevel.kudu.dto.working.ConfigDTO;
+import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.util.LookupUtil;
 import org.slf4j.Logger;
 
@@ -37,8 +38,17 @@ public class SystemManager {
     }
 
     public List<ConfigDTO> getConfigList() {
-        log.debug("getConfigs.");
+        log.debug("getConfigList");
         return configMapper.toDTO(configDAO.findAll().stream());
+    }
+
+    public List<ConfigDTO> getConfigList(List<SystemConfig> systemConfigList) {
+        log.debug("getConfigList(systemConfigList: {})", systemConfigList);
+
+        List<String> configNameList = new ArrayList<>();
+        systemConfigList.forEach(systemConfig -> configNameList.add(systemConfig.getCode()));
+
+        return configMapper.toDTO(configDAO.findByList(configNameList).stream());
     }
 
     public void audit(String requestURL, String clientIP, String userAgent, String referer, String sessionId, String request) {

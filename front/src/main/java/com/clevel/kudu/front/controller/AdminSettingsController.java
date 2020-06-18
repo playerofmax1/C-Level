@@ -4,6 +4,7 @@ import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.ConfigDTO;
+import com.clevel.kudu.model.KuduEvent;
 import com.clevel.kudu.util.FacesUtil;
 
 import javax.annotation.PostConstruct;
@@ -66,6 +67,11 @@ public class AdminSettingsController extends AbstractController {
             configList = serviceResponse.getResult();
             configList.sort(Comparator.comparing(ConfigDTO::getDescription));
             log.debug("configList: {}", configList);
+
+            application.fireEvent(KuduEvent.SYSTEM_CONFIG_CHANGED);
+
+            /* after change the SystemConfig.FORCE_RELOAD_CSS need to refresh the screen to avoid bad appearance */
+            FacesUtil.redirect("/site/adminSettings.jsf");
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");

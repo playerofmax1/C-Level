@@ -3,6 +3,7 @@ package com.clevel.kudu.api;
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.ConfigDTO;
+import com.clevel.kudu.model.SystemConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +28,13 @@ public interface SystemService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response getConfigList(@Parameter(description = "request: SimpleDTO, result: List<ConfigDTO>", required = true)
                                     ServiceRequest<SimpleDTO> request);
+
+    @POST
+    @Path("/config/specifiedlist")
+    @Operation(summary = "get configs by the list of SystemConfig enum.", description = "get configs by the list of SystemConfig enum.")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response getSpecifiedConfigList(@Parameter(description = "request: List<SystemConfig>, result: List<ConfigDTO>", required = true)
+                                    ServiceRequest<List<SystemConfig>> request);
 
     @POST
     @Path("/config/save")

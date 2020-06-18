@@ -21,7 +21,7 @@ public class ConfigDAO extends GenericDAO<Config, Long> {
 
     @SuppressWarnings("unchecked")
     public Config findByName(String name) throws RecordNotFoundException {
-        log.debug("getByName. (name: {})",name);
+        log.debug("getByName. (name: {})", name);
 
         CriteriaQuery<Config> criteria = createCriteriaQuery();
 
@@ -36,6 +36,19 @@ public class ConfigDAO extends GenericDAO<Config, Long> {
         } else {
             return configList.get(0);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Config> findByList(List<String> configNameList) {
+        log.debug("findAll.");
+
+        CriteriaQuery<Config> criteria = createCriteriaQuery();
+
+        criteria.where(root.get(Config_.name).in(configNameList));
+
+        Query query = em.createQuery(criteria);
+
+        return query.getResultList();
     }
 
     @SuppressWarnings("unchecked")

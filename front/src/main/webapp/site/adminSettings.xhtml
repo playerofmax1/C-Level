@@ -19,7 +19,7 @@
         <!--<link rel="icon" href="../../favicon.ico">-->
 
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
         <style>
             .ui-datalist {
                 font-size: 12px;
@@ -95,30 +95,36 @@
                                         <p:inputNumber value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='INTEGER'}" emptyValue="0" decimalPlaces="0" thousandSeparator="">
                                             <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                         </p:inputNumber>
-                                        <span class="ui-inputgroup-addon"> # </span>
+                                        <h:outputText id="inputNumber" value=" # " class="ui-inputgroup-addon"/>
                                     </div>
                                 </p:outputPanel>
+                                <p:tooltip value="Number" position="top" for="inputNumber" rendered="#{setting.systemConfig.inputType=='INTEGER'}"/>
 
                                 <p:outputPanel styleClass="no-margin" rendered="#{setting.systemConfig.inputType=='PERCENT'}">
                                     <div class="ui-inputgroup">
                                         <p:inputNumber value="#{setting.value}" emptyValue="0.00" decimalPlaces="2">
                                             <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                         </p:inputNumber>
-                                        <span class="ui-inputgroup-addon"> % </span>
+                                        <h:outputText id="inputPercent" value=" % " class="ui-inputgroup-addon"/>
                                     </div>
                                 </p:outputPanel>
-                                <p:inputSwitch styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='YESNO'}"
+                                <p:tooltip value="Percent" position="top" for="inputPercent" rendered="#{setting.systemConfig.inputType=='PERCENT'}"/>
+
+                                <p:inputSwitch id="yesNoInput" styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='YESNO'}"
                                                onLabel="YES" offLabel="NO">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputSwitch>
-                                <p:inputSwitch styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='ENABLED'}"
+                                <p:tooltip for="yesNoInput" value="YES or NO" position="top" rendered="#{setting.systemConfig.inputType=='YESNO'}"/>
+
+                                <p:inputSwitch id="enabledInput" styleClass="no-margin" value="#{setting.value}" rendered="#{setting.systemConfig.inputType=='ENABLED'}"
                                                onLabel="Enabled" offLabel="Disabled">
                                     <p:ajax event="change" listener="#{adminSettingsCtl.onChanged}" update="mainForm:buttonPanel"/>
                                 </p:inputSwitch>
+                                <p:tooltip for="enabledInput" value="Enabled or Disabled" position="top" rendered="#{setting.systemConfig.inputType=='ENABLED'}"/>
                             </p:outputPanel>
                         </p:dataList>
 
-                        <br/>
+
                         <p:blockUI block="mainForm:buttonPanel" trigger="mainForm:saveButton" styleClass="ui-corner-all">
                             <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
                         </p:blockUI>

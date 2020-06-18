@@ -18,6 +18,8 @@ public enum SystemConfig {
 
     TS_CUTOFF_DATE("app.ts.cutoff.date", InputType.INTEGER),
     TS_CUTOFF_DATE_ENABLE("app.ts.cutoff.date.enable", InputType.ENABLED),
+
+    FORCE_RELOAD_CSS("app.force.reload.css", InputType.YESNO),
     ;
 
     private String code;

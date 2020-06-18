@@ -19,7 +19,7 @@
         <!--<link rel="icon" href="../../favicon.ico">-->
 
         <!-- Custom styles for this template -->
-        <h:outputStylesheet library="css" name="kudu.css" target="head"/>
+        <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
         <style>
             .noProjectLabel,
             .nonPlanLabel {
@@ -32,7 +32,7 @@
             }
 
             .holiday-panel {
-                width:56em;
+                width: 56em;
             }
 
             .holiday-table {
@@ -109,16 +109,20 @@
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
                                             <p:spacer width="5px"/>
-                                            <p:outputLabel value="Year #{rptMandaysCtl.currentYear}"/>
+                                            <p:outputPanel styleClass="no-margin alignMiddle" style="display: inline-block;">
+                                                <p:outputLabel id="pfYear" value="(PF)Year #{rptMandaysCtl.currentYear.year}" ondblclick="onToday();"/>
+                                                <p:remoteCommand name="onToday" actionListener="#{rptMandaysCtl.onToDay}" update="yearForm,mainForm"/>
+                                                <br/>
+                                                <sup class="gray-font">
+                                                    <p:outputLabel value="#{rptMandaysCtl.holidayList.size()} Holidays"/>
+                                                    <p:outputLabel id="holidayList" styleClass="fa fa-chevron-circle-down"/>
+                                                </sup>
+                                            </p:outputPanel>
                                             <p:spacer width="5px"/>
                                             <p:commandButton id="nextYear" icon="fa fa-chevron-right" disabled="#{!rptMandaysCtl.nextEnable}"
                                                              action="#{rptMandaysCtl.onNext}"
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
-                                            <p:tooltip for="previousYear" value="Previous Year" position="left"/>
-                                            <p:tooltip for="nextYear" value="Next Year" position="right"/><br/>
-                                            <p:outputLabel value="#{rptMandaysCtl.holidayList.size()} Holidays"/>
-                                            <p:outputLabel id="holidayList" styleClass="fa fa-chevron-circle-down"/>
                                             <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top" styleClass="holiday-panel ui-corner-all">
                                                 <p:dataTable var="holiday" value="#{rptMandaysCtl.holidayList}" sortBy="#{holiday.holidayDate}"
                                                              styleClass="no-border holiday-table" rowStyleClass="#{(holiday.holidayDate.month % 2 > 0)?'even':'odd'}">
@@ -145,6 +149,9 @@
                                                     </p:column>
                                                 </p:dataTable>
                                             </p:overlayPanel>
+                                            <p:tooltip for="previousYear" value="Previous Year" position="left"/>
+                                            <p:tooltip for="pfYear" value="#{rptMandaysCtl.currentYear.displayString}" position="top"/>
+                                            <p:tooltip for="nextYear" value="Next Year" position="right"/>
                                         </div>
                                         <div class="ui-g-3 alignRight">
                                             <p:outputLabel id="targetUtilization" value="Target Utilization: #{rptMandaysCtl.targetUtilization}%" styleClass="cursor-pointer"/><br/>

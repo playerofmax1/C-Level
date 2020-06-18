@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
@@ -217,6 +218,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(projectTaskDAO.findByProjectIdAndUser(projectId, user).stream());
     }
 
+    @Transactional(rollbackOn = {Exception.class})
     public ProjectTaskDTO createNewProjectTask(long userId, ProjectTaskDTO projectTaskDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createNewProjectTask. (userId: {}, projectTaskDTO: {})", userId, projectTaskDTO);
 
@@ -255,6 +257,7 @@ public class ProjectManager {
         return projectTaskMapper.toDTO(newProjectTask);
     }
 
+    @Transactional(rollbackOn = {Exception.class})
     public ProjectTaskExtDTO createExtendProjectTask(long userId, ProjectTaskDTO projectTaskDTO, ProjectTaskExtDTO projectTaskExtDTO, MandaysRequest mandaysRequest) throws RecordNotFoundException, EmailException {
         log.debug("createExtendProjectTask. (userId: {}, projectTaskDTO: {}, projectTaskExtDTO: {})", userId, projectTaskDTO, projectTaskExtDTO);
         User user = userDAO.findById(userId);
@@ -422,6 +425,7 @@ public class ProjectManager {
         return mandaysRequestMapper.toDTO(mandaysRequestDAO.findByStatus(userId, status, startDate, endDate).stream());
     }
 
+    @Transactional(rollbackOn = {Exception.class})
     public MandaysRequestDTO createMandaysRequest(long userId, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
         log.debug("createMandaysRequest(userId: {}, mandaysRequestDTO: {})", userId, mandaysRequestDTO);
         User user = userDAO.findById(userId);
@@ -442,6 +446,10 @@ public class ProjectManager {
         newMandaysRequest = mandaysRequestDAO.persist(newMandaysRequest);
 
         List<RelRoleFunction> relRoleFunctionList = relRoleFunctionDAO.findByFunction(Function.F0005);
+        if (relRoleFunctionList == null || relRoleFunctionList.size() == 0) {
+            throw new EmailException("Need a role with function 'Approve mandays request', please contact admin.");
+        }
+
         List<Role> roleList = new ArrayList<>();
         Role role;
         for (RelRoleFunction relRoleFunction : relRoleFunctionList) {
@@ -449,10 +457,15 @@ public class ProjectManager {
             roleList.add(role);
             log.debug("found F0005 on role({})", role.getName());
         }
+
         List<User> approverList = userDAO.findByRoleList(roleList);
         for (User approver : approverList) {
             log.debug("found F0005 approver([{}]{}:{})", approver.getRole().getName(), approver.getName(), approver.getEmail());
         }
+        if (approverList.size() == 0) {
+            throw new EmailException("Need a man to approve mandays request, please contact admin.");
+        }
+
         mdRequestEmail.sendMail(mandaysRequestDTO.getType(), newMandaysRequest, approverList);
 
         return mandaysRequestMapper.toDTO(newMandaysRequest);
@@ -542,6 +555,7 @@ public class ProjectManager {
         return mandaysRequestMapper.toDTO(newMandaysRequest);
     }
 
+    @Transactional(rollbackOn = {Exception.class})
     private MandaysRequestDTO rejectMandaysRequest(User user, MandaysRequestDTO mandaysRequestDTO) throws RecordNotFoundException, EmailException {
         log.debug("rejectMandaysRequest().");
         long mandaysRequestDTOId = mandaysRequestDTO.getId();

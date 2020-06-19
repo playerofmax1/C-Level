@@ -19,9 +19,9 @@
         </sequential>
     </macrodef>
 
-    <property name="current.ver" location="front/src/main/resources/version.property"/>
-    <property name="current.ver.building" location="out/production/front/version.property"/>
-    <property name="copy.to.lib" value="out/production/pjt-lib"/>
+    <property name="current.ver" location="lib/src/main/resources/version.property"/>
+    <property name="current.ver.building" location="out/production/pjt-lib/version.property"/>
+    <property name="copy.to.front" value="front/src/main/resources"/>
     <property name="copy.to.api" value="api/src/main/resources"/>
     <property name="kudu.css.path" value="front/src/main/webapp/resources/css"/>
     <property file="${current.ver}"/>
@@ -59,7 +59,7 @@
                        match="build\.number\=.*"
                        replace="build.number=0"
                        byline="true"/>
-        <copy file="${current.ver}" todir="${copy.to.lib}"/>
+        <copy file="${current.ver}" todir="${copy.to.front}"/>
         <copy file="${current.ver}" todir="${copy.to.api}"/>
     </target>
 
@@ -90,7 +90,7 @@
                        match="\#\/\* Current\: .* \*\/"
                        replace="#/* Current: ${project.name} ${version.name} ${version.number}.${revision.number}.${build.number} build ${build.date} */"
                        byline="true"/>
-        <copy file="${current.ver}" todir="${copy.to.lib}"/>
+        <copy file="${current.ver}" todir="${copy.to.front}"/>
         <copy file="${current.ver}" todir="${copy.to.api}"/>
     </target>
 
@@ -121,7 +121,7 @@
                        match="\#\/\* Current\: .* \*\/"
                        replace="#/* Current: ${project.name} ${version.name} ${version.number}.${revision.number}.${build.number} build ${build.date} */"
                        byline="true"/>
-        <copy file="${current.ver}" todir="${copy.to.lib}"/>
+        <copy file="${current.ver}" todir="${copy.to.front}"/>
         <copy file="${current.ver}" todir="${copy.to.api}"/>
     </target>
 

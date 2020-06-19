@@ -262,8 +262,12 @@
     <target name="compile.module.api" depends="compile.module.api.production" description="Compile module API"/>
 
     <target name="compile.module.api.production" description="Compile module API; production classes">
+        <delete dir="${processor.output.dir}"/>
         <mkdir dir="${processor.output.dir}"/>
+
+        <delete dir="${api.output.dir}"/>
         <mkdir dir="${api.output.dir}"/>
+
         <javac destdir="${api.output.dir}"
                debug="${compiler.debug}"
                nowarn="${compiler.generate.no.warnings}"
@@ -464,12 +468,6 @@
         </dirset>
     </path>
 
-    <path id="pjt-lib.module.test.sourcepath">
-        <dirset dir="${module.pjt-lib.basedir}/lib">
-            <include name="src/test/java"/>
-        </dirset>
-    </path>
-
     <target name="compile.module.pjt-lib" depends="compile.module.pjt-lib.production" description="Compile module pjt-lib"/>
 
     <target name="compile.module.pjt-lib.production" description="Compile module pjt-lib; production classes">
@@ -545,6 +543,8 @@
         <copy todir="${artifact.output.api}">
             <fileset dir="${artifact.temp.output.api}"/>
         </copy>
+
+        <delete dir="${artifacts.temp.dir}"/>
     </target>
 
     <target name="artifact.front" depends="init.artifacts, compile.module.front" description="Build &#39;front&#39; artifact">
@@ -615,25 +615,21 @@
 
     <target name="clean.module.api" description="cleanup module">
         <delete dir="${api.output.dir}"/>
-        <delete dir="${api.testoutput.dir}"/>
     </target>
 
     <target name="clean.module.front" description="cleanup module">
         <delete dir="${front.output.dir}"/>
-        <delete dir="${front.testoutput.dir}"/>
     </target>
 
     <target name="clean.module.pjt-lib" description="cleanup module">
         <delete dir="${pjt-lib.output.dir}"/>
-        <delete dir="${pjt-lib.testoutput.dir}"/>
     </target>
 
-    <target name="clean.temp" description="remove temp folder">
-        <!-- Delete temporary files -->
+    <target name="clean.artifacts" depends="init.artifacts">
         <delete dir="${artifacts.temp.dir}"/>
     </target>
 
-    <target name="clean.all" depends="clean.module.api, clean.module.front, clean.module.pjt-lib, clean.temp" description="cleanup all"/>
+    <target name="clean.all" depends="clean.module.api, clean.module.front, clean.module.pjt-lib" description="cleanup all"/>
 
     <!-- Build JAR and WAR -->
 
@@ -643,5 +639,5 @@
 
     <target name="build.pjt-lib" depends="init, compile.module.pjt-lib, artifact.pjt-lib" description="build pjt-lib.jar"/>
 
-    <target name="build.all" depends="clean.all, build.pjt-lib, build.front, build.api, clean.temp" description="build all jar and war"/>
+    <target name="build.all" depends="clean.all, build.pjt-lib, build.front, build.api" description="build all jar and war"/>
 </project>

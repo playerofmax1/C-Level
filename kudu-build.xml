@@ -6,7 +6,7 @@
     <!-- Compiler options -->
 
     <property name="compiler.debug" value="on"/>
-    <property name="compiler.generate.no.warnings" value="on"/>
+    <property name="compiler.generate.no.warnings" value="off"/>
     <property name="compiler.args" value=""/>
     <property name="compiler.max.memory" value="700m"/>
     <patternset id="ignored.files">
@@ -40,11 +40,6 @@
         <exclude name="**/?*.clj"/>
         <exclude name="**/?*.aj"/>
     </patternset>
-
-    <!-- mapstruct processor -->
-
-    <property name="processor.path" value="${basedir}/../kudu-mapstruct-lib/mapstruct-processor-1.2.0.Final.jar"/>
-    <property name="processor.output.dir" value="${basedir}/out/generated"/>
 
     <!-- JDK definitions -->
 
@@ -262,21 +257,26 @@
         </dirset>
     </path>
 
+    <property name="processor.output.dir" value="${module.api.basedir}/api/generated"/>
 
     <target name="compile.module.api" depends="compile.module.api.production" description="Compile module API"/>
 
     <target name="compile.module.api.production" description="Compile module API; production classes">
         <mkdir dir="${processor.output.dir}"/>
         <mkdir dir="${api.output.dir}"/>
-        <javac destdir="${api.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.api}/javac">
-            <compilerarg line="-processorpath ${processor.path}"/>
-            <!--<compilerarg line="-processor ${processor}"/>-->
-            <compilerarg line="-s ${processor.output.dir}"/>
+        <javac destdir="${api.output.dir}"
+               debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}"
+               fork="true"
+               executable="${module.jdk.bin.api}/javac"
+               includeantruntime="false">
             <compilerarg line="${compiler.args.api}"/>
             <bootclasspath refid="api.module.bootclasspath"/>
             <classpath refid="api.module.production.classpath"/>
             <src refid="api.module.sourcepath"/>
             <patternset refid="excluded.from.compilation.api"/>
+            <compilerarg line="-s ${processor.output.dir}"/>
         </javac>
 
         <copy todir="${api.output.dir}">
@@ -373,7 +373,7 @@
         </ant>
 
         <mkdir dir="${front.output.dir}"/>
-        <javac destdir="${front.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.front}/javac">
+        <javac destdir="${front.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.front}/javac" includeantruntime="false">
             <compilerarg line="${compiler.args.front}"/>
             <bootclasspath refid="front.module.bootclasspath"/>
             <classpath refid="front.module.production.classpath"/>
@@ -474,7 +474,7 @@
 
     <target name="compile.module.pjt-lib.production" description="Compile module pjt-lib; production classes">
         <mkdir dir="${pjt-lib.output.dir}"/>
-        <javac destdir="${pjt-lib.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pjt-lib}/javac">
+        <javac destdir="${pjt-lib.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pjt-lib}/javac" includeantruntime="false">
             <compilerarg line="${compiler.args.pjt-lib}"/>
             <bootclasspath refid="pjt-lib.module.bootclasspath"/>
             <classpath refid="pjt-lib.module.production.classpath"/>

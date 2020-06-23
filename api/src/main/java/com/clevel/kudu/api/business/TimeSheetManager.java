@@ -683,6 +683,7 @@ public class TimeSheetManager {
         BigDecimal netWorkdaysDec = new BigDecimal(netWorkdays);
         BigDecimal weight;
         BigDecimal totalWeight = BigDecimal.ZERO;
+        log.debug("newWorkdays = {}", netWorkdaysDec);
 
         BigDecimal weightMultiplier;
 
@@ -723,10 +724,10 @@ public class TimeSheetManager {
              * [RPMDPercent] sometimes called %AMD
              **/
             weight = PMD.divide(netWorkdaysDec, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-            log.debug("PMD / newWorkdays = {}", weight);
+            log.debug("PMD / netWorkdays = {}", weight);
 
             weight = weight.multiply(RPMDPercent).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-            log.debug("PMD / newWorkdays x %AMD = {}", weight);
+            log.debug("(PMD / netWorkdays) x %AMD = {}", weight);
 
             weight = weightMultiplier.multiply(weight);
             userMandays.setWeight(weight);

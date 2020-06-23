@@ -14,11 +14,6 @@
             <h3>View Expired</h3>
             <h4>The session is timed out, please login again to confirm this is your.</h4>
         </p:outputPanel>
-
-        <p:outputPanel rendered="#{pfExceptionHandler.type != 'javax.faces.application.ViewExpiredException'}">
-            <h3>Exception: #{pfExceptionHandler.type}</h3>
-            <h4>#{pfExceptionHandler.message}.</h4>
-        </p:outputPanel>
     </p:sidebar>
 
 </f:view>

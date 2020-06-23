@@ -3,13 +3,19 @@ package com.clevel.kudu.front.controller;
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
+import com.clevel.kudu.dto.rpt.MandaysReportRequest;
+import com.clevel.kudu.dto.rpt.MandaysReportResult;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.Function;
 import com.clevel.kudu.util.DateTimeUtil;
+import com.clevel.kudu.util.ExcelUtil;
 import com.clevel.kudu.util.FacesUtil;
 import com.clevel.kudu.util.LookupUtil;
 import org.primefaces.component.export.ExcelOptions;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -17,6 +23,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -106,6 +116,130 @@ public class ReportMandaysController extends AbstractController {
             FacesUtil.addError("wrong response from server!");
         }
 
+    }
+
+    public StreamedContent onExcelTemplate() {
+        String templatePath = application.getAppPath() + "/WEB-INF/xlsx/";
+        String tmpPath = templatePath + "tmp/";
+        String templateFileName = "report_mandays.xlsx";
+        String outputFileName = templateFileName.substring(0, templateFileName.length() - 5) + "." + DateTimeUtil.getDateStr(new Date(), "yyyyMMdd.HHmmss") + ".xlsx";
+        String aliasFileName = "report_mandays.xlsx";
+        log.debug("onExcelTemplate.");
+
+        /*clean previous output files*/
+        File tmpPathFile = new File(tmpPath);
+        FileSystemUtils.deleteRecursively(tmpPathFile);
+        log.debug("onExcelTemplate.createTempFolder passed");
+
+        /*load data for report*/
+        MandaysReportResult mandaysReportResult = loadMandaysReport();
+        if (mandaysReportResult == null) {
+            log.debug("onExcelTemplate.loadMandaysReport failed");
+            return null;
+        }
+        log.debug("onExcelTemplate.loadMandaysReport passed");
+
+        /*create output file*/
+        String outputFullFileName = tmpPath + outputFileName;
+        createExcelReport(templatePath + templateFileName, outputFullFileName, mandaysReportResult);
+        log.debug("onExcelTemplate.createExcelReport passed");
+
+        /*download output file*/
+        try {
+            String mimeType = "application/vnd.ms-excel";
+            log.debug("download(alias:{}, file:{}, mimeType:{})", aliasFileName, outputFullFileName, mimeType);
+            return new DefaultStreamedContent(new FileInputStream(outputFullFileName), mimeType, aliasFileName);
+
+        } catch (FileNotFoundException ex) {
+            String errorMessage = "Download failed: " + ex.getMessage();
+            log.error(errorMessage);
+            FacesUtil.actionFailed(errorMessage);
+            return null;
+        }
+    }
+
+    private MandaysReportResult loadMandaysReport() {
+        log.debug("loadMandaysReport(year: {})", currentYear.getYear());
+
+        MandaysReportRequest mandaysReportRequest = new MandaysReportRequest();
+        mandaysReportRequest.setYear((int) currentYear.getYear());
+
+        ServiceRequest<MandaysReportRequest> request = new ServiceRequest<>(mandaysReportRequest);
+        request.setUserId(userDetail.getUserId());
+
+        Response response = apiService.getTimeSheetResource().getMandaysReport(request);
+        if (response.getStatus() != 200) {
+            String message = "Call API is failed by connection problem(" + response.getStatus() + ")!";
+            log.debug(message);
+            FacesUtil.addError(message);
+            return null;
+        }
+
+        ServiceResponse<MandaysReportResult> serviceResponse = response.readEntity(new GenericType<ServiceResponse<MandaysReportResult>>() {
+        });
+        log.debug("serviceResponse = {}", serviceResponse);
+        if (serviceResponse.getApiResponse() != APIResponse.SUCCESS) {
+            String message = "loadMandaysReport is failed! " + serviceResponse.getMessage();
+            log.debug(message);
+            FacesUtil.addError(message);
+            return null;
+        }
+
+        return serviceResponse.getResult();
+    }
+
+    private void createExcelReport(String templateFileName, String outputFileName, MandaysReportResult mandaysReportResult) {
+        String errMessage;/*create output file*/
+        try {
+            /*Read Template as InputStream and create the output as OutputStream for JETT, JXLS v.1*/
+            /*InputStream templateFileInputStream = new BufferedInputStream(new FileInputStream(templateFileName));
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFileName);
+            log.debug("templateFile is ready.");*/
+
+            /*Create Variable Map for JETT, JXLS v.1*/
+            /*HashMap<String, Object> beans = new HashMap<>();
+            beans.put("title", "This is TITLE");
+            beans.put("mandaysList", userMandaysDTOList);*/
+
+            /*Using JETT - Generate excel workbook by template and variableMap*/
+            /*ExcelTransformer transformer = new ExcelTransformer();
+            Workbook workbook = transformer.transform(templateFileInputStream, beans);*/
+
+            /*[Tested-OK-don't-support-for-to-the-right]Using JXLS v.1 - Generate excel workbook by template and variableMap*/
+            /*XLSTransformer xlsTransformer = new XLSTransformer();
+            Workbook workbook = xlsTransformer.transformXLS(templateFileInputStream, beans);
+            log.debug("workbook is ready.");*/
+
+            /*Using JXLS v.2 - Generate excel file by template*/
+            ExcelUtil.createExcel(outputFileName, templateFileName, mandaysReportResult.getReportItemList(), mandaysReportResult.getProjectList());
+
+            /*Create output file*/
+            /*workbook.write(fileOutputStream);
+            fileOutputStream.close();*/
+            log.debug("response is ready.");
+
+            //FacesUtil.actionSuccess("Success");
+
+        } catch (IOException e) {
+            errMessage = e.getMessage();
+            log.error("IOException reading excel-template: {}", errMessage);
+            FacesUtil.actionFailed("Failed, " + errMessage);
+
+        /*} catch (InvalidFormatException e) {
+            errMessage = e.getMessage();
+            log.error("InvalidFormatException reading excel-template: {}", errMessage);
+            FacesUtil.actionFailed("Failed, " + errMessage);*/
+
+        } catch (RuntimeException e) {
+            errMessage = e.getMessage();
+            log.error("Please check mapping list for excel-template: {}", errMessage);
+            FacesUtil.actionFailed("Failed, " + errMessage);
+
+        } catch (Exception e) {
+            errMessage = e.getMessage();
+            log.error("Reading excel-template failed: {}", errMessage);
+            FacesUtil.actionFailed("Failed, " + errMessage);
+        }
     }
 
     public void onPrevious() {

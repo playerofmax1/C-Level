@@ -537,6 +537,7 @@ hr.ui-separator {
 
 .alignCenter {
     text-align: center;
+    align-items: center;
 }
 
 .alignTop {

@@ -10,6 +10,8 @@ import com.clevel.kudu.api.system.SystemManager;
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
+import com.clevel.kudu.dto.rpt.MandaysReportRequest;
+import com.clevel.kudu.dto.rpt.MandaysReportResult;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.SystemConfig;
@@ -169,6 +171,37 @@ public class TimeSheetResource implements TimeSheetService {
         } catch (RecordNotFoundException e1) {
             log.debug("", e1);
             response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+
+    @Override
+    public Response getMandaysReport(ServiceRequest<MandaysReportRequest> request) {
+        log.debug("getMandaysReport. (request: {})", request);
+
+        systemManager.audit(httpServletRequest.getRequestURL().toString(), httpServletRequest.getRemoteAddr() + ":" + httpServletRequest.getRemotePort(),
+                httpServletRequest.getHeader("User-Agent"), httpServletRequest.getHeader("Referer"), (cookie == null) ? "null" : cookie.toString(),
+                request.toString());
+
+        MandaysReportResult mandaysResult;
+        ServiceResponse<MandaysReportResult> response = new ServiceResponse<>();
+
+        try {
+            MandaysReportRequest mandaysReportRequest = request.getRequest();
+            int year = mandaysReportRequest.getYear();
+            if (year == 0) {
+                year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
+                log.debug("{} = {}", SystemConfig.PF_YEAR.name(), year);
+            }
+            mandaysResult = timeSheetManager.getUserMandaysReport(request.getUserId(), year);
+
+            response.setResult(mandaysResult);
+            response.setApiResponse(APIResponse.SUCCESS);
+
         } catch (Exception e) {
             log.error("", e);
             response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());

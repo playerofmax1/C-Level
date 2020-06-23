@@ -56,6 +56,15 @@
                 background-color: #EFEFEF;
             }
         </style>
+        <script type="text/javascript">
+            function startDownload() {
+                PF('mdHeader').show();
+            }
+
+            function stopDownload() {
+                PF('mdHeader').hide();
+            }
+        </script>
     </h:head>
     <h:body>
         <ui:include src="../resources/topMenu.xhtml"/>
@@ -72,7 +81,7 @@
 
                     <h:form id="yearForm">
 
-                        <p:panelGrid columns="2" rendered="#{accessCtl.functionEnable('F0002')}" styleClass="no-border">
+                        <p:panelGrid columns="3" rendered="#{accessCtl.functionEnable('F0002')}" styleClass="no-border">
                             <h:outputText value="User: "/>
                             <p:selectOneMenu value="#{rptMandaysCtl.selectedUserId}" style="width:300px">
                                 <f:selectItems value="#{rptMandaysCtl.userList}" var="user"
@@ -80,7 +89,16 @@
                                                itemValue="#{user.id}"/>
                                 <p:ajax event="change" listener="#{rptMandaysCtl.onChangeUser()}" update="yearForm"/>
                             </p:selectOneMenu>
+
+                            <p:commandButton id="xlsxTemplate"
+                                             icon="fa fa-check"
+                                             value="Excel (xlsx)"
+                                             ajax="false"
+                                             onclick="PrimeFaces.monitorDownload(startDownload, stopDownload);">
+                                <p:fileDownload value="#{rptMandaysCtl.onExcelTemplate()}"/>
+                            </p:commandButton>
                         </p:panelGrid>
+                        <p:tooltip position="right" value="Summary for all employees as Excel(xlsx) file" for="xlsxTemplate"/>
 
                         <p:separator rendered="#{accessCtl.functionEnable('F0002')}"/>
 
@@ -94,14 +112,14 @@
                                         <div class="ui-g-3 alignLeft">
                                             <p:commandButton id="xlsx"
                                                              icon="fa fa-file-excel-o"
-                                                             value="Excel(xlsx)"
+                                                             value="Excel (xlsx)"
                                                              ajax="false">
                                                 <p:dataExporter target="md"
                                                                 fileName="#{rptMandaysCtl.dataExportFileName()}"
                                                                 type="xlsx"
                                                                 options="#{rptMandaysCtl.exportExcelOptions}"/>
                                             </p:commandButton>
-                                            <p:tooltip position="right" value="Download as Excel(xlsx)" for="xlsx"/>
+                                            <p:tooltip position="right" value="Download as Excel (xlsx)" for="xlsx"/>
                                         </div>
                                         <div class="ui-g-6 alignCenter alignBottom">
                                             <p:commandButton id="previousYear" icon="fa fa-chevron-left" disabled="#{!rptMandaysCtl.previousEnable}"
@@ -224,7 +242,7 @@
                                     </div>
                                 </p:outputPanel>
 
-                                <p:blockUI block="mdHeader" trigger="md:previousYear,md:nextYear" styleClass="ui-corner-all">
+                                <p:blockUI block="mdHeader" widgetVar="mdHeader" trigger="md:previousYear,md:nextYear" styleClass="ui-corner-all">
                                     <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
                                 </p:blockUI>
 

@@ -39,6 +39,8 @@ public class Application {
     private boolean cssForceReload;
     private String cssFileName;
 
+    private String appPath;
+
     @Inject
     public Application() {
     }
@@ -118,5 +120,13 @@ public class Application {
 
     public String getCssFileName() {
         return cssFileName;
+    }
+
+    public String getAppPath() {
+        return appPath;
+    }
+
+    public void setAppPath(String appPath) {
+        this.appPath = appPath;
     }
 }

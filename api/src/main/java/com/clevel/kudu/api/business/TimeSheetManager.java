@@ -8,6 +8,8 @@ import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.api.rest.mapper.*;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.MDUtil;
+import com.clevel.kudu.dto.rpt.MandaysReportItem;
+import com.clevel.kudu.dto.rpt.MandaysReportResult;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.RecordStatus;
@@ -450,6 +452,115 @@ public class TimeSheetManager {
         List<UserMandays> userMandaysList = userMandaysDAO.findByYear(userId, year);
 
         return userMandaysMapper.toDTO(userMandaysList.stream());
+    }
+
+    public MandaysReportResult getUserMandaysReport(long viewerUserId, int year) {
+        log.debug("getUserMandays(year:{})", year);
+        MandaysReportResult mandaysReportResult = new MandaysReportResult();
+
+        /*TODO: need to add filter 'ViewableUserList' of viewerUserId*/
+        List<UserMandays> userMandaysList = userMandaysDAO.findByYear(year);
+
+        List<MandaysReportItem> itemList = new ArrayList<>();
+        MandaysReportItem item;
+        User user;
+
+        List<String/*ProjectCode*/> projectCodeList = new ArrayList<>();
+        HashMap<Long/*UserId*/, HashMap<String/*ProjectCode*/, UserMandays/*for this user*/>> userMandaysMap = getMappedUserMandays(userMandaysList, projectCodeList);
+        HashMap<String/*ProjectCode*/, UserMandays/*for this user*/> userMandays;
+        int projectCodeCount = projectCodeList.size();
+        UserMandays userMandaysItem;
+        UserMandays userMandaysLastItem = null;
+        BigDecimal[] amdArray;
+        int index;
+
+        /*need to sort project code before mapping to array*/
+        projectCodeList.sort((o1, o2) -> {
+            String o1Code = o1.startsWith("MA") ? "Z" + o1 : (o1.startsWith("A00") ? "ZZ" + o1 : o1);
+            String o2Code = o2.startsWith("MA") ? "Z" + o2 : (o2.startsWith("A00") ? "ZZ" + o2 : o2);
+            return o1Code.compareTo(o2Code);
+        });
+
+        for (Long userId : userMandaysMap.keySet()) {
+            userMandays = userMandaysMap.get(userId);
+            item = new MandaysReportItem();
+
+            amdArray = new BigDecimal[projectCodeCount];
+            index = 0;
+            for (String projectCode : projectCodeList) {
+                userMandaysItem = userMandays.get(projectCode);
+                if (userMandaysItem == null) {
+                    amdArray[index] = BigDecimal.ZERO;
+                } else {
+                    amdArray[index] = userMandaysItem.getAMD();
+                    userMandaysLastItem = userMandaysItem;
+                }
+                index++;
+            }
+            item.setAmdList(Arrays.asList(amdArray));
+
+            if (userMandaysLastItem != null) {
+                user = userMandaysLastItem.getUser();
+                item.setName(user.getName() + " " + user.getLastName());
+            } else {
+                log.warn("userMandaysLastItem is null in the expected not null!");
+            }
+
+            /*item.setTargetPercentCU(user.get);*/
+            itemList.add(item);
+        }
+
+        /*sort itemList by User Name*/
+        itemList.sort((o1, o2) -> {
+            return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+        });
+
+        mandaysReportResult.setProjectList(projectCodeList);
+        mandaysReportResult.setReportItemList(itemList);
+        return mandaysReportResult;
+    }
+
+    /**
+     * @param userMandaysList sort by UserId is required
+     * @param projectCodeList output for ordered list of project code.
+     */
+    private HashMap<Long, HashMap<String, UserMandays>> getMappedUserMandays(List<UserMandays> userMandaysList, List<String> projectCodeList) {
+        HashMap<Long/*UserId*/, HashMap<String/*ProjectCode*/, UserMandays/*for this user*/>> mappedUserMandays = new HashMap<>();
+        HashMap<String/*ProjectCode*/, UserMandays/*for this user*/> projectOfUser = null;
+        Project project;
+        String projectCode;
+        long latestUserId = -1;
+        long userId = 0;
+
+        for (UserMandays userMandays : userMandaysList) {
+            userId = userMandays.getUser().getId();
+            if (userId != latestUserId) {
+                latestUserId = userId;
+                if (projectOfUser != null) {
+                    mappedUserMandays.put(userId, projectOfUser);
+                }
+                projectOfUser = new HashMap<>();
+            }
+
+            project = userMandays.getProject();
+            if (project == null) {
+                projectCode = "A00X";
+            } else {
+                projectCode = project.getCode();
+            }
+
+            if (!projectCodeList.contains(projectCode)) {
+                projectCodeList.add(projectCode);
+            }
+
+            projectOfUser.put(projectCode, userMandays);
+        }
+
+        if (projectOfUser != null) {
+            mappedUserMandays.put(userId, projectOfUser);
+        }
+
+        return mappedUserMandays;
     }
 
     /**

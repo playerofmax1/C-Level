@@ -93,6 +93,11 @@
     </error-page>
 
     <error-page>
+        <exception-type>java.lang.NoSuchMethodError</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
         <exception-type>java.lang.IllegalArgumentException</exception-type>
         <location>/site/exception.xhtml</location>
     </error-page>

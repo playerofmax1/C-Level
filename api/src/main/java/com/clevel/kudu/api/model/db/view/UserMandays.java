@@ -2,6 +2,7 @@ package com.clevel.kudu.api.model.db.view;
 
 
 import com.clevel.kudu.api.model.db.working.Project;
+import com.clevel.kudu.api.model.db.working.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,8 +14,9 @@ import java.util.Date;
 public class UserMandays implements Serializable {
 
   @Id
-  @Column(name = "userId")
-  private long userId;
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "userId")
+  private User user;
 
   @Id
   @OneToOne(fetch = FetchType.LAZY)
@@ -64,12 +66,12 @@ public class UserMandays implements Serializable {
   @Column(name = "RPMDPercent")
   private BigDecimal RPMDPercent;
 
-  public long getUserId() {
-    return userId;
+  public User getUser() {
+    return user;
   }
 
-  public void setUserId(long userId) {
-    this.userId = userId;
+  public void setUser(User user) {
+    this.user = user;
   }
 
   public Project getProject() {

@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -164,6 +165,7 @@ public class SecurityManager {
         return userMapper.toDTO(user);
     }
 
+    @Transactional(rollbackOn = {Exception.class})
     public UserDTO resetPwd(long userId) throws RecordNotFoundException, IOException, EmailException {
         log.debug("changePwd. (userId: {})", userId);
 

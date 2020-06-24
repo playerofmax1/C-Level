@@ -260,6 +260,11 @@ body {
     margin-top: 68px !important;
 }
 
+.ui-contextmenu li > a > span,
+.ui-contextmenu li span:nth-child(2) {
+    margin-left: 0.5em;
+}
+
 .panel-heading {
     text-align: right;
     height: 30px;
@@ -514,6 +519,10 @@ hr.ui-separator {
     width: 12em;
 }
 
+.overlayLabel.formula {
+    width: 4em;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
@@ -537,6 +546,7 @@ hr.ui-separator {
 
 .alignCenter {
     text-align: center;
+    align-items: center;
 }
 
 .alignTop {

@@ -102,34 +102,6 @@ public class TimeSheetController extends AbstractController {
         loadTimeSheet();
     }
 
-    private void loadUserList() {
-        log.debug("loadUserList.");
-
-        ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(userDetail.getUserId()));
-        request.setUserId(userDetail.getUserId());
-        Response response = apiService.getSecurityResource().getUserViewTS(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<List<UserTimeSheetDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserTimeSheetDTO>>>() {
-            });
-            List<UserTimeSheetDTO> userTSList = serviceResponse.getResult();
-            userList = new ArrayList<>();
-            UserDTO currentUser = new UserDTO();
-            currentUser.setId(userDetail.getUserId());
-            currentUser.setName(userDetail.getName());
-            currentUser.setLastName(userDetail.getLastName());
-            currentUser.setTsStartDate(userDetail.getTsStartDate());
-            userList.add(currentUser);
-            timeSheetUserId = userDetail.getUserId();
-            for (UserTimeSheetDTO u : userTSList) {
-                userList.add(u.getTimeSheetUser());
-            }
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-
-    }
-
     public void onPrevious() {
         log.debug("onPrevious.");
         currentMonth = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
@@ -187,6 +159,213 @@ public class TimeSheetController extends AbstractController {
         FacesUtil.addInfo(message);
     }
 
+    public void onChangeProjectInDetail() {
+        log.debug("onChangeProjectInDetail. (selectedProjectId: {})", selectedProjectId);
+        selectedProjectTaskId = 0;
+        selectedTaskId = 0;
+
+        detail.setProject(getObjById(projectList, selectedProjectId));
+        detail.setProjectTask(null);
+        detail.setTask(null);
+
+        loadProjectTask();
+    }
+
+    public void onChangeProjectTaskInDetail() {
+        log.debug("onChangeProjectTaskInDetail. (selectedProjectTaskId: {})", selectedProjectTaskId);
+        detail.setProjectTask(getObjById(projectTaskList, selectedProjectTaskId));
+    }
+
+    public void onChangeTaskInDetail() {
+        log.debug("onChangeTaskInDetail. (selectTaskId: {})", selectedTaskId);
+        detail.setTask(getObjById(taskList, selectedTaskId));
+    }
+
+    public void onChangeDuration() {
+        log.trace("onChangeDuration.");
+        chargeDurationButton = DateTimeUtil.durationToString(detail.getChargeDuration());
+        log.debug("chargeDurationButton = {}", chargeDurationButton);
+    }
+
+    public void onChargeButtonClicked() {
+        log.trace("onChargeButtonClicked.");
+        detail.setChargeDuration(DateTimeUtil.stringToDuration(chargeDurationButton));
+        log.debug("detail.chargeDuration = {}", detail.getChargeDuration());
+    }
+
+    private boolean isLeaveTask(TimeSheetDTO detail) {
+        if (detail.getTask() == null) {
+            return false;
+        } else {
+            return detail.getTask().getType() == TaskType.LEAVE;
+        }
+    }
+
+    public void onSaveDetail() {
+        log.debug("onSaveDetail. (detail: {})", detail);
+
+        // validate task
+        if (detail.getProjectTask() == null && detail.getTask() == null) {
+            log.debug("not select project task.");
+            FacesUtil.addError("Please select task!");
+            return;
+        }
+
+        // if task are A002, A003 (leave)
+        if (isLeaveTask(detail)) {
+            log.debug("on leave task.");
+        } else {
+            // validate time-in, time-out
+            if (detail.getTimeOut().before(detail.getTimeIn()) && detail.getSortOrder() == 1) {
+                log.debug("time-out is before time-in. (time-in: {}, time-out: {})", detail.getTimeIn(), detail.getTimeOut());
+                FacesUtil.addError("Time-out is before Time-in!");
+                return;
+            }
+
+            if (detail.getTimeOut().equals(detail.getTimeIn()) && detail.getSortOrder() == 1) {
+                log.debug("time-out is equal to time-in. (time-in: {}, time-out: {})", detail.getTimeIn(), detail.getTimeOut());
+                FacesUtil.addError("Time-out is equal to Time-in!");
+                return;
+            }
+
+            // validate charge hour
+            if (detail.getChargeDuration().compareTo(Duration.ZERO) <= 0) {
+                log.debug("not fill in charge duration.");
+                FacesUtil.addError("Charge hours must greater than 0!");
+                return;
+            }
+        }
+
+        // validate description if no project
+        if (detail.getProject() == null && detail.getDescription().isEmpty()) {
+            log.debug("need to provide description if no project.");
+            FacesUtil.addError("Please fill in description.");
+            return;
+        }
+
+        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(detail);
+        request.setUserId(timeSheetUserId);
+        Response response = apiService.getTimeSheetResource().saveRecord(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
+            });
+
+            if (serviceResponse.getApiResponse() == APIResponse.SUCCESS) {
+                TimeSheetDTO result = serviceResponse.getResult();
+
+                updateViewRecord(result);
+                loadUtilization();
+                PrimeFaces.current().executeScript("PF('timeSheetDlg').hide();");
+            } else {
+                FacesUtil.addError(serviceResponse.getMessage());
+            }
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+
+    public void onReset() {
+        log.debug("onReset. (detail: {})", detail);
+
+        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(detail);
+        request.setUserId(timeSheetUserId);
+        Response response = apiService.getTimeSheetResource().resetRecord(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
+            });
+
+            if (serviceResponse.getApiResponse() == APIResponse.SUCCESS) {
+                TimeSheetDTO result = serviceResponse.getResult();
+
+                updateViewRecord(result);
+                loadUtilization();
+                PrimeFaces.current().executeScript("PF('timeSheetDlg').hide();");
+            } else {
+                FacesUtil.addError(serviceResponse.getMessage());
+            }
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+
+    public void onAddRecord(TimeSheetDTO timeSheet) {
+        log.debug("onAddRecord. (timeSheet: {})", timeSheet);
+
+        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(timeSheet);
+        request.setUserId(timeSheetUserId);
+        Response response = apiService.getTimeSheetResource().newRecord(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
+            });
+
+            TimeSheetDTO newTimeSheet = serviceResponse.getResult();
+            log.debug("newTimeSheet: {}", newTimeSheet);
+            timeSheetList.add(newTimeSheet);
+            sortList(timeSheetList);
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+
+    public void onDeleteRecord(TimeSheetDTO timeSheet) {
+        log.debug("onDeleteRecord. (timeSheet: {})", timeSheet);
+
+        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(timeSheet);
+        request.setUserId(userDetail.getUserId());
+        Response response = apiService.getTimeSheetResource().deleteRecord(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
+            });
+
+            timeSheetList.removeIf(t -> t.getId() == timeSheet.getId());
+            loadUtilization();
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+
+    private void sortList(List<TimeSheetDTO> list) {
+        log.debug("sortList.");
+//        list.sort((TimeSheetDTO o1, TimeSheetDTO o2) -> {
+//            return Integer.compare(0, o2.getWorkDate().compareTo(o1.getWorkDate()));
+//        });
+
+        list.sort(Comparator.comparing(TimeSheetDTO::getWorkDate).thenComparing(TimeSheetDTO::getSortOrder));
+    }
+
+    public void onPreEdit(TimeSheetDTO timeSheet) {
+        log.debug("onPreEdit. (timeSheet: {})", timeSheet);
+        detail = timeSheet;
+
+        if (projectList == null) {
+            loadProject();
+        }
+
+        selectedProjectId = (detail.getProject() == null) ? 0 : detail.getProject().getId();
+        selectedProjectTaskId = (detail.getProjectTask() == null) ? 0 : detail.getProjectTask().getId();
+        selectedTaskId = (detail.getTask() == null) ? 0 : detail.getTask().getId();
+
+        loadProjectTask();
+
+        loadTimeSheetInfo(timeSheet);
+    }
+
+    public void onExtendMandays(ProjectTaskDTO selectedProjectTask) {
+        log.debug("onExtendMandays(selectedProjectTask: {})", selectedProjectTask);
+        /*TODO: may be need the confirm dialog for lost data on the Timesheet Detail dialog*/
+
+        /*TODO: create attributes for Open then redirect*/
+        MandaysRequestOpenAttributes openAttributes = new MandaysRequestOpenAttributes();
+        openAttributes.setProjectTask(selectedProjectTask);
+        httpSession.setAttribute(SessionAttribute.MANDAYS_REQUEST_OPEN.name(), openAttributes);
+
+        FacesUtil.redirect("/site/mandaysRequest.jsf");
+    }
+
     private void checkNavigationButtonEnable() {
         nextEnable = hasNextMonth;
 
@@ -194,22 +373,32 @@ public class TimeSheetController extends AbstractController {
         previousEnable = hasPreviousMonth && !previousMonth.before(tsStartDate);
     }
 
-    private Date loadTsStartDate() {
-        log.debug("loadTsStartDate.");
+    private void loadUserList() {
+        log.debug("loadUserList.");
+
         ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO(userDetail.getUserId()));
         request.setUserId(userDetail.getUserId());
-        Response response = apiService.getSecurityResource().getUserInfo(request);
+        Response response = apiService.getSecurityResource().getUserViewTS(request);
         if (response.getStatus() == 200) {
-            ServiceResponse<UserDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<UserDTO>>() {
+            ServiceResponse<List<UserTimeSheetDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserTimeSheetDTO>>>() {
             });
-            UserDTO user = serviceResponse.getResult();
-            log.debug("user: {}", user);
-            return user.getTsStartDate();
+            List<UserTimeSheetDTO> userTSList = serviceResponse.getResult();
+            userList = new ArrayList<>();
+            UserDTO currentUser = new UserDTO();
+            currentUser.setId(userDetail.getUserId());
+            currentUser.setName(userDetail.getName());
+            currentUser.setLastName(userDetail.getLastName());
+            currentUser.setTsStartDate(userDetail.getTsStartDate());
+            userList.add(currentUser);
+            timeSheetUserId = userDetail.getUserId();
+            for (UserTimeSheetDTO u : userTSList) {
+                userList.add(u.getTimeSheetUser());
+            }
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
         }
 
-        log.debug("wrong response status! (status: {})", response.getStatus());
-        FacesUtil.addError("wrong response from server!");
-        return null;
     }
 
     private void checkViewOnly(TimeSheetResult result) {
@@ -456,247 +645,6 @@ public class TimeSheetController extends AbstractController {
         });
 
         return summaryList;
-    }
-
-    public void onChangeProjectInDetail() {
-        log.debug("onChangeProjectInDetail. (selectedProjectId: {})", selectedProjectId);
-        detail.setProject(getObjById(projectList, selectedProjectId));
-        detail.setTask(null);
-        selectedProjectTaskId = 0;
-        detail.setChargeDuration(Duration.ZERO);
-        detail.setDescription("");
-        //reset task
-        detail.setProjectTask(null);
-        detail.setTask(null);
-
-        loadProjectTask();
-    }
-
-    public void onChangeProjectTaskInDetail() {
-        log.debug("onChangeProjectTaskInDetail. (selectedProjectTaskId: {})", selectedProjectTaskId);
-        detail.setProjectTask(getObjById(projectTaskList, selectedProjectTaskId));
-    }
-
-    public void onChangeTaskInDetail() {
-        log.debug("onChangeTaskInDetail. (selectTaskId: {})", selectedTaskId);
-        detail.setTask(getObjById(taskList, selectedTaskId));
-    }
-
-    public void onChangeDuration() {
-        log.trace("onChangeDuration.");
-        chargeDurationButton = DateTimeUtil.durationToString(detail.getChargeDuration());
-        log.debug("chargeDurationButton = {}", chargeDurationButton);
-    }
-
-    public void onChargeButtonClicked() {
-        log.trace("onChargeButtonClicked.");
-        detail.setChargeDuration(DateTimeUtil.stringToDuration(chargeDurationButton));
-        log.debug("detail.chargeDuration = {}", detail.getChargeDuration());
-    }
-
-    private boolean isLeaveTask(TimeSheetDTO detail) {
-        if (detail.getTask() == null) {
-            return false;
-        } else {
-            return detail.getTask().getType() == TaskType.LEAVE;
-        }
-    }
-
-    public void onSaveDetail() {
-        log.debug("onSaveDetail. (detail: {})", detail);
-
-        // validate task
-        if (detail.getProjectTask() == null && detail.getTask() == null) {
-            log.debug("not select project task.");
-            FacesUtil.addError("Please select task!");
-            return;
-        }
-
-        // if task are A002, A003 (leave)
-        if (isLeaveTask(detail)) {
-            log.debug("on leave task.");
-        } else {
-            // validate time-in, time-out
-            if (detail.getTimeOut().before(detail.getTimeIn()) && detail.getSortOrder() == 1) {
-                log.debug("time-out is before time-in. (time-in: {}, time-out: {})", detail.getTimeIn(), detail.getTimeOut());
-                FacesUtil.addError("Time-out is before Time-in!");
-                return;
-            }
-
-            if (detail.getTimeOut().equals(detail.getTimeIn()) && detail.getSortOrder() == 1) {
-                log.debug("time-out is equal to time-in. (time-in: {}, time-out: {})", detail.getTimeIn(), detail.getTimeOut());
-                FacesUtil.addError("Time-out is equal to Time-in!");
-                return;
-            }
-
-            // validate charge hour
-            if (detail.getChargeDuration().compareTo(Duration.ZERO) <= 0) {
-                log.debug("not fill in charge duration.");
-                FacesUtil.addError("Charge hours must greater than 0!");
-                return;
-            }
-        }
-
-        // validate description if no project
-        if (detail.getProject() == null && detail.getDescription().isEmpty()) {
-            log.debug("need to provide description if no project.");
-            FacesUtil.addError("Please fill in description.");
-            return;
-        }
-
-        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(detail);
-        request.setUserId(timeSheetUserId);
-        Response response = apiService.getTimeSheetResource().saveRecord(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
-            });
-
-            if (serviceResponse.getApiResponse() == APIResponse.SUCCESS) {
-                TimeSheetDTO result = serviceResponse.getResult();
-
-                updateViewRecord(result);
-                loadUtilization();
-                PrimeFaces.current().executeScript("PF('timeSheetDlg').hide();");
-            } else {
-                FacesUtil.addError(serviceResponse.getMessage());
-            }
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-    }
-
-    public void onReset() {
-        log.debug("onReset. (detail: {})", detail);
-
-        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(detail);
-        request.setUserId(timeSheetUserId);
-        Response response = apiService.getTimeSheetResource().resetRecord(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
-            });
-
-            if (serviceResponse.getApiResponse() == APIResponse.SUCCESS) {
-                TimeSheetDTO result = serviceResponse.getResult();
-
-                updateViewRecord(result);
-                loadUtilization();
-                PrimeFaces.current().executeScript("PF('timeSheetDlg').hide();");
-            } else {
-                FacesUtil.addError(serviceResponse.getMessage());
-            }
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-    }
-
-    public void onAddRecord(TimeSheetDTO timeSheet) {
-        log.debug("onAddRecord. (timeSheet: {})", timeSheet);
-
-        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(timeSheet);
-        request.setUserId(timeSheetUserId);
-        Response response = apiService.getTimeSheetResource().newRecord(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
-            });
-
-            TimeSheetDTO newTimeSheet = serviceResponse.getResult();
-            log.debug("newTimeSheet: {}", newTimeSheet);
-            timeSheetList.add(newTimeSheet);
-            sortList(timeSheetList);
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-    }
-
-    public void onDeleteRecord(TimeSheetDTO timeSheet) {
-        log.debug("onDeleteRecord. (timeSheet: {})", timeSheet);
-
-        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(timeSheet);
-        request.setUserId(userDetail.getUserId());
-        Response response = apiService.getTimeSheetResource().deleteRecord(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
-            });
-
-            timeSheetList.removeIf(t -> t.getId() == timeSheet.getId());
-            loadUtilization();
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-    }
-
-    private void sortList(List<TimeSheetDTO> list) {
-        log.debug("sortList.");
-//        list.sort((TimeSheetDTO o1, TimeSheetDTO o2) -> {
-//            return Integer.compare(0, o2.getWorkDate().compareTo(o1.getWorkDate()));
-//        });
-
-        list.sort(Comparator.comparing(TimeSheetDTO::getWorkDate).thenComparing(TimeSheetDTO::getSortOrder));
-    }
-
-    public void onPreEdit(TimeSheetDTO timeSheet) {
-        log.debug("onPreEdit. (timeSheet: {})", timeSheet);
-        detail = timeSheet;
-        selectedProjectId = 0;
-        selectedProjectTaskId = 0;
-
-        // change time sheet user
-        loadProject();
-        if (detail.getProject() != null) {
-            selectedProjectId = detail.getProject().getId();
-        }
-
-        loadProjectTask();
-        if (detail.getProjectTask() != null) {
-            selectedProjectTaskId = detail.getProjectTask().getId();
-        }
-
-        if (detail.getTask() != null) {
-            selectedTaskId = detail.getTask().getId();
-        } else {
-            selectedTaskId = 0;
-        }
-
-        loadTimeSheetInfo(timeSheet);
-    }
-
-    public void onSave(TimeSheetDTO timeSheet) {
-        log.debug("onSave. (timeSheet: {})", timeSheet);
-
-        ServiceRequest<TimeSheetDTO> request = new ServiceRequest<>(timeSheet);
-        request.setUserId(timeSheetUserId);
-        Response response = apiService.getTimeSheetResource().saveRecord(request);
-        if (response.getStatus() == 200) {
-            ServiceResponse<TimeSheetDTO> serviceResponse = response.readEntity(new GenericType<ServiceResponse<TimeSheetDTO>>() {
-            });
-
-            if (serviceResponse.getApiResponse() == APIResponse.SUCCESS) {
-                TimeSheetDTO result = serviceResponse.getResult();
-                FacesUtil.addInfo("Saved. (" + DateTimeUtil.getDateStr(result.getWorkDate()) + ")");
-
-                updateViewRecord(result);
-                loadUtilization();
-            }
-        } else {
-            log.debug("wrong response status! (status: {})", response.getStatus());
-            FacesUtil.addError("wrong response from server!");
-        }
-    }
-
-    public void onExtendMandays(ProjectTaskDTO selectedProjectTask) {
-        log.debug("onExtendMandays(selectedProjectTask: {})", selectedProjectTask);
-        /*TODO: may be need the confirm dialog for lost data on the Timesheet Detail dialog*/
-
-        /*TODO: create attributes for Open then redirect*/
-        MandaysRequestOpenAttributes openAttributes = new MandaysRequestOpenAttributes();
-        openAttributes.setProjectTask(selectedProjectTask);
-        httpSession.setAttribute(SessionAttribute.MANDAYS_REQUEST_OPEN.name(), openAttributes);
-
-        FacesUtil.redirect("/site/mandaysRequest.jsf");
     }
 
     private void updateViewRecord(TimeSheetDTO timeSheet) {

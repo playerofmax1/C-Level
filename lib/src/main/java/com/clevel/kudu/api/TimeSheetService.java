@@ -2,6 +2,7 @@ package com.clevel.kudu.api;
 
 import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.SimpleDTO;
+import com.clevel.kudu.dto.rpt.MandaysReportRequest;
 import com.clevel.kudu.dto.working.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,6 +39,13 @@ public interface TimeSheetService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response getMandays(@Parameter(description = "request: MandaysRequest, result: MandaysResult", required = true)
                                   ServiceRequest<MandaysRequest> request);
+
+    @POST
+    @Path("/mandaysreport")
+    @Operation(summary = "get mandays report for a specified year", description = "get mandays report for a specified year")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response getMandaysReport(@Parameter(description = "request: MandaysReportRequest, result: MandaysReportResult", required = true)
+                                  ServiceRequest<MandaysReportRequest> request);
 
     @POST
     @Path("/new")

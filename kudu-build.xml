@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="kudu" default="build.all">
+
+    <property file="kudu-build.properties"/>
+
+    <!-- Compiler options -->
+
+    <property name="compiler.debug" value="on"/>
+    <property name="compiler.generate.no.warnings" value="off"/>
+    <property name="compiler.args" value=""/>
+    <property name="compiler.max.memory" value="700m"/>
+    <patternset id="ignored.files">
+        <exclude name="**/*.hprof/**"/>
+        <exclude name="**/*.pyc/**"/>
+        <exclude name="**/*.pyo/**"/>
+        <exclude name="**/*.rbc/**"/>
+        <exclude name="**/*.yarb/**"/>
+        <exclude name="**/*~/**"/>
+        <exclude name="**/.DS_Store/**"/>
+        <exclude name="**/.git/**"/>
+        <exclude name="**/.hg/**"/>
+        <exclude name="**/.svn/**"/>
+        <exclude name="**/CVS/**"/>
+        <exclude name="**/__pycache__/**"/>
+        <exclude name="**/_svn/**"/>
+        <exclude name="**/vssver.scc/**"/>
+        <exclude name="**/vssver2.scc/**"/>
+    </patternset>
+    <patternset id="library.patterns">
+        <include name="*.jar"/>
+    </patternset>
+    <patternset id="compiler.resources">
+        <exclude name="**/?*.java"/>
+        <exclude name="**/?*.form"/>
+        <exclude name="**/?*.class"/>
+        <exclude name="**/?*.groovy"/>
+        <exclude name="**/?*.scala"/>
+        <exclude name="**/?*.flex"/>
+        <exclude name="**/?*.kt"/>
+        <exclude name="**/?*.clj"/>
+        <exclude name="**/?*.aj"/>
+    </patternset>
+
+    <!-- JDK definitions -->
+
+    <property name="jdk.bin.13" value="${jdk.home.13}/bin"/>
+    <path id="jdk.classpath.13">
+        <fileset dir="${jdk.home.13}">
+            <include name="../jdk13.0.2!/java.base"/>
+            <include name="../jdk13.0.2!/java.compiler"/>
+            <include name="../jdk13.0.2!/java.datatransfer"/>
+            <include name="../jdk13.0.2!/java.desktop"/>
+            <include name="../jdk13.0.2!/java.instrument"/>
+            <include name="../jdk13.0.2!/java.logging"/>
+            <include name="../jdk13.0.2!/java.management"/>
+            <include name="../jdk13.0.2!/java.management.rmi"/>
+            <include name="../jdk13.0.2!/java.naming"/>
+            <include name="../jdk13.0.2!/java.net.http"/>
+            <include name="../jdk13.0.2!/java.prefs"/>
+            <include name="../jdk13.0.2!/java.rmi"/>
+            <include name="../jdk13.0.2!/java.scripting"/>
+            <include name="../jdk13.0.2!/java.se"/>
+            <include name="../jdk13.0.2!/java.security.jgss"/>
+            <include name="../jdk13.0.2!/java.security.sasl"/>
+            <include name="../jdk13.0.2!/java.smartcardio"/>
+            <include name="../jdk13.0.2!/java.sql"/>
+            <include name="../jdk13.0.2!/java.sql.rowset"/>
+            <include name="../jdk13.0.2!/java.transaction.xa"/>
+            <include name="../jdk13.0.2!/java.xml"/>
+            <include name="../jdk13.0.2!/java.xml.crypto"/>
+            <include name="../jdk13.0.2!/jdk.accessibility"/>
+            <include name="../jdk13.0.2!/jdk.aot"/>
+            <include name="../jdk13.0.2!/jdk.attach"/>
+            <include name="../jdk13.0.2!/jdk.charsets"/>
+            <include name="../jdk13.0.2!/jdk.compiler"/>
+            <include name="../jdk13.0.2!/jdk.crypto.cryptoki"/>
+            <include name="../jdk13.0.2!/jdk.crypto.ec"/>
+            <include name="../jdk13.0.2!/jdk.crypto.mscapi"/>
+            <include name="../jdk13.0.2!/jdk.dynalink"/>
+            <include name="../jdk13.0.2!/jdk.editpad"/>
+            <include name="../jdk13.0.2!/jdk.hotspot.agent"/>
+            <include name="../jdk13.0.2!/jdk.httpserver"/>
+            <include name="../jdk13.0.2!/jdk.internal.ed"/>
+            <include name="../jdk13.0.2!/jdk.internal.jvmstat"/>
+            <include name="../jdk13.0.2!/jdk.internal.le"/>
+            <include name="../jdk13.0.2!/jdk.internal.opt"/>
+            <include name="../jdk13.0.2!/jdk.internal.vm.ci"/>
+            <include name="../jdk13.0.2!/jdk.internal.vm.compiler"/>
+            <include name="../jdk13.0.2!/jdk.internal.vm.compiler.management"/>
+            <include name="../jdk13.0.2!/jdk.jartool"/>
+            <include name="../jdk13.0.2!/jdk.javadoc"/>
+            <include name="../jdk13.0.2!/jdk.jcmd"/>
+            <include name="../jdk13.0.2!/jdk.jconsole"/>
+            <include name="../jdk13.0.2!/jdk.jdeps"/>
+            <include name="../jdk13.0.2!/jdk.jdi"/>
+            <include name="../jdk13.0.2!/jdk.jdwp.agent"/>
+            <include name="../jdk13.0.2!/jdk.jfr"/>
+            <include name="../jdk13.0.2!/jdk.jlink"/>
+            <include name="../jdk13.0.2!/jdk.jshell"/>
+            <include name="../jdk13.0.2!/jdk.jsobject"/>
+            <include name="../jdk13.0.2!/jdk.jstatd"/>
+            <include name="../jdk13.0.2!/jdk.localedata"/>
+            <include name="../jdk13.0.2!/jdk.management"/>
+            <include name="../jdk13.0.2!/jdk.management.agent"/>
+            <include name="../jdk13.0.2!/jdk.management.jfr"/>
+            <include name="../jdk13.0.2!/jdk.naming.dns"/>
+            <include name="../jdk13.0.2!/jdk.naming.rmi"/>
+            <include name="../jdk13.0.2!/jdk.net"/>
+            <include name="../jdk13.0.2!/jdk.pack"/>
+            <include name="../jdk13.0.2!/jdk.rmic"/>
+            <include name="../jdk13.0.2!/jdk.scripting.nashorn"/>
+            <include name="../jdk13.0.2!/jdk.scripting.nashorn.shell"/>
+            <include name="../jdk13.0.2!/jdk.sctp"/>
+            <include name="../jdk13.0.2!/jdk.security.auth"/>
+            <include name="../jdk13.0.2!/jdk.security.jgss"/>
+            <include name="../jdk13.0.2!/jdk.unsupported"/>
+            <include name="../jdk13.0.2!/jdk.unsupported.desktop"/>
+            <include name="../jdk13.0.2!/jdk.xml.dom"/>
+            <include name="../jdk13.0.2!/jdk.zipfs"/>
+        </fileset>
+    </path>
+
+    <property name="project.jdk.home" value="${jdk.home.13}"/>
+    <property name="project.jdk.bin" value="${jdk.bin.13}"/>
+    <property name="project.jdk.classpath" value="jdk.classpath.13"/>
+
+
+    <!-- Project Libraries -->
+
+    <path id="library.kudu-api-lib.classpath">
+        <fileset dir="${basedir}/../kudu-api-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-dconvers-lib.classpath">
+        <fileset dir="${basedir}/../kudu-dconvers-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-hibernate-lib.classpath">
+        <fileset dir="${basedir}/../kudu-hibernate-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-mapstruct-lib.classpath">
+        <fileset dir="${basedir}/../kudu-mapstruct-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-resteasy-lib.classpath">
+        <fileset dir="${basedir}/../kudu-resteasy-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+
+    <!-- Global Libraries -->
+
+    <path id="library.kudu-common-lib.classpath">
+        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-common-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-front-lib.classpath">
+        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-front-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-javax-lib.classpath">
+        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-javax-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+    <path id="library.kudu-jboss-lib.classpath">
+        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-jboss-lib">
+            <patternset refid="library.patterns"/>
+        </fileset>
+    </path>
+
+
+    <!-- Module API -->
+
+    <dirname property="module.api.basedir" file="${ant.file}"/>
+
+
+    <property name="module.jdk.home.api" value="${project.jdk.home}"/>
+    <property name="module.jdk.bin.api" value="${project.jdk.bin}"/>
+    <property name="module.jdk.classpath.api" value="${project.jdk.classpath}"/>
+
+    <property name="compiler.args.api" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+
+    <property name="api.output.dir" value="${module.api.basedir}/out/production/API"/>
+
+    <path id="api.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="api.module.production.classpath">
+        <path refid="${module.jdk.classpath.api}"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-mapstruct-lib.classpath"/>
+        <path refid="library.kudu-hibernate-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+        <pathelement location="${processor.output.dir}"/>
+    </path>
+
+    <path id="api.runtime.production.module.classpath">
+        <pathelement location="${api.output.dir}"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+    </path>
+
+    <path id="api.module.classpath">
+        <path refid="${module.jdk.classpath.api}"/>
+        <pathelement location="${api.output.dir}"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-mapstruct-lib.classpath"/>
+        <path refid="library.kudu-hibernate-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+    </path>
+
+    <path id="api.runtime.module.classpath">
+        <pathelement location="${api.output.dir}"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-mapstruct-lib.classpath"/>
+        <path refid="library.kudu-hibernate-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.api">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.api">
+        <patternset refid="excluded.from.module.api"/>
+    </patternset>
+
+    <path id="api.module.sourcepath">
+        <dirset dir="${module.api.basedir}/api">
+            <include name="src/main/java"/>
+            <include name="src/main/resources"/>
+            <include name="generated"/>
+        </dirset>
+    </path>
+
+    <property name="processor.output.dir" value="${module.api.basedir}/api/generated"/>
+
+    <target name="compile.module.api" depends="compile.module.api.production" description="Compile module API"/>
+
+    <target name="compile.module.api.production" description="Compile module API; production classes">
+        <delete dir="${processor.output.dir}"/>
+        <mkdir dir="${processor.output.dir}"/>
+
+        <delete dir="${api.output.dir}"/>
+        <mkdir dir="${api.output.dir}"/>
+
+        <javac destdir="${api.output.dir}"
+               debug="${compiler.debug}"
+               nowarn="${compiler.generate.no.warnings}"
+               memorymaximumsize="${compiler.max.memory}"
+               fork="true"
+               executable="${module.jdk.bin.api}/javac"
+               includeantruntime="false">
+            <compilerarg line="${compiler.args.api}"/>
+            <bootclasspath refid="api.module.bootclasspath"/>
+            <classpath refid="api.module.production.classpath"/>
+            <src refid="api.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.api"/>
+            <compilerarg line="-s ${processor.output.dir}"/>
+        </javac>
+
+        <copy todir="${api.output.dir}">
+            <fileset dir="${module.api.basedir}/api/src/main/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.api.basedir}/api/src/main/resources">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.api.basedir}/api/generated">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!-- Module Front -->
+
+    <dirname property="module.front.basedir" file="${ant.file}"/>
+
+
+    <property name="module.jdk.home.front" value="${project.jdk.home}"/>
+    <property name="module.jdk.bin.front" value="${project.jdk.bin}"/>
+    <property name="module.jdk.classpath.front" value="${project.jdk.classpath}"/>
+
+    <property name="compiler.args.front" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+
+    <property name="front.output.dir" value="${module.front.basedir}/out/production/Front"/>
+
+    <path id="front.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="front.module.production.classpath">
+        <path refid="${module.jdk.classpath.front}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+        <path refid="library.kudu-dconvers-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+    </path>
+
+    <path id="front.runtime.production.module.classpath">
+        <pathelement location="${front.output.dir}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+        <path refid="library.kudu-dconvers-lib.classpath"/>
+    </path>
+
+    <path id="front.module.classpath">
+        <path refid="${module.jdk.classpath.front}"/>
+        <pathelement location="${front.output.dir}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+        <path refid="library.kudu-dconvers-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+    </path>
+
+    <path id="front.runtime.module.classpath">
+        <pathelement location="${front.output.dir}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+        <path refid="library.kudu-dconvers-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.front">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.front">
+        <patternset refid="excluded.from.module.front"/>
+    </patternset>
+
+    <path id="front.module.sourcepath">
+        <dirset dir="${module.front.basedir}/front">
+            <include name="src/main/java"/>
+            <include name="src/main/resources"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.front" depends="compile.module.front.production" description="Compile module Front"/>
+
+    <target name="compile.module.front.production" description="Compile module Front; production classes">
+        <ant antfile="version_control.xml" target="alias kudu.css" dir="${basedir}">
+            <property name="artifact.output.path" value="${artifact.temp.output.pjt-lib}"/>
+        </ant>
+
+        <mkdir dir="${front.output.dir}"/>
+        <javac destdir="${front.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.front}/javac" includeantruntime="false">
+            <compilerarg line="${compiler.args.front}"/>
+            <bootclasspath refid="front.module.bootclasspath"/>
+            <classpath refid="front.module.production.classpath"/>
+            <src refid="front.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.front"/>
+        </javac>
+
+        <copy todir="${front.output.dir}">
+            <fileset dir="${module.front.basedir}/front/src/main/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.front.basedir}/front/src/main/resources">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!-- Module pjt-lib -->
+
+    <dirname property="module.pjt-lib.basedir" file="${ant.file}"/>
+
+
+    <property name="module.jdk.home.pjt-lib" value="${project.jdk.home}"/>
+    <property name="module.jdk.bin.pjt-lib" value="${project.jdk.bin}"/>
+    <property name="module.jdk.classpath.pjt-lib" value="${project.jdk.classpath}"/>
+
+    <property name="compiler.args.pjt-lib" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+
+    <property name="pjt-lib.output.dir" value="${module.pjt-lib.basedir}/out/production/pjt-lib"/>
+
+    <path id="pjt-lib.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="pjt-lib.module.production.classpath">
+        <path refid="${module.jdk.classpath.pjt-lib}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+    </path>
+
+    <path id="pjt-lib.runtime.production.module.classpath">
+        <pathelement location="${pjt-lib.output.dir}"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+    </path>
+
+    <path id="pjt-lib.module.classpath">
+        <path refid="${module.jdk.classpath.pjt-lib}"/>
+        <pathelement location="${pjt-lib.output.dir}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+    </path>
+
+    <path id="pjt-lib.runtime.module.classpath">
+        <pathelement location="${pjt-lib.output.dir}"/>
+        <path refid="library.kudu-common-lib.classpath"/>
+        <path refid="library.kudu-api-lib.classpath"/>
+        <path refid="library.kudu-jboss-lib.classpath"/>
+        <path refid="library.kudu-javax-lib.classpath"/>
+        <path refid="library.kudu-resteasy-lib.classpath"/>
+        <path refid="library.kudu-front-lib.classpath"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.pjt-lib">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.pjt-lib">
+        <patternset refid="excluded.from.module.pjt-lib"/>
+    </patternset>
+
+    <path id="pjt-lib.module.sourcepath">
+        <dirset dir="${module.pjt-lib.basedir}/lib">
+            <include name="src/main/java"/>
+            <include name="src/main/resources"/>
+        </dirset>
+    </path>
+
+    <target name="compile.module.pjt-lib" depends="compile.module.pjt-lib.production" description="Compile module pjt-lib"/>
+
+    <target name="compile.module.pjt-lib.production" description="Compile module pjt-lib; production classes">
+        <mkdir dir="${pjt-lib.output.dir}"/>
+        <javac destdir="${pjt-lib.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pjt-lib}/javac" includeantruntime="false">
+            <compilerarg line="${compiler.args.pjt-lib}"/>
+            <bootclasspath refid="pjt-lib.module.bootclasspath"/>
+            <classpath refid="pjt-lib.module.production.classpath"/>
+            <src refid="pjt-lib.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.pjt-lib"/>
+        </javac>
+
+        <copy todir="${pjt-lib.output.dir}">
+            <fileset dir="${module.pjt-lib.basedir}/lib/src/main/java">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.pjt-lib.basedir}/lib/src/main/resources">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+
+        <ant antfile="version_control.xml" target="stamp build.date" dir="${basedir}">
+            <property name="artifact.output.path" value="${artifact.temp.output.pjt-lib}"/>
+        </ant>
+    </target>
+
+    <target name="init" description="Build initialization">
+        <!-- Perform any build initialization in this target -->
+    </target>
+
+    <target name="init.artifacts">
+        <property name="artifacts.temp.dir" value="${basedir}/out/ant_temp"/>
+        <property name="artifact.output.api" value="${basedir}/out/war"/>
+        <property name="artifact.output.front" value="${basedir}/out/war"/>
+        <property name="artifact.output.pjt-lib" value="${basedir}/../kudu-common-lib"/>
+        <mkdir dir="${artifacts.temp.dir}"/>
+        <property name="temp.jar.path.api.war" value="${artifacts.temp.dir}/api.war"/>
+        <property name="temp.jar.path.front.war" value="${artifacts.temp.dir}/front.war"/>
+        <property name="temp.jar.path.pjt-lib.jar" value="${artifacts.temp.dir}/pjt-lib.jar"/>
+    </target>
+
+    <target name="artifact.api" depends="init.artifacts, compile.module.api" description="Build &#39;api&#39; artifact">
+        <property name="artifact.temp.output.api" value="${artifacts.temp.dir}/api"/>
+        <mkdir dir="${artifact.temp.output.api}"/>
+        <zip destfile="${temp.jar.path.api.war}">
+            <zipfileset dir="${basedir}/api/src/main/webapp"/>
+            <zipfileset file="${basedir}/api/src/main/webapp/WEB-INF/web.xml" prefix="WEB-INF"/>
+            <zipfileset dir="${api.output.dir}" prefix="WEB-INF/classes"/>
+            <zipfileset dir="${api.output.dir}" prefix="WEB-INF/classes"/>
+            <zipfileset file="${basedir}/api/src/main/resources/META-INF/persistence.xml" prefix="WEB-INF/classes/META-INF"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/guava-23.0.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/reflections-0.9.10.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-core-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-jaxrs2-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-models-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-annotations-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-integration-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/jackson-dataformat-yaml-2.9.5.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-api-lib/swagger-jaxrs2-servlet-initializer-2.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/pjt-lib.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/dconvers.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/commons-text-1.8.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/slf4j-api-1.7.30.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/commons-lang3-3.9.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/logback-core-1.2.3.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/logback-classic-1.2.3.jar" prefix="WEB-INF/lib"/>
+        </zip>
+        <copy file="${temp.jar.path.api.war}" tofile="${artifact.temp.output.api}/api.war"/>
+
+        <mkdir dir="${artifact.output.api}"/>
+        <copy todir="${artifact.output.api}">
+            <fileset dir="${artifact.temp.output.api}"/>
+        </copy>
+
+        <delete dir="${artifacts.temp.dir}"/>
+    </target>
+
+    <target name="artifact.front" depends="init.artifacts, compile.module.front" description="Build &#39;front&#39; artifact">
+        <property name="artifact.temp.output.front" value="${artifacts.temp.dir}/front"/>
+        <mkdir dir="${artifact.temp.output.front}"/>
+        <zip destfile="${temp.jar.path.front.war}">
+            <zipfileset dir="${basedir}/front/src/main/webapp"/>
+            <zipfileset file="${basedir}/front/src/main/webapp/WEB-INF/web.xml" prefix="WEB-INF"/>
+            <zipfileset dir="${front.output.dir}" prefix="WEB-INF/classes"/>
+            <zipfileset dir="${front.output.dir}" prefix="WEB-INF/classes"/>
+            <zipfileset file="${basedir}/../kudu-dconvers-lib/dconvers.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-dconvers-lib/commons-beanutils-1.9.3.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-dconvers-lib/commons-configuration2-2.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/poi-3.17.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/curvesapi-1.04.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/poi-ooxml-3.17.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/primefaces-6.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/xmlbeans-2.6.0.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/poi-excelant-3.17.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/commons-codec-1.10.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/commons-logging-1.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/commons-math3-3.6.1.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/poi-scratchpad-3.17.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/poi-ooxml-schemas-3.17.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/reactive-streams-1.0.2.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/commons-collections4-4.1.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/primefaces-themes-1.0.10.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-aop-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-web-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-core-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-beans-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-context-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-expression-5.2.3.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-security-web-5.2.1.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-security-core-5.2.1.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-front-lib/spring-security-config-5.2.1.RELEASE.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/pjt-lib.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/dconvers.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/commons-text-1.8.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/slf4j-api-1.7.30.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/commons-lang3-3.9.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/logback-core-1.2.3.jar" prefix="WEB-INF/lib"/>
+            <zipfileset file="${basedir}/../kudu-common-lib/logback-classic-1.2.3.jar" prefix="WEB-INF/lib"/>
+        </zip>
+        <copy file="${temp.jar.path.front.war}" tofile="${artifact.temp.output.front}/front.war"/>
+
+        <mkdir dir="${artifact.output.front}"/>
+        <copy todir="${artifact.output.front}">
+            <fileset dir="${artifact.temp.output.front}"/>
+        </copy>
+    </target>
+
+    <target name="artifact.pjt-lib" depends="init.artifacts, compile.module.pjt-lib" description="Build &#39;pjt-lib&#39; artifact">
+        <property name="artifact.temp.output.pjt-lib" value="${artifacts.temp.dir}/pjt_lib"/>
+        <mkdir dir="${artifact.temp.output.pjt-lib}"/>
+        <jar destfile="${temp.jar.path.pjt-lib.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+            <zipfileset dir="${pjt-lib.output.dir}"/>
+        </jar>
+        <copy file="${temp.jar.path.pjt-lib.jar}" tofile="${artifact.temp.output.pjt-lib}/pjt-lib.jar"/>
+
+        <mkdir dir="${artifact.output.pjt-lib}"/>
+        <copy todir="${artifact.output.pjt-lib}">
+            <fileset dir="${artifact.temp.output.pjt-lib}"/>
+        </copy>
+    </target>
+
+    <!-- Clean Up -->
+
+    <target name="clean.module.api" description="cleanup module">
+        <delete dir="${api.output.dir}"/>
+    </target>
+
+    <target name="clean.module.front" description="cleanup module">
+        <delete dir="${front.output.dir}"/>
+    </target>
+
+    <target name="clean.module.pjt-lib" description="cleanup module">
+        <delete dir="${pjt-lib.output.dir}"/>
+    </target>
+
+    <target name="clean.artifacts" depends="init.artifacts">
+        <delete dir="${artifacts.temp.dir}"/>
+    </target>
+
+    <target name="clean.all" depends="clean.module.api, clean.module.front, clean.module.pjt-lib" description="cleanup all"/>
+
+    <!-- Build JAR and WAR -->
+
+    <target name="build.api" depends="init, compile.module.api, artifact.api" description="build api.war"/>
+
+    <target name="build.front" depends="init, compile.module.front, artifact.front" description="build front.war"/>
+
+    <target name="build.pjt-lib" depends="init, compile.module.pjt-lib, artifact.pjt-lib" description="build pjt-lib.jar"/>
+
+    <target name="build.all" depends="clean.all, build.pjt-lib, build.front, build.api" description="build all jar and war"/>
+</project>

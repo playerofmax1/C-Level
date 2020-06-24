@@ -19,6 +19,7 @@ public class DateTimeUtil {
     public static final BigDecimal MANDAYS_HOUR = new BigDecimal(8);
     public static final BigDecimal MANDAYS_MINUTE = new BigDecimal(60);
     public static final int DEFAULT_SCALE = 2;
+    public static final int NATURAL_SCALE = 8;
 
     public static Date now() {
         return Date.from(Instant.now());
@@ -111,13 +112,15 @@ public class DateTimeUtil {
     }
 
     public static String durationToString(Duration duration) {
+        if (duration == null) {
+            return "00:00";
+        }
+
         long hour = duration.toHours();
         long minute = duration.toMinutesPart();
 
         return String.format("%02d:%02d", hour, minute);
     }
-
-    //
 
     /**
      * Hours:Minutes to Duration
@@ -125,6 +128,10 @@ public class DateTimeUtil {
      * @param str in this pattern 'HH:mm'
      */
     public static Duration stringToDuration(String str) {
+        if (str == null) {
+            return Duration.parse("PT0M");
+        }
+
         String[] tmp = str.split(":");
         if (tmp.length == 1) {
             return Duration.parse("PT" + tmp[0] + "M");

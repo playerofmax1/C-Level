@@ -3,6 +3,7 @@ package com.clevel.kudu.front.system;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -16,6 +17,9 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext ctx = servletContextEvent.getServletContext();
+        app.setAppPath(ctx.getRealPath("/"));
+
         log.debug("contextInitialized");
     }
 

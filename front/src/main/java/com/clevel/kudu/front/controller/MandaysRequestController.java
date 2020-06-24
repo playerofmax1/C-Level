@@ -206,6 +206,9 @@ public class MandaysRequestController extends AbstractController {
     public void onChangeMDDuration() {
         Duration extendMDDuration = newMandaysRequest.getExtendMDDuration();
         log.debug("onChangeMDDuration(extendMDDuration: {})", extendMDDuration);
+        if (extendMDDuration == null) {
+            return;
+        }
 
         long minutes = extendMDDuration.toMinutes();
         newMandaysRequest.setExtendMDMinute(minutes);
@@ -251,7 +254,7 @@ public class MandaysRequestController extends AbstractController {
         });
         log.debug("serviceResponse = {}", serviceResponse);
         if (serviceResponse.getApiResponse() != APIResponse.SUCCESS) {
-            String message = "save request is failed! " + serviceResponse.getMessage();
+            String message = serviceResponse.getMessage();
             log.debug(message);
             FacesUtil.actionFailed(message);
             return;

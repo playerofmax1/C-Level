@@ -8,6 +8,8 @@ import com.clevel.kudu.api.model.db.working.*;
 import com.clevel.kudu.api.rest.mapper.*;
 import com.clevel.kudu.api.system.Application;
 import com.clevel.kudu.api.util.MDUtil;
+import com.clevel.kudu.dto.rpt.MandaysReportItem;
+import com.clevel.kudu.dto.rpt.MandaysReportResult;
 import com.clevel.kudu.dto.working.*;
 import com.clevel.kudu.model.APIResponse;
 import com.clevel.kudu.model.RecordStatus;
@@ -33,6 +35,8 @@ public class TimeSheetManager {
     private UserMandaysDAO userMandaysDAO;
     @Inject
     private UserPerformanceDAO userPerformanceDAO;
+    @Inject
+    private UserTimeSheetDAO userTimeSheetDAO;
     @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
@@ -452,6 +456,133 @@ public class TimeSheetManager {
         return userMandaysMapper.toDTO(userMandaysList.stream());
     }
 
+    public MandaysReportResult getUserMandaysReport(long viewerUserId, int year) throws RecordNotFoundException {
+        log.debug("getUserMandaysReport(viewerUserId:{}, year:{})", viewerUserId, year);
+        MandaysReportResult mandaysReportResult = new MandaysReportResult();
+
+        PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
+
+        User viewerUser = userDAO.findById(viewerUserId);
+        List<UserTimeSheet> userTimeSheetList = userTimeSheetDAO.findByUser(viewerUser);
+        List<User> viewableUserList = new ArrayList<>();
+        User timeSheetUser;
+        for (UserTimeSheet userTimeSheet : userTimeSheetList) {
+            timeSheetUser = userTimeSheet.getTimeSheetUser();
+            viewableUserList.add(timeSheetUser);
+        }
+        viewableUserList.add(viewerUser);
+        List<UserMandays> userMandaysList = userMandaysDAO.findByUserList(viewableUserList, year);
+
+        List<MandaysReportItem> itemList = new ArrayList<>();
+        MandaysReportItem item;
+        User user;
+
+        List<String/*ProjectCode*/> projectCodeList = new ArrayList<>();
+        HashMap<Long/*UserId*/, HashMap<String/*ProjectCode*/, UserMandays/*for this user*/>> userMandaysMap = getMappedUserMandays(userMandaysList, projectCodeList);
+        HashMap<String/*ProjectCode*/, UserMandays/*for this user*/> userMandays;
+        int projectCodeCount = projectCodeList.size();
+        UserMandays userMandaysItem;
+        UserMandays userMandaysLastItem = null;
+        BigDecimal[] amdArray;
+        int index;
+
+        /*need to sort project code before mapping to array*/
+        projectCodeList.sort((o1, o2) -> {
+            String o1Code = o1.startsWith("!") ? "ZZ" + o1 : (o1.startsWith("A00") ? "Z" + o1 : o1);
+            String o2Code = o2.startsWith("!") ? "ZZ" + o2 : (o2.startsWith("A00") ? "Z" + o2 : o2);
+            return o1Code.compareTo(o2Code);
+        });
+
+        for (Long userId : userMandaysMap.keySet()) {
+            userMandays = userMandaysMap.get(userId);
+            item = new MandaysReportItem();
+
+            amdArray = new BigDecimal[projectCodeCount];
+            index = 0;
+            for (String projectCode : projectCodeList) {
+                userMandaysItem = userMandays.get(projectCode);
+                if (userMandaysItem == null) {
+                    amdArray[index] = BigDecimal.ZERO;
+                } else {
+                    amdArray[index] = userMandaysItem.getAMD();
+                    userMandaysLastItem = userMandaysItem;
+                }
+                index++;
+            }
+            item.setAmdList(Arrays.asList(amdArray));
+
+            if (userMandaysLastItem != null) {
+                user = userMandaysLastItem.getUser();
+                item.setName(user.getName() + " " + user.getLastName());
+                item.setTargetPercentCU(userMandaysLastItem.getTargetPercentCU());
+            } else {
+                log.warn("userMandaysLastItem is null (not null is expected!)");
+            }
+
+            long chargeMinutes = DateTimeUtil.mandaysToMinutes(getTotalAMD(new ArrayList<>(userMandays.values())));
+            UtilizationDTO utilization = getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), chargeMinutes);
+            item.setPercentCU(utilization.getPercentCU());
+
+            /*item.setTargetPercentCU(user.get);*/
+            itemList.add(item);
+        }
+
+        /*sort itemList by User Name*/
+        itemList.sort((o1, o2) -> {
+            return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
+        });
+
+        mandaysReportResult.setPerformanceYear(performanceYearMapper.toDTO(performanceYear));
+        mandaysReportResult.setProjectList(projectCodeList);
+        mandaysReportResult.setReportItemList(itemList);
+        return mandaysReportResult;
+    }
+
+    /**
+     * @param userMandaysList sort by UserId is required
+     * @param projectCodeList output for ordered list of project code.
+     */
+    private HashMap<Long, HashMap<String, UserMandays>> getMappedUserMandays(List<UserMandays> userMandaysList, List<String> projectCodeList) {
+        HashMap<Long/*UserId*/, HashMap<String/*ProjectCode*/, UserMandays/*for this user*/>> mappedUserMandays = new HashMap<>();
+        HashMap<String/*ProjectCode*/, UserMandays/*for this user*/> projectOfUser = null;
+        Project project;
+        String projectCode;
+        long latestUserId = -1;
+        long userId = 0;
+
+        for (UserMandays userMandays : userMandaysList) {
+            userId = userMandays.getUser().getId();
+            if (userId != latestUserId) {
+                if (projectOfUser != null) {
+                    mappedUserMandays.put(latestUserId, projectOfUser);
+                }
+                latestUserId = userId;
+                projectOfUser = new HashMap<>();
+            }
+
+            project = userMandays.getProject();
+            if (project == null) {
+                projectCode = "A00X";
+            } else if (userMandays.isPlanFlag()) {
+                projectCode = project.getCode();
+            } else {
+                projectCode = "!" + project.getCode();
+            }
+
+            if (!projectCodeList.contains(projectCode)) {
+                projectCodeList.add(projectCode);
+            }
+
+            projectOfUser.put(projectCode, userMandays);
+        }
+
+        if (projectOfUser != null) {
+            mappedUserMandays.put(latestUserId, projectOfUser);
+        }
+
+        return mappedUserMandays;
+    }
+
     /**
      * This function has duplicated in TimesheetController.getTotalChargedMinutes.
      * When you modified this function may be need to modify them too.
@@ -504,6 +635,20 @@ public class TimeSheetManager {
         totalUserMandays.setAMD(AMD);
 
         return totalUserMandays;
+    }
+
+    public BigDecimal getTotalAMD(List<UserMandays> userMandaysList) {
+        BigDecimal AMD = BigDecimal.ZERO;
+
+        for (UserMandays userMandays : userMandaysList) {
+            if (userMandays.getProject() == null) {
+                /*total is for chargeable items only, chargeable item must have PID.*/
+                continue;
+            }
+            AMD = AMD.add(userMandays.getAMD());
+        }
+
+        return AMD;
     }
 
     public PerformanceYearDTO getPerformanceYear(int year) {
@@ -572,6 +717,7 @@ public class TimeSheetManager {
         BigDecimal netWorkdaysDec = new BigDecimal(netWorkdays);
         BigDecimal weight;
         BigDecimal totalWeight = BigDecimal.ZERO;
+        log.debug("newWorkdays = {}", netWorkdaysDec);
 
         BigDecimal weightMultiplier;
 
@@ -611,11 +757,11 @@ public class TimeSheetManager {
             /* recordWeight = (PMD / [NetWorkdays]) x [RPMDPercent]
              * [RPMDPercent] sometimes called %AMD
              **/
-            weight = PMD.divide(netWorkdaysDec, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-            log.debug("PMD / newWorkdays = {}", weight);
+            weight = PMD.divide(netWorkdaysDec, DateTimeUtil.NATURAL_SCALE, RoundingMode.HALF_UP);
+            log.debug("PMD / netWorkdays = {}", weight);
 
             weight = weight.multiply(RPMDPercent).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
-            log.debug("PMD / newWorkdays x %AMD = {}", weight);
+            log.debug("(PMD / netWorkdays) x %AMD = {}", weight);
 
             weight = weightMultiplier.multiply(weight);
             userMandays.setWeight(weight);

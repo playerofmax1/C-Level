@@ -25,10 +25,9 @@
             <p:menuitem icon="fa fa-sign-out" value="Sign out" actionListener="#{loginBean.logout}"/>
         </p:menu>
 
-        <p:contextMenu styleClass="bring-to-top">
-            <p:menuitem icon="fa fa-navicon" value="Screen Menu" onclick="PF('screenMenu').show();"/>
+        <p:contextMenu styleClass="bring-to-top" beforeShow="PF('screenMenu').show();">
+            <p:menuitem icon="fa fa-calendar" value="Time Sheet" outcome="/site/timesheet.jsf?faces-redirect=true"/>
             <p:separator/>
-            <p:menuitem icon="fa fa-key" value="Change Password" outcome="/site/changePwd.jsf?faces-redirect=true"/>
             <p:menuitem icon="fa fa-sign-out" value="Sign out" actionListener="#{loginBean.logout}"/>
         </p:contextMenu>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

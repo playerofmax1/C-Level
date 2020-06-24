@@ -36,6 +36,8 @@ public class TimeSheetManager {
     @Inject
     private UserPerformanceDAO userPerformanceDAO;
     @Inject
+    private UserTimeSheetDAO userTimeSheetDAO;
+    @Inject
     private TimeSheetDAO timeSheetDAO;
     @Inject
     private TimeSheetLockDAO timeSheetLockDAO;
@@ -454,12 +456,22 @@ public class TimeSheetManager {
         return userMandaysMapper.toDTO(userMandaysList.stream());
     }
 
-    public MandaysReportResult getUserMandaysReport(long viewerUserId, int year) {
-        log.debug("getUserMandays(year:{})", year);
+    public MandaysReportResult getUserMandaysReport(long viewerUserId, int year) throws RecordNotFoundException {
+        log.debug("getUserMandaysReport(viewerUserId:{}, year:{})", viewerUserId, year);
         MandaysReportResult mandaysReportResult = new MandaysReportResult();
 
-        /*TODO: need to add filter 'ViewableUserList' of viewerUserId*/
-        List<UserMandays> userMandaysList = userMandaysDAO.findByYear(year);
+        PerformanceYear performanceYear = performanceYearDAO.findByYear(year);
+
+        User viewerUser = userDAO.findById(viewerUserId);
+        List<UserTimeSheet> userTimeSheetList = userTimeSheetDAO.findByUser(viewerUser);
+        List<User> viewableUserList = new ArrayList<>();
+        User timeSheetUser;
+        for (UserTimeSheet userTimeSheet : userTimeSheetList) {
+            timeSheetUser = userTimeSheet.getTimeSheetUser();
+            viewableUserList.add(timeSheetUser);
+        }
+        viewableUserList.add(viewerUser);
+        List<UserMandays> userMandaysList = userMandaysDAO.findByUserList(viewableUserList, year);
 
         List<MandaysReportItem> itemList = new ArrayList<>();
         MandaysReportItem item;
@@ -476,8 +488,8 @@ public class TimeSheetManager {
 
         /*need to sort project code before mapping to array*/
         projectCodeList.sort((o1, o2) -> {
-            String o1Code = o1.startsWith("MA") ? "Z" + o1 : (o1.startsWith("A00") ? "ZZ" + o1 : o1);
-            String o2Code = o2.startsWith("MA") ? "Z" + o2 : (o2.startsWith("A00") ? "ZZ" + o2 : o2);
+            String o1Code = o1.startsWith("!") ? "ZZ" + o1 : (o1.startsWith("A00") ? "Z" + o1 : o1);
+            String o2Code = o2.startsWith("!") ? "ZZ" + o2 : (o2.startsWith("A00") ? "Z" + o2 : o2);
             return o1Code.compareTo(o2Code);
         });
 
@@ -502,9 +514,14 @@ public class TimeSheetManager {
             if (userMandaysLastItem != null) {
                 user = userMandaysLastItem.getUser();
                 item.setName(user.getName() + " " + user.getLastName());
+                item.setTargetPercentCU(userMandaysLastItem.getTargetPercentCU());
             } else {
-                log.warn("userMandaysLastItem is null in the expected not null!");
+                log.warn("userMandaysLastItem is null (not null is expected!)");
             }
+
+            long chargeMinutes = DateTimeUtil.mandaysToMinutes(getTotalAMD(new ArrayList<>(userMandays.values())));
+            UtilizationDTO utilization = getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), chargeMinutes);
+            item.setPercentCU(utilization.getPercentCU());
 
             /*item.setTargetPercentCU(user.get);*/
             itemList.add(item);
@@ -515,6 +532,7 @@ public class TimeSheetManager {
             return o1.getName().toUpperCase().compareTo(o2.getName().toUpperCase());
         });
 
+        mandaysReportResult.setPerformanceYear(performanceYearMapper.toDTO(performanceYear));
         mandaysReportResult.setProjectList(projectCodeList);
         mandaysReportResult.setReportItemList(itemList);
         return mandaysReportResult;
@@ -535,18 +553,20 @@ public class TimeSheetManager {
         for (UserMandays userMandays : userMandaysList) {
             userId = userMandays.getUser().getId();
             if (userId != latestUserId) {
-                latestUserId = userId;
                 if (projectOfUser != null) {
-                    mappedUserMandays.put(userId, projectOfUser);
+                    mappedUserMandays.put(latestUserId, projectOfUser);
                 }
+                latestUserId = userId;
                 projectOfUser = new HashMap<>();
             }
 
             project = userMandays.getProject();
             if (project == null) {
                 projectCode = "A00X";
-            } else {
+            } else if (userMandays.isPlanFlag()) {
                 projectCode = project.getCode();
+            } else {
+                projectCode = "!" + project.getCode();
             }
 
             if (!projectCodeList.contains(projectCode)) {
@@ -557,7 +577,7 @@ public class TimeSheetManager {
         }
 
         if (projectOfUser != null) {
-            mappedUserMandays.put(userId, projectOfUser);
+            mappedUserMandays.put(latestUserId, projectOfUser);
         }
 
         return mappedUserMandays;
@@ -615,6 +635,20 @@ public class TimeSheetManager {
         totalUserMandays.setAMD(AMD);
 
         return totalUserMandays;
+    }
+
+    public BigDecimal getTotalAMD(List<UserMandays> userMandaysList) {
+        BigDecimal AMD = BigDecimal.ZERO;
+
+        for (UserMandays userMandays : userMandaysList) {
+            if (userMandays.getProject() == null) {
+                /*total is for chargeable items only, chargeable item must have PID.*/
+                continue;
+            }
+            AMD = AMD.add(userMandays.getAMD());
+        }
+
+        return AMD;
     }
 
     public PerformanceYearDTO getPerformanceYear(int year) {

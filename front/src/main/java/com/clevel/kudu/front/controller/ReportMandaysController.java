@@ -12,6 +12,7 @@ import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.ExcelUtil;
 import com.clevel.kudu.util.FacesUtil;
 import com.clevel.kudu.util.LookupUtil;
+import org.apache.commons.math3.util.Pair;
 import org.primefaces.component.export.ExcelOptions;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -188,6 +189,7 @@ public class ReportMandaysController extends AbstractController {
         return serviceResponse.getResult();
     }
 
+    @SuppressWarnings("unchecked")
     private void createExcelReport(String templateFileName, String outputFileName, MandaysReportResult mandaysReportResult) {
         String errMessage;/*create output file*/
         try {
@@ -201,6 +203,17 @@ public class ReportMandaysController extends AbstractController {
             beans.put("title", "This is TITLE");
             beans.put("mandaysList", userMandaysDTOList);*/
 
+            /*Create Variable Map for ExcelUtil on JXLS v.2*/
+            List<Pair<String, Object>> variableList = new ArrayList<>();
+            variableList.add(new Pair<>("datetime", DateTimeUtil.getDateStr(DateTimeUtil.now(), "dd/MM/yyyy HH:mm:ss")));
+            variableList.add(new Pair<>("user", userDetail.getName() + " " + userDetail.getLastName()));
+            PerformanceYearDTO performanceYear = mandaysReportResult.getPerformanceYear();
+            variableList.add(new Pair<>("year", performanceYear.getYear()));
+            variableList.add(new Pair<>("yearStartDate", DateTimeUtil.getDateStr(performanceYear.getStartDate(), "dd/MM/yyyy")));
+            variableList.add(new Pair<>("yearEndDate", DateTimeUtil.getDateStr(performanceYear.getEndDate(), "dd/MM/yyyy")));
+            Pair<String, Object>[] variables = new Pair[2];
+            variables = variableList.toArray(variables);
+
             /*Using JETT - Generate excel workbook by template and variableMap*/
             /*ExcelTransformer transformer = new ExcelTransformer();
             Workbook workbook = transformer.transform(templateFileInputStream, beans);*/
@@ -211,7 +224,8 @@ public class ReportMandaysController extends AbstractController {
             log.debug("workbook is ready.");*/
 
             /*Using JXLS v.2 - Generate excel file by template*/
-            ExcelUtil.createExcel(outputFileName, templateFileName, mandaysReportResult.getReportItemList(), mandaysReportResult.getProjectList());
+            log.debug("createExcelReport.mandaysReportResult = {}", mandaysReportResult);
+            ExcelUtil.createExcel(outputFileName, templateFileName, mandaysReportResult.getReportItemList(), mandaysReportResult.getProjectList(), variables);
 
             /*Create output file*/
             /*workbook.write(fileOutputStream);

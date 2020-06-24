@@ -202,6 +202,10 @@ public class TimeSheetResource implements TimeSheetService {
             response.setResult(mandaysResult);
             response.setApiResponse(APIResponse.SUCCESS);
 
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+
         } catch (Exception e) {
             log.error("", e);
             response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());

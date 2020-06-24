@@ -1,5 +1,6 @@
 package com.clevel.kudu.util;
 
+import org.apache.commons.math3.util.Pair;
 import org.jxls.area.Area;
 import org.jxls.builder.AreaBuilder;
 import org.jxls.builder.xls.XlsCommentAreaBuilder;
@@ -29,7 +30,8 @@ public class ExcelUtil {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static void createExcel(String outputFileName, String templateFileName, Iterable<?> itemList, Iterable<?> columnHeaderList) throws IOException {
+    @SafeVarargs
+    public static void createExcel(String outputFileName, String templateFileName, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
         log.debug("createExcel(output:{},template{}).", outputFileName, templateFileName);
         InputStream inputStream = new BufferedInputStream(new FileInputStream(templateFileName));
 
@@ -42,19 +44,21 @@ public class ExcelUtil {
         }
 
         FileOutputStream outputStream = new FileOutputStream(file);
-        createExcel(outputStream, inputStream, itemList, columnHeaderList);
+        createExcel(outputStream, inputStream, itemList, columnHeaderList, variables);
         outputStream.close();
     }
 
     /**
      * Using JXLS v2.
-     * @param outputStream excel output file
-     * @param inputStream excel template file
-     * @param itemList data used in excel template, ref: items=”itemList”
+     *
+     * @param outputStream     excel output file
+     * @param inputStream      excel template file
+     * @param itemList         data used in excel template, ref: items=”itemList”
      * @param columnHeaderList [optional] columns list for the report with unknown number of column, ref: items=”columnHeaderList”
      * @throws IOException
      */
-    public static void createExcel(OutputStream outputStream, InputStream inputStream, Iterable<?> itemList, Iterable<?> columnHeaderList) throws IOException {
+    @SafeVarargs
+    public static void createExcel(OutputStream outputStream, InputStream inputStream, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
         log.debug("createExcel.");
         byte[] templateBytes = forceLoadFromInputStream(inputStream);
         InputStream is = new ByteArrayInputStream(templateBytes);
@@ -62,6 +66,12 @@ public class ExcelUtil {
         Context context = new Context();
         context.putVar("columnHeaderList", columnHeaderList);
         context.putVar("itemList", itemList);
+
+        if (variables != null && variables.length > 0) {
+            for (Pair<String, Object> variable : variables) {
+                context.putVar(variable.getKey(), variable.getValue());
+            }
+        }
 
         Transformer transformer = TransformerFactory.createTransformer(is, outputStream);
         AreaBuilder areaBuilder = new XlsCommentAreaBuilder(transformer);

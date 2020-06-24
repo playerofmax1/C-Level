@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,33 @@ public class UserMandaysDAO extends GenericDAO<UserMandays, Long> {
         List<UserMandays> userMandaysList = query.getResultList();
         if (userMandaysList.isEmpty()) {
             log.debug("UserMandays for year({}) not found!", year);
+            return new ArrayList<>();
+        } else {
+            return userMandaysList;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<UserMandays> findByUserList(List<User> viewableUserList, int year) {
+        log.debug("findByUserList.");
+        CriteriaQuery<UserMandays> criteria = createCriteriaQuery();
+
+        Expression<User> parentExpression = root.get(UserMandays_.user);
+        Predicate userListPredicate = parentExpression.in(viewableUserList);
+
+        criteria.where(
+                cb.and(
+                        cb.equal(root.get(UserMandays_.workYear), year),
+                        userListPredicate
+                )
+        ).orderBy(cb.asc(root.get(UserMandays_.user)), cb.asc(root.get(UserMandays_.project)));
+
+        Query query = em.createQuery(criteria);
+        query.setHint(FETCH_GRAPH, graph);
+
+        List<UserMandays> userMandaysList = query.getResultList();
+        if (userMandaysList.isEmpty()) {
+            log.debug("UserMandays for year({}) userList({}) not found!", year, viewableUserList);
             return new ArrayList<>();
         } else {
             return userMandaysList;

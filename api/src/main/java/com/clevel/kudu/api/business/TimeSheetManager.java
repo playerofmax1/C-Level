@@ -723,7 +723,7 @@ public class TimeSheetManager {
             /* recordWeight = (PMD / [NetWorkdays]) x [RPMDPercent]
              * [RPMDPercent] sometimes called %AMD
              **/
-            weight = PMD.divide(netWorkdaysDec, DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);
+            weight = PMD.divide(netWorkdaysDec, DateTimeUtil.NATURAL_SCALE, RoundingMode.HALF_UP);
             log.debug("PMD / netWorkdays = {}", weight);
 
             weight = weight.multiply(RPMDPercent).setScale(DateTimeUtil.DEFAULT_SCALE, RoundingMode.HALF_UP);

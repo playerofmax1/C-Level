@@ -19,6 +19,7 @@ public class DateTimeUtil {
     public static final BigDecimal MANDAYS_HOUR = new BigDecimal(8);
     public static final BigDecimal MANDAYS_MINUTE = new BigDecimal(60);
     public static final int DEFAULT_SCALE = 2;
+    public static final int NATURAL_SCALE = 8;
 
     public static Date now() {
         return Date.from(Instant.now());

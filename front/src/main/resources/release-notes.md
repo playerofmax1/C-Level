@@ -2,30 +2,79 @@
 
 
 
-## Kudu (Alpha) Version 1.3.1
+## Kudu (Alpha) Version 1.3.1 (RC3) [git:db1c6f07f7f8179f8f2b4763b1193c4990a84d24]
 > From: Kudu (Alpha)(RC2) Version 1.2.4 build 29/5/2020 18:30
 > Marked: Main screen layout are changed from Bootstrap-CSS to Primefaces6.2.
 
 Fixed: KUDU-3: New Project Task need to send email after save.
+Fixed: KUDU-5: Mandays Request screen for requester and approver (same screen)
+              + Manage Project: move project name from screen title to project description.
+              + Hamburger Button: fix bug when click on the padding area has no response.
+              + Add errors page for IllegalArgumentException, NullPointerException and PropertyNotFoundException that frequently happened.
+              + Improve ViewExpired message appearance on the signin screen.
+              + Task list in all related screens now order by Code.
+              + [OPEN] Project Task list in all related screens now order by Code.
+              + TimeSheet: date column and project (closed) column has improved.
+              + Some validation functions are added to Validator.
+            Subtask: Open Mandays Request Dialog from Time Sheet Detail Dialog.
+            + Project list and Project-Task list in Timesheet Detail Dialog now order by Code.
+            + Mandays Request Dialog: Fix bug of invalid html structure for requester (panelGrid with 4 columns go unbalanced when some columns has rendered=false for requester)
+            + TimeSheet Dialog: Dropdown List of Task go oversize when the selected task has long description.
 Fixed: KUDU-15: create new Admin Settings Screen.
 Fixed: KUDU-18: Need to remove BootstrapCSS
-+   change title-bar from Bootstrap to Primefaces.
-+   change side-bar(screen menu) from Bootstrap to Primefaces.
-+   improve UI of Admin Setting Screen.
-+   fix all impacts.
+        +   change title-bar from Bootstrap to Primefaces.
+        +   change side-bar(screen menu) from Bootstrap to Primefaces.
+        +   improve UI of Admin Setting Screen.
+        +   fix all impacts.
 Fixed: KUDU-24: User Management: Delete user still show on screens.
-+   Time Sheet : User dropdown-list
-+   Time Sheet Summary : User dropdown-list
-+   User Management : Main user list
-+   User Management : Main user list > V-button > User List in both sides
-+   Project Management : Main list > M-button > New/Edit-button > User dropdown-list
-+   Improve UI/UX & fix a bug in Timesheet Detail Dialog.
+        +   Time Sheet : User dropdown-list
+        +   Time Sheet Summary : User dropdown-list
+        +   User Management : Main user list
+        +   User Management : Main user list > V-button > User List in both sides
+        +   Project Management : Main list > M-button > New/Edit-button > User dropdown-list
+        +   Improve UI/UX & fix a bug in Timesheet Detail Dialog.
 Fixed: KUDU-29: Send email after extend task/MD for Employee.
-+   Revise all 3 email-services to use one standard for content and subject, improve related UI.
+        +   Revise all 3 email-services to use one standard for content and subject, improve related UI.
 Fixed: KUDU-30: Employee need to see all Holidays in this year.
 Fixed: KUDU-31: Project Management : Closed Project need to lock timesheet.
-+   Improve appearance: inputs on panelGrid (timesheet,project,manageProject,user).
+        +   Improve appearance: inputs on panelGrid (timesheet,project,manageProject,user).
+Fixed: KUDU-32: Timesheet: Previous Month in case of new super-admin with Timesheet-start date after PFYear start date can't see month before Timesheet-start.
+         + Top Bar: Hamburger Button, when mouse pointer changed to Hand Pointer then click immediately with expected to see Screen Menu but got none.
+         + Top Bar: Screen name, need to move to same base line of KUDU logo.
+         + Admin Settings: swap between name and description, sort by Name and add more InputTypes.
+         + Time Sheet: change ViewOnly/Editable need to show blockUI same as next/previous month actions.
+         + Time Sheet: blockUI need some words 'please wait...'
+Fixed: KUDU-33: Some bugs in many screens need to be fix before release v1.3.1 to production
+       + Mandays Request: Comments need to split from description because of the description used to show in many screen such as task in Time Sheet Dialog.
+       + Mandays Request: in case of type NEW: project list still show the Closed Projects
+       + Mandays Request: Approve for type New: need to allow to modify description because of Project Task need correct Description by approver.
+       + Mandays Request: Email Templates need to check and fix description of Task & Project Task for all
+       + Mandays Request: send email to all approvers when got new request.
+       + Extend Request from Timesheet : has OptimisticLockException wrong version Error.
+       + Admin Settings: Save settings need to call Application.loadConfig to refresh the data immeditely.
+       + Side Menu need scroller to show all screens.
+       + Database View of Timesheet Summary Screen.
+Fixed: KUDU-34: TimeSheet Summary:
+        + Show performance year with start date and end date.
+        + Enable next year button when has the next year in performance year table.
+    TimeSheet:
+        + Enable next month button when has the next month in performance year table, same concept as Time Sheet Summary, unblock the future parts.
+    AdminSetteng:
+        + Add new config: Force client to reload CSS after released.
+Fixed: KUDU-35: Mandays Request: It has an error when don't have a Role with assigned function 'Approve mandays request'
+    + Add message to the screen.
+    + Rollback db-transaction when send email is failed.
+Fixed: KUDU-38: Time Sheet Summary Report (excel to show all employees).
+    + Fixed: user listed in the excel report need to filter by Viewable User List depends on a role of current user
+    + Fixed: first user and current user need to show on the report too.
+    + Fixed: project with pland=NO need to show on the report to avoid invalid-%CU.
+Fixed: KUDU-47: Time Sheet Detail : got exception message when double-click on 2hours button.
+Fixed: KUDU-48: need full error message in signin screen, remove other exception message and remain only for the View Exception message because of all other exceptions already redirect to Exception page instead.
+KUDU-49: Timesheet Detail Error (reported by Pininthana (Kwan)).
+    + Improve the right click menu from feed back.
+KUDU-50: Time Sheet Summary: value in Weight column is invalid, change to use 8 decimal places in calculation.
 SQL: V6__email_templates.sql
+SQL: V7__mandays_request.sql
 
 
 

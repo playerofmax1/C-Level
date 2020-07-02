@@ -192,7 +192,7 @@ The version.property is used in the front-end to show full version text on the b
 
 
 
-### Dev Environment Passwords
+### [Obsoleted] Dev Environment Passwords
 
 >   The C-LEVEL VPN is required in order to use the information from this table.
 >
@@ -203,6 +203,21 @@ The version.property is used in the front-end to show full version text on the b
 | DEV  | Cent OS 8<br />(SFTP Home Path: /Root/)<br />(SSH Home Path: ) | 192.168.88.19                                | root         | P@$$w0rd |
 | DEV  | MariaDB 10.3.17                                              | 192.168.88.19:3360                           | root         | P@$$w0rd |
 | DEV  | Wildfly 19.0.0 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(Home Path: /opt/wildfly/)<br />(Deployment Path: /opt/wildfly/standalone/deployments/) | http://192.168.88.19:9990/console/index.html | wildflyadmin | P@$$w0rd |
+
+
+
+### Dev Environment on Google Cloud
+
+>   Start @ 2020.07.01
+
+| Env. | Name                                                         | IP / URL                                                     | User                                                        | Password |
+| ---- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------------- | -------- |
+| DEV  | Google Cloud :  Project (OCRC) : Compute Engine : VMWare Instances | https://console.cloud.google.com/compute/instances?project=ocrc-254809&authuser=2 | request to Saroch and then use your email user and password | -        |
+| DEV  | OS ?<br />(SSH Home Path: /home/<name>)                      | 35.247.155.31                                                | click SSH on VMWare Instance Item                           | -        |
+| DEV  | MariaDB ?                                                    | 35.247.155.31:3360                                           | request to Saroch if you want                               | -        |
+| DEV  | Wildfly 18.0.1 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(Home Path: start : /opt/wildfly-18.0.1.Final/)<br />(Deployment Path: /opt/wildfly-18.0.1.Final/standalone/deployments/)<br />(Log Path: /opt/wildfly-18.0.1.Final/standalone/log/) | http://35.247.155.31:9997/console/index.html                 | request to Saroch                                           | -        |
+
+
 
 
 

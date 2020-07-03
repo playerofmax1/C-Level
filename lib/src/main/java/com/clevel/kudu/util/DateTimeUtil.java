@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -50,6 +51,15 @@ public class DateTimeUtil {
         return Date.from(instant);
     }
 
+    public static Date getDatePlusYears(Date date, int years) {
+        Instant instant = LocalDate.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE)).atStartOfDay().plusYears(years).atZone(ZoneId.systemDefault()).toInstant();
+        return Date.from(instant);
+    }
+
+    public static int getYear(Date date) {
+        return LocalDate.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE)).getYear();
+    }
+
     public static Date setTime(Date date, int hour, int minute, int second) {
         Instant instant = LocalDate.ofInstant(date.toInstant(), ZoneId.of(DEFAULT_ZONE)).atTime(hour, minute, second).atZone(ZoneId.systemDefault()).toInstant();
         return Date.from(instant);
@@ -91,11 +101,11 @@ public class DateTimeUtil {
     }
 
     public static Date getFirstDateOfYear(int year) {
-        return Date.from(new GregorianCalendar(year + 1900, 1, 1).toInstant());
+        return Date.from(new GregorianCalendar(year, Calendar.JANUARY, 1).toInstant());
     }
 
     public static Date getLastDateOfYear(int year) {
-        return Date.from(new GregorianCalendar(year + 1900, 31, 12).toInstant());
+        return Date.from(new GregorianCalendar(year, Calendar.DECEMBER, 31).toInstant());
     }
 
     public static boolean isSameDate(Date date1, Date date2) {

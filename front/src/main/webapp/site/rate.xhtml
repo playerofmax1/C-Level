@@ -69,7 +69,7 @@
                             </p:column>
 
                             <p:column headerText="Actions" style="width: 5.5em">
-                                <p:commandButton id="editButton" icon="ui-icon-pencil"  action="#{rateCtl.onPreUpdateRate}"
+                                <p:commandButton id="editButton" icon="ui-icon-pencil" action="#{rateCtl.onPreUpdateRate}"
                                                  update="rateDlgForm"
                                                  onsuccess="PF('rateDlg').show();">
                                     <f:setPropertyActionListener value="#{rate.id}"
@@ -94,17 +94,23 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Rate" widgetVar="rateDlg" modal="true" resizable="false">
+        <p:dialog header="Add/Edit Rate" widgetVar="rateDlg" modal="true" resizable="false" closable="false">
             <h:form id="rateDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Code" styleClass="require"/>
-                    <p:inputText value="#{rateCtl.newRate.code}" style="width: 400px" styleClass="#{rateCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}" />
-                    <h:outputLabel value="Name" styleClass="require"/>
-                    <p:inputText value="#{rateCtl.newRate.name}" style="width: 400px" styleClass="#{rateCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}" />
-                    <h:outputLabel value="Description"/>
+                    <h:outputLabel value="Code:" styleClass="require"/>
+                    <p:inputText value="#{rateCtl.newRate.code}" style="width: 400px" styleClass="#{rateCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"/>
+
+                    <h:outputLabel value="Name:" styleClass="require"/>
+                    <p:inputText value="#{rateCtl.newRate.name}" style="width: 400px" styleClass="#{rateCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
+
+                    <h:outputLabel value="Description:"/>
                     <p:inputTextarea value="#{rateCtl.newRate.description}" style="width: 400px"/>
-                    <h:outputLabel value="Cost"/>
-                    <p:inputNumber value="#{rateCtl.newRate.cost}"/>
+
+                    <h:outputLabel value="Cost:"/>
+                    <p:outputPanel styleClass="ui-inputgroup no-margin">
+                        <p:inputNumber value="#{rateCtl.newRate.cost}"/>
+                        <h:outputText styleClass="ui-inputgroup-addon" value="฿"/>
+                    </p:outputPanel>
                 </p:panelGrid>
 
                 <hr/>

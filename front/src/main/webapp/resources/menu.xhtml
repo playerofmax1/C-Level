@@ -21,7 +21,7 @@
             <p:scrollPanel styleClass="no-margin no-padding" style="height: calc(100% - 101px) !important;">
                 <div class="additional ui-g">
                     <div class="ui-g-6">
-                        <p:commandButton id="chagePassButton" icon="fa fa-key" value="Change Password" action="/site/changePwd.jsf?faces-redirect=true"/>
+                        <p:commandButton id="changePassButton" icon="fa fa-key" value="Change Password" action="/site/changePwd.jsf?faces-redirect=true"/>
                     </div>
                     <div class="ui-g-6">
                         <p:commandButton icon="fa fa-sign-out" value="Sign Out" actionListener="#{loginBean.logout}"/>
@@ -43,12 +43,13 @@
                         <p:menuitem icon="fa fa-users" value="User Management" action="/site/user.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0005')}"/>
                         <p:menuitem icon="fa fa-toggle-on" value="Role Management" action="/site/role.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0006')}"/>
                         <p:menuitem icon="fa fa-plane" value="Holiday" action="/site/holiday.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0008')}"/>
+                        <p:menuitem icon="fa fa-calendar-o" value="Year" action="/site/performanceYear.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0012')}"/>
                         <p:menuitem icon="fa fa-cog" value="Admin Settings" action="/site/adminSettings.jsf?faces-redirect=true" rendered="#{accessCtl.isVisible('S0010')}"/>
                     </p:submenu>
                 </p:menu>
             </p:scrollPanel>
 
-            <p:focus for="chagePassButton"/>
+            <p:focus for="changePassButton"/>
 
             <footer style="z-index: 1000;" class="ui-corner-top">
                 &#169; 2020 <a href="http://www.the-c-level.com/" target="_blank">C-Level Co., Ltd.</a> All rights reserved.<br/>

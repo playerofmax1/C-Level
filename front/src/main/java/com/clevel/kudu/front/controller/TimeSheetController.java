@@ -358,7 +358,6 @@ public class TimeSheetController extends AbstractController {
         log.debug("onExtendMandays(selectedProjectTask: {})", selectedProjectTask);
         /*TODO: may be need the confirm dialog for lost data on the Timesheet Detail dialog*/
 
-        /*TODO: create attributes for Open then redirect*/
         MandaysRequestOpenAttributes openAttributes = new MandaysRequestOpenAttributes();
         openAttributes.setProjectTask(selectedProjectTask);
         httpSession.setAttribute(SessionAttribute.MANDAYS_REQUEST_OPEN.name(), openAttributes);

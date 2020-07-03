@@ -88,6 +88,16 @@
     </error-page>
 
     <error-page>
+        <exception-type>org.primefaces.expression.ComponentNotFoundException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>javax.el.PropertyNotFoundException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
         <exception-type>org.jboss.weld.exceptions.WeldException</exception-type>
         <location>/site/exception.xhtml</location>
     </error-page>
@@ -98,17 +108,17 @@
     </error-page>
 
     <error-page>
+        <exception-type>java.lang.IllegalStateException</exception-type>
+        <location>/site/exception.xhtml</location>
+    </error-page>
+
+    <error-page>
         <exception-type>java.lang.IllegalArgumentException</exception-type>
         <location>/site/exception.xhtml</location>
     </error-page>
 
     <error-page>
         <exception-type>java.lang.NullPointerException</exception-type>
-        <location>/site/exception.xhtml</location>
-    </error-page>
-
-    <error-page>
-        <exception-type>javax.el.PropertyNotFoundException</exception-type>
         <location>/site/exception.xhtml</location>
     </error-page>
 

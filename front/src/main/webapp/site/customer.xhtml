@@ -90,14 +90,14 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Customer" widgetVar="customerDlg" modal="true" width="50%" resizable="false">
+        <p:dialog header="Add/Edit Customer" widgetVar="customerDlg" modal="true" resizable="false" closable="false">
             <h:form id="customerDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Code" styleClass="require"/>
+                    <h:outputLabel value="Code:" styleClass="require"/>
                     <p:inputText value="#{customerCtl.newCustomer.code}" styleClass="#{customerCtl.validator.failMap['code']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Name" styleClass="require"/>
+                    <h:outputLabel value="Name:" styleClass="require"/>
                     <p:inputText value="#{customerCtl.newCustomer.name}" styleClass="#{customerCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Description"/>
+                    <h:outputLabel value="Description:"/>
                     <p:inputTextarea value="#{customerCtl.newCustomer.description}" style="width: 400px"
                                      autoResize="false"/>
                 </p:panelGrid>

@@ -44,16 +44,22 @@
 
                         <hr/>
 
-                        <p:panel style="font-size: 12px">
-                            <f:facet name="header">
-                                <div class="ui-g">
-                                    <div class="ui-g-12 ui-lg-6 ui-sm-12 alignLeft">
+                        <p:outputPanel style="font-size: 12px">
+                            <p:outputPanel styleClass="ui-widget-header ui-corner-top">
+                                <div class="ui-g" style="margin: 10px">
+                                    <div class="ui-g-6 alignLeft">
                                         <p:commandButton id="newRole"
                                                          icon="fa fa-plus"
                                                          value="New Role"
                                                          action="#{roleCtl.onPreNewRole}"
                                                          onsuccess="PF('roleDlg').show()"
                                                          update="mainForm,roleDlgForm"/>
+                                        <p:tooltip position="right" value="Create new role." for="newRole"/>
+                                    </div>
+                                    <div class="ui-g-6 alignRight">
+                                        <b>Role: </b><h:outputText value="#{roleCtl.selectedRoleDTO.name}"/>
+                                        <br/><sup class="gray-font"><b>Description: </b><h:outputText value="#{roleCtl.selectedRoleDTO.description}"/></sup>
+                                        <br/>
                                         <p:commandButton id="editRole"
                                                          icon="ui-icon-pencil"
                                                          value="Edit Role"
@@ -68,12 +74,11 @@
                                                          onsuccess="PF('deleteRoleDlg').show();"
                                                          update="deleteDlgForm"
                                                          disabled="#{roleCtl.selectedRoleId==0}"/>
-                                        <p:tooltip position="top" value="Create new role." for="newRole"/>
-                                        <p:tooltip position="top" value="Edit this role." for="editRole"/>
-                                        <p:tooltip position="top" value="Delete this role." for="deleteRole"/>
+                                        <p:tooltip position="bottom" value="Edit this role." for="editRole"/>
+                                        <p:tooltip position="bottom" value="Delete this role." for="deleteRole"/>
                                     </div>
                                 </div>
-                            </f:facet>
+                            </p:outputPanel>
 
                             <p:tabView id="tab">
                                 <p:tab id="screenTab" title="Screen" disabled="#{roleCtl.selectedRoleId==0}">
@@ -109,7 +114,7 @@
                                     </p:pickList>
                                 </p:tab>
                             </p:tabView>
-                        </p:panel>
+                        </p:outputPanel>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </h:form>
                 </div>
@@ -117,12 +122,13 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Role" widgetVar="roleDlg" modal="true" width="50%" resizable="false">
+        <p:dialog header="Add/Edit Role" widgetVar="roleDlg" modal="true" resizable="false" closable="false">
             <h:form id="roleDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Name" styleClass="require"/>
+                    <h:outputLabel value="Name:" styleClass="require"/>
                     <p:inputText value="#{roleCtl.newRole.name}" styleClass="#{roleCtl.validator.failMap['name']==null?'ui-inputtext':'ui-state-error'}"/>
-                    <h:outputLabel value="Description "/>
+
+                    <h:outputLabel value="Description:"/>
                     <p:inputTextarea value="#{roleCtl.newRole.description}" style="width: 400px"/>
                 </p:panelGrid>
 

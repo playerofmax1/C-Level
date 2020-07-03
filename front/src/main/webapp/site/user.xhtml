@@ -122,7 +122,7 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="64em" resizable="false">
+        <p:dialog header="Add/Edit User" widgetVar="userDlg" modal="true" width="64em" resizable="false" closable="false">
             <h:form id="userDlgForm">
                 <p:panelGrid columns="4" styleClass="no-border">
                     <h:outputLabel value="Name:" styleClass="require" style="width:105px;display: inline-block;"/>
@@ -270,7 +270,7 @@
             </h:form>
         </p:dialog>
 
-        <p:dialog header="Time Sheet View Setting" widgetVar="viewTSDlg" modal="true" width="50%" resizable="false">
+        <p:dialog header="Time Sheet View Setting" widgetVar="viewTSDlg" modal="true" width="50%" resizable="false" closable="false">
             <h:form id="viewTSDlgForm">
 
                 <p:pickList id="userTSList" value="#{userCtl.userTimeSheet}" var="user"

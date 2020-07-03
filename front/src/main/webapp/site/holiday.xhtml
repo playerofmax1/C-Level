@@ -92,15 +92,19 @@
             </div>
         </div>
 
-        <p:dialog header="Add/Edit Holiday" widgetVar="holidayDlg" modal="true" resizable="false">
+        <p:dialog header="Add/Edit Holiday" widgetVar="holidayDlg" modal="true" resizable="false" closable="false">
             <h:form id="holidayDlgForm">
                 <p:panelGrid columns="2" styleClass="no-border">
-                    <h:outputLabel value="Date" styleClass="require"/>
-                    <p:calendar id="popup" value="#{holidayCtl.newHoliday.holidayDate}"
-                                pattern="dd/MM/yyyy"
-                                mask="true"/>
-                    <h:outputLabel value="Description" styleClass="require" />
-                    <p:inputText value="#{holidayCtl.newHoliday.description}" style="width: 500px;"/>
+                    <h:outputLabel value="Date:" styleClass="require"/>
+                    <p:outputPanel class="ui-inputgroup no-margin">
+                        <p:calendar value="#{holidayCtl.newHoliday.holidayDate}"
+                                    pattern="dd/MM/yyyy"
+                                    mask="true" required="true" requiredMessage="Date is required!"/>
+                        <span class="ui-inputgroup-addon">dd/mm/yyyy</span>
+                    </p:outputPanel>
+
+                    <h:outputLabel value="Description:" styleClass="require"/>
+                    <p:inputTextarea value="#{holidayCtl.newHoliday.description}" style="width: 400px" required="true" requiredMessage="Description is required!"/>
                 </p:panelGrid>
                 <div class="ui-g">
                     <div class="ui-g-12 ui-lg-12 alignRight">

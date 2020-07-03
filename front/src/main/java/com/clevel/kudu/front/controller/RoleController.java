@@ -33,6 +33,7 @@ public class RoleController extends AbstractController {
 
     private List<RoleDTO> roleList;
     private long selectedRoleId;
+    private RoleDTO selectedRoleDTO;
     private RoleDTO newRole;
 
     private boolean editMode;
@@ -285,8 +286,10 @@ public class RoleController extends AbstractController {
             log.debug("no role available.");
             return;
         }
+
         // screen tab
-        ServiceRequest<RoleDTO> request = new ServiceRequest<>(getObjById(roleList,selectedRoleId));
+        selectedRoleDTO = getObjById(roleList, selectedRoleId);
+        ServiceRequest<RoleDTO> request = new ServiceRequest<>(selectedRoleDTO);
         request.setUserId(userDetail.getUserId());
         Response response = apiService.getSecurityResource().getRoleScreenList(request);
         if (response.getStatus() == 200) {
@@ -378,5 +381,13 @@ public class RoleController extends AbstractController {
 
     public void setValidator(Validator validator) {
         this.validator = validator;
+    }
+
+    public RoleDTO getSelectedRoleDTO() {
+        return selectedRoleDTO;
+    }
+
+    public void setSelectedRoleDTO(RoleDTO selectedRoleDTO) {
+        this.selectedRoleDTO = selectedRoleDTO;
     }
 }

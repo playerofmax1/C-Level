@@ -1,7 +1,7 @@
-#/* Current: Kudu (Alpha)(RC3) Version 1.3.1 build 24/6/2020 17:36 */
+#/* Current: Kudu (Alpha)(RC4) Version 1.3.1 build 3/7/2020 15:38 */
 project.name=Kudu
-version.name=(Alpha)(RC3) Version
-build.date=24/6/2020 17:36
+version.name=(Alpha)(RC4) Version
+build.date=3/7/2020 15:38
 
 #/* major changes */
 version.number=1

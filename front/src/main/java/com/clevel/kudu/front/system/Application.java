@@ -9,6 +9,7 @@ import com.clevel.kudu.model.KuduEvent;
 import com.clevel.kudu.model.KuduEventListener;
 import com.clevel.kudu.model.SystemConfig;
 import com.clevel.kudu.resource.APIService;
+import com.clevel.kudu.util.DateTimeUtil;
 import com.clevel.kudu.util.FacesUtil;
 import org.slf4j.Logger;
 
@@ -38,6 +39,8 @@ public class Application {
 
     private boolean cssForceReload;
     private String cssFileName;
+
+    private int currentYear;
 
     private String appPath;
 
@@ -79,6 +82,7 @@ public class Application {
     private void loadSystemConfig() {
         List<SystemConfig> configNameList = new ArrayList<>();
         configNameList.add(SystemConfig.FORCE_RELOAD_CSS);
+        configNameList.add(SystemConfig.PF_YEAR);
 
         ServiceRequest<List<SystemConfig>> request = new ServiceRequest<>(configNameList);
         Response response = apiService.getSystemResource().getSpecifiedConfigList(request);
@@ -87,11 +91,29 @@ public class Application {
             });
             List<ConfigDTO> configDTOList = serviceResponse.getResult();
             log.debug("configDTOList: {}", configDTOList);
-            cssForceReload = Boolean.parseBoolean(configDTOList.get(0).getValue());
+            setConfigVariable(configDTOList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
-            cssForceReload = true;
+            setConfigVariable(null);
+        }
+    }
+
+    private void setConfigVariable(List<ConfigDTO> configDTOList) {
+        /*defaults*/
+        currentYear = DateTimeUtil.getYear(DateTimeUtil.currentDate());
+        cssForceReload = true;
+
+        if (configDTOList == null) {
+            return;
+        }
+
+        for (ConfigDTO configDTO : configDTOList) {
+            if (SystemConfig.PF_YEAR.equals(configDTO.getSystemConfig())) {
+                currentYear = Integer.parseInt(configDTO.getValue());
+            } else if(SystemConfig.FORCE_RELOAD_CSS.equals(configDTO.getSystemConfig())) {
+                cssForceReload = Boolean.parseBoolean(configDTO.getValue());
+            }
         }
     }
 
@@ -128,5 +150,9 @@ public class Application {
 
     public void setAppPath(String appPath) {
         this.appPath = appPath;
+    }
+
+    public int getCurrentYear() {
+        return currentYear;
     }
 }

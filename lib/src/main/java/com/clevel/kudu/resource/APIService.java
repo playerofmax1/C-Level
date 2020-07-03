@@ -55,6 +55,11 @@ public class APIService implements Serializable {
         return client.target(context.getInitParameter(restAPIUrl)).proxy(HolidayService.class);
     }
 
+    public PerformanceYearService getPerformanceYearResource() {
+        ResteasyClient client = new ResteasyClientBuilder().build();
+        return client.target(context.getInitParameter(restAPIUrl)).proxy(PerformanceYearService.class);
+    }
+
     public SystemService getSystemResource() {
         ResteasyClient client = new ResteasyClientBuilder().build();
         return client.target(context.getInitParameter(restAPIUrl)).proxy(SystemService.class);

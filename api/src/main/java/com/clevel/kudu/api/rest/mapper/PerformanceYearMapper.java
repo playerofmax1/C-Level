@@ -5,9 +5,13 @@ import com.clevel.kudu.dto.working.PerformanceYearDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PerformanceYearMapper {
 
     PerformanceYearDTO toDTO(PerformanceYear performanceYear);
+    List<PerformanceYearDTO> toDTO(Stream<PerformanceYear> performanceYearStream);
 
 }

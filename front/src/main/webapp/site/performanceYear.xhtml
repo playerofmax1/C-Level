@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <f:event type="preRenderView" listener="#{accessCtl.checkAccess('S0012')}"/>
+
+    <h:head>
+        <title>Year</title>
+        <h:outputScript library="js" name="front.js"/>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!--<link rel="icon" href="../../favicon.ico">-->
+
+        <!-- Custom styles for this template -->
+        <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
+    </h:head>
+    <h:body>
+        <ui:include src="../resources/topMenu.xhtml"/>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ui:include src="../resources/menu.xhtml"/>
+
+                <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                    <h1>Year</h1>
+                    <h:form id="mainForm">
+                        <p:growl id="msg" showDetail="true" escape="false"/>
+
+                        <p:dataTable var="pfYear" value="#{pfYearCtl.performanceYearList}" rows="10" sortBy="#{pfYear.year}"
+                                     paginator="true" paginatorPosition="bottom" style="font-size: 12px">
+
+                            <f:facet name="header">
+                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                    <div class="ui-g">
+                                        <div class="ui-g-3 alignLeft">
+                                            <p:commandButton id="newYear" icon="fa fa-plus" value="Add Year"
+                                                             action="#{pfYearCtl.onPreNewYear}"
+                                                             oncomplete="if(args.isActionSuccess)PF('pfYearDlg').show()"
+                                                             update="pfYearDlgForm"/>
+                                            <p:tooltip position="right" value="Add new performance year." for="newYear"/>
+                                        </div>
+                                    </div>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column headerText="Year" styleClass="alignCenter">
+                                <h:outputText value="#{pfYear.year}"/>
+                                <p:outputPanel rendered="#{pfYearCtl.currentYear eq pfYear.year}" styleClass="silver-font"><sup><h:outputText value="(current year)"/></sup></p:outputPanel>
+                            </p:column>
+
+                            <p:column headerText="Start Date" styleClass="alignCenter" style="width: 80px">
+                                <h:outputText value="#{pfYear.startDate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="End Date" styleClass="alignCenter" style="width: 80px">
+                                <h:outputText value="#{pfYear.endDate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="Asia/Bangkok"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Actions" style="width: 5.5em">
+                                <p:commandButton id="editButton" icon="ui-icon-pencil" action="#{pfYearCtl.onPreUpdateYear}"
+                                                 update="pfYearDlgForm,mainForm"
+                                                 oncomplete="if(args.isActionSuccess)PF('pfYearDlg').show();">
+                                    <f:setPropertyActionListener value="#{pfYear}"
+                                                                 target="#{pfYearCtl.selectedYear}"/>
+                                </p:commandButton>
+                                <p:tooltip for="editButton" value="Edit" position="top"/>
+
+                                <p:commandButton id="deleteButton" icon="ui-icon-minus" action="#{pfYearCtl.onPreDeleteYear}"
+                                                 update="deleteDlgForm,mainForm"
+                                                 oncomplete="if(args.isActionSuccess)PF('deleteYearDlg').show();"
+                                                 disabled="#{pfYearCtl.lastYear.year != pfYear.year}">
+                                    <f:setPropertyActionListener value="#{pfYear}"
+                                                                 target="#{pfYearCtl.selectedYear}"/>
+                                </p:commandButton>
+                                <p:tooltip for="deleteButton" value="Delete" position="top"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <p:dialog header="Add/Edit Year" widgetVar="pfYearDlg" modal="true" resizable="false">
+            <h:form id="pfYearDlgForm">
+                <p:panelGrid columns="2" styleClass="no-border">
+                    <h:outputLabel value="Year:" styleClass="require"/>
+                    <p:outputPanel>
+                        <h:outputLabel value="#{pfYearCtl.newPerformanceYear.year}"/><h:outputText value=" (current year)" rendered="#{pfYearCtl.currentYear eq pfYearCtl.newPerformanceYear.year}" styleClass="silver-font"/>
+                    </p:outputPanel>
+
+                    <h:outputText value=" "/>
+                    <h:outputText value=" "/>
+
+                    <h:outputLabel value="Start Date:" styleClass="require"/>
+                    <p:outputPanel class="ui-inputgroup no-margin">
+                        <p:calendar value="#{pfYearCtl.newPerformanceYear.startDate}"
+                                    pattern="dd/MM/yyyy"
+                                    mask="true"/>
+                        <span class="ui-inputgroup-addon">dd/mm/yyyy</span>
+                    </p:outputPanel>
+
+                    <h:outputLabel value="End Date:" styleClass="require"/>
+                    <p:outputPanel class="ui-inputgroup no-margin">
+                        <p:calendar value="#{pfYearCtl.newPerformanceYear.endDate}"
+                                    pattern="dd/MM/yyyy"
+                                    mask="true"/>
+                        <span class="ui-inputgroup-addon">dd/mm/yyyy</span>
+                    </p:outputPanel>
+                </p:panelGrid>
+
+                <hr/>
+
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-lg-12 alignRight">
+                        <p:commandButton icon="fa fa-save" value="Save" action="#{pfYearCtl.onSaveNewYear}"
+                                         rendered="#{pfYearCtl.editMode==false}"
+                                         update="mainForm,pfYearDlgForm"
+                                         oncomplete="if(args.isActionSuccess)PF('pfYearDlg').hide();"/>
+                        <p:commandButton icon="fa fa-save" value="Update" action="#{pfYearCtl.onUpdatePerformanceYear}"
+                                         rendered="#{pfYearCtl.editMode==true}"
+                                         update="mainForm,pfYearDlgForm"
+                                         oncomplete="if(args.isActionSuccess)PF('pfYearDlg').hide();"/>
+                        <p:commandButton id="cancelButton" icon="fa fa-ban" value="Cancel" onclick="PF('pfYearDlg').hide();"/>
+                    </div>
+                </div>
+
+                <p:focus for="cancelButton"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </h:form>
+        </p:dialog>
+
+        <ui:include src="/resources/deleteConfirmDlg.xhtml">
+            <ui:param name="header" value="Delete Last Year"/>
+            <ui:param name="widgetVar" value="deleteYearDlg"/>
+            <ui:param name="msg1" value="Delete year(#{pfYearCtl.selectedYear.year}) will block some screens can't show data in this year!"/>
+            <ui:param name="msg2" value="Do you want to delete this year?"/>
+            <ui:param name="controller" value="#{pfYearCtl}"/>
+            <ui:param name="action" value="onDeleteYear"/>
+            <ui:param name="update" value="mainForm"/>
+        </ui:include>
+    </h:body>
+</f:view>
+</html>

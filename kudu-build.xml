@@ -539,10 +539,7 @@
         <mkdir dir="${artifact.temp.output.api}"/>
         <zip destfile="${temp.jar.path.api.war}">
             <zipfileset dir="${basedir}/api/src/main/webapp"/>
-            <zipfileset file="${basedir}/api/src/main/webapp/WEB-INF/web.xml" prefix="WEB-INF"/>
             <zipfileset dir="${api.output.dir}" prefix="WEB-INF/classes"/>
-            <zipfileset dir="${api.output.dir}" prefix="WEB-INF/classes"/>
-            <zipfileset file="${basedir}/api/src/main/resources/META-INF/persistence.xml" prefix="WEB-INF/classes/META-INF"/>
             <zipfileset file="${basedir}/../kudu-api-lib/guava-23.0.jar" prefix="WEB-INF/lib"/>
             <zipfileset file="${basedir}/../kudu-api-lib/reflections-0.9.10.jar" prefix="WEB-INF/lib"/>
             <zipfileset file="${basedir}/../kudu-api-lib/swagger-core-2.0.2.jar" prefix="WEB-INF/lib"/>
@@ -575,8 +572,6 @@
         <mkdir dir="${artifact.temp.output.front}"/>
         <zip destfile="${temp.jar.path.front.war}">
             <zipfileset dir="${basedir}/front/src/main/webapp"/>
-            <zipfileset file="${basedir}/front/src/main/webapp/WEB-INF/web.xml" prefix="WEB-INF"/>
-            <zipfileset dir="${front.output.dir}" prefix="WEB-INF/classes"/>
             <zipfileset dir="${front.output.dir}" prefix="WEB-INF/classes"/>
             <zipfileset file="${basedir}/../kudu-dconvers-lib/dconvers.jar" prefix="WEB-INF/lib"/>
             <zipfileset file="${basedir}/../kudu-dconvers-lib/commons-beanutils-1.9.3.jar" prefix="WEB-INF/lib"/>

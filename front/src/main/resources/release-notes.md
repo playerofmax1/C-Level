@@ -1,6 +1,12 @@
 # Kudu - Released Notes
 
 
+## Kudu (Alpha) Version 1.3.2
+
+Fixed: KUDU-53: Project Management > click M button has FaceletException.
+Fixed: Build script add many duplicated files into both api.war and front.war.  
+
+
 
 ## Kudu (Alpha) Version 1.3.1 (RC3) [git:db1c6f07f7f8179f8f2b4763b1193c4990a84d24]
 > From: Kudu (Alpha)(RC2) Version 1.2.4 build 29/5/2020 18:30

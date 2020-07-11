@@ -1,4 +1,165 @@
-/* common styles for kudu with aristo primefaces theme */
+/* Common styles for kudu with aristo primefaces theme */
+/* Ordered: Z-INDEX, COLOR, FONT-SIZE, ELEMENT-BOX-SIZE-N-POSITION, SPECIFIC-PROP */
+
+/*-- MANAGE Z-INDEX (DESC) --*/
+
+.top-bar {
+    z-index: 90000 !important;
+}
+
+.left-side-bar {
+    z-index: 90500 !important;
+}
+
+.main h1,
+.hamburger-button {
+    z-index: 91000 !important;
+}
+
+.ui-dialog {
+    z-index: 98000 !important;
+}
+
+.ui-datepicker,
+.ui-tooltip,
+.ui-selectonemenu-panel {
+    z-index: 98100 !important;
+}
+
+.bring-to-top {
+    z-index: 98300 !important;
+}
+
+.ui-menu-overlay {
+    z-index: 98500 !important;
+}
+
+.ui-growl {
+    z-index: 99000 !important;
+}
+
+/*-- MANAGE COLOR --*/
+
+.login-panel {
+    background-color: rgba(255,255,255,.9);
+    border-color: silver;
+}
+
+.login-panel-container footer,
+.login-panel-container footer a {
+    color: silver;
+}
+
+.main h1 {
+    border-left: silver solid 2px;
+    color: gray !important;
+}
+
+.top-bar {
+    background-color: white;
+    box-shadow: silver 1px 1px 7px 1px;
+}
+
+.user-menu {
+    border: silver solid thin !important;
+    color: gray;
+}
+
+.user-circle {
+    border: gray solid 1.5px !important;
+}
+
+.left-side-bar {
+    box-shadow: silver 1px 7px 5px 3px !important;
+}
+
+.left-side-bar .ui-scrollpanel,
+.left-side-bar .ui-scrollpanel-container {
+    background-color: rgb(196, 196, 196);
+}
+
+.left-side-bar .additional .ui-button-icon-left {
+    color: gray;
+}
+
+.left-side-bar footer {
+    border: gray solid 1px;
+    color: #786e68;
+    background-color: rgb(196, 196, 196);
+}
+
+.panel-title {
+    background-color: #428bca !important;
+}
+
+.panel-body {
+    background: #f5f5f5;
+}
+
+.version {
+    color: #786e68;
+}
+
+.warning-message {
+    color: #ff0a08;
+}
+
+.summary {
+    background-color: #c5c8ca !important;
+}
+
+label.require:after {
+    color: #ff0000;
+}
+
+.ui-inputfield,
+.ui-inputtext {
+    box-shadow: inset 1px 1px 4px #cccccc !important;
+}
+
+.ui-inputgroup span.ui-inputgroup-addon.disabled {
+    color: silver;
+    border-color: silver;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+    border: 1px solid #e20034 !important;
+    background: white !important;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next,
+.ui-datepicker .ui-datepicker-title {
+    color: #000000 !important;
+}
+
+.ui-datepicker .ui-datepicker-calendar td.ui-datepicker-today a {
+    background-color: #65a5cc !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.ui-border {
+    border: 1px solid #a8a8a8;
+}
+
+hr,
+hr.ui-separator {
+    border-top: 1px solid #eee;
+}
+
+.holiday {
+    background-color: steelblue;
+    color: white;
+}
+
+.normal {
+    background-color: white;
+}
+
+/*-- MANAGE FONT SIZE (ASC) --*/
+
+/*-- MANAGE ELEMENT BOX SIZE AND POSITION --*/
+
 body {
     min-width: 640px;
     padding-top: 68px;
@@ -10,14 +171,11 @@ body {
     min-width: 250px;
     padding: 21px !important;
     width: 25%;
-    background-color: white;
     display: inline-block;
 
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
-
-    border-color: #ddd;
 }
 
 .login-panel.ui-panel .ui-panel-content {
@@ -40,7 +198,6 @@ body {
 .login-panel-container footer,
 .login-panel-container footer a {
     font-size: 9px;
-    color: silver;
     text-decoration: none;
 }
 
@@ -62,9 +219,7 @@ body {
     font-size: 21px;
     font-weight: normal;
     margin: -70px 0 0 266px;
-    border-left: silver solid 2px;
     padding: 9px 0 7px 30px;
-    color: gray !important;
 }
 
 .main h2 {
@@ -75,8 +230,6 @@ body {
 .top-bar {
     min-width: 640px;
     width: 100%;
-    background-color: white;
-    box-shadow: silver 1px 1px 7px 1px;
 }
 
 .top-bar > .alignLeft {
@@ -84,13 +237,11 @@ body {
 }
 
 .user-menu {
-    border: silver solid thin !important;
     padding: 5px;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
     margin: 0;
-    color: gray;
     display: inline-block;
     cursor: pointer;
 }
@@ -103,7 +254,6 @@ body {
     -webkit-border-radius: 18px;
     border-radius: 18px;
 
-    border: gray solid 1.5px !important;
     font-size: 2em;
 
     text-align: center;
@@ -142,11 +292,6 @@ body {
     margin: 68px 0 0 0 !important;
     padding: 0 !important;
     border: 0 !important;
-    box-shadow: silver 1px 7px 5px 3px !important;
-}
-
-.left-side-bar .ui-scrollpanel-container {
-    background-color: rgb(196, 196, 196);
 }
 
 .left-side-bar .ui-scrollpanel-vbar {
@@ -185,7 +330,6 @@ body {
     width: 2em;
     height: 2em;
     font-size: 2em;
-    color: gray;
 }
 
 .left-side-bar .ui-menu {
@@ -244,16 +388,12 @@ body {
     left: 0px;
     bottom: 68px;
     margin: 0 !important;
-    border: gray solid 1px;
     padding: 5px;
     width: calc(100% - 12px);
     height: 20px;
 
     text-align: center;
     font-size: 9px;
-    color: #786e68;
-
-    background-color: rgb(196, 196, 196);
 }
 
 .ui-sidebar-mask {
@@ -274,12 +414,7 @@ body {
 
 .panel-title {
     text-align: right;
-    background-color: #428bca !important;
     height: 25px;
-}
-
-.panel-body {
-    background: #f5f5f5;
 }
 
 .gridInputRow {
@@ -290,7 +425,6 @@ body {
     text-align: right;
     font-family: "Courier New", Courier, serif;
     font-size: 10px;
-    color: #786e68;
     position: fixed;
     bottom: 5px;
     width: 100%;
@@ -301,50 +435,6 @@ body {
     font-weight: bold;
     font-family: Courier, serif;
     font-size: 14px;
-    color: #ff0a08;
-}
-
-.yellow {
-    background-color: yellow;
-}
-
-.red {
-    background-color: red;
-}
-
-.green {
-    background-color: darkolivegreen !important;
-}
-
-.blue {
-    background-color: cornflowerblue !important;
-}
-
-.gray-font {
-    color: gray;
-!important;
-}
-
-.silver-font {
-    color: silver !important;
-}
-
-.red-font {
-    color: red !important;
-}
-
-.white-font {
-    color: white !important;
-}
-
-.superscript {
-    vertical-align: super;
-    font-size: smaller !important;
-}
-
-.subscript {
-    vertical-align: sub;
-    font-size: smaller !important;
 }
 
 .summary {
@@ -352,7 +442,6 @@ body {
     font-weight: bold;
     text-align: right;
     vertical-align: middle;
-    background-color: #c5c8ca !important;
     height: 20px;
 }
 
@@ -372,7 +461,6 @@ label {
 
 label.require:after {
     content: "*";
-    color: #ff0000;
     font-size: 1.4em !important;
 }
 
@@ -393,7 +481,6 @@ label.require:after {
     outline: none !important;
     font-weight: normal !important;
     padding: 5px 5px !important;
-    box-shadow: inset 1px 1px 4px #cccccc !important;
 }
 
 .ui-inputfield,
@@ -412,24 +499,7 @@ label.require:after {
     margin: 0;
 }
 
-.ui-inputgroup span.ui-inputgroup-addon.disabled {
-    color: silver;
-    border-color: silver;
-}
-
-.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
-    border: 1px solid #e20034 !important;
-    background: #ffffff !important;
-}
-
-.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next,
-.ui-datepicker .ui-datepicker-title {
-    color: #000000 !important;
-}
-
 .ui-datepicker .ui-datepicker-calendar td.ui-datepicker-today a {
-    background-color: #65a5cc !important;
-    color: #fff !important;
     font-weight: bold !important;
 }
 
@@ -460,16 +530,11 @@ label.require:after {
     margin-bottom: 0 !important;
 }
 
-.ui-border {
-    border: 1px solid #a8a8a8;
-}
-
 hr,
 hr.ui-separator {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
     border: 0;
-    border-top: 1px solid #eee;
 }
 
 .ui-widget {
@@ -504,13 +569,10 @@ hr.ui-separator {
 }
 
 .holiday {
-    background-color: steelblue;
-    color: white;
     background-image: none;
 }
 
 .normal {
-    background-color: white;
     background-image: none;
 }
 
@@ -534,7 +596,49 @@ hr.ui-separator {
     text-align: center;
 }
 
-/*IMPORTANT!*/
+/*-- SPECIFIC PROPERTY --*/
+
+.yellow {
+    background-color: yellow;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: darkolivegreen !important;
+}
+
+.blue {
+    background-color: cornflowerblue !important;
+}
+
+.gray-font {
+    color: gray !important;
+}
+
+.silver-font {
+    color: silver !important;
+}
+
+.red-font {
+    color: red !important;
+}
+
+.white-font {
+    color: white !important;
+}
+
+.superscript {
+    vertical-align: super;
+    font-size: smaller !important;
+}
+
+.subscript {
+    vertical-align: sub;
+    font-size: smaller !important;
+}
 
 .alignLeft {
     text-align: left;
@@ -629,46 +733,10 @@ hr.ui-separator {
     padding: 5px;
 }
 
-/* Z-Index Management */
-
-.top-bar {
-    z-index: 90000 !important;
+@media (max-width: 1024px) {
+    /*MD(medium) in Primefaces Grid CSS, please put only the fields that has different from above/default*/
 }
-
-.left-side-bar {
-    z-index: 90500 !important;
-}
-
-.main h1,
-.hamburger-button {
-    z-index: 91000 !important;
-}
-
-.ui-dialog {
-    z-index: 98000 !important;
-}
-
-.ui-datepicker,
-.ui-tooltip,
-.ui-selectonemenu-panel {
-    z-index: 98100 !important;
-}
-
-.bring-to-top {
-    z-index: 98300 !important;
-}
-
-.ui-menu-overlay {
-    z-index: 98500 !important;
-}
-
-.ui-growl {
-    z-index: 99000 !important;
-}
-
-/* Improve appearance on small devices */
 
 @media (max-width: 640px) {
-
-
+    /*SM(small) in Primefaces Grid CSS, please put only the fields that has different from above/default*/
 }

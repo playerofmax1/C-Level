@@ -141,7 +141,7 @@
                                                              action="#{rptMandaysCtl.onNext}"
                                                              update="yearForm,mainForm">
                                             </p:commandButton>
-                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top" styleClass="holiday-panel ui-corner-all">
+                                            <p:overlayPanel id="holidaysPanel" for="holidayList" showEffect="blind" hideEffect="blind" at="center bottom" my="center top" styleClass="holiday-panel ui-corner-all" style="left:0;">
                                                 <p:dataTable var="holiday" value="#{rptMandaysCtl.holidayList}" sortBy="#{holiday.holidayDate}"
                                                              styleClass="no-border holiday-table" rowStyleClass="#{(holiday.holidayDate.month % 2 > 0)?'even':'odd'}">
                                                     <p:column groupRow="true" style="width:45px;" styleClass="alignCenter">
@@ -175,7 +175,7 @@
                                             <p:outputLabel id="targetUtilization" value="Target: #{rptMandaysCtl.targetUtilization}%" styleClass="cursor-pointer"/><br/>
                                             <p:overlayPanel id="targetUtilizationPanel" widgetVar="targetUtilizationPanel" for="targetUtilization"
                                                             showEffect="blind" hideEffect="blind" appendToBody="false"
-                                                            at="right bottom" my="right top">
+                                                            at="right bottom" my="right top" style="left:0;">
                                                 <div class="ui-inputgroup">
                                                     <p:inputNumber id="editTargetUtilization"
                                                                    emptyValue="0"
@@ -198,7 +198,7 @@
                                             <p:outputLabel value="Utilization: #{rptMandaysCtl.utilization.percentCU} %"/><br/>
                                             <p:outputLabel value="Final %AMD: #{rptMandaysCtl.utilization.percentAMD} %"/><br/>
                                             <p:outputLabel id="percentCU" styleClass="fa fa-chevron-circle-down"/>
-                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind" at="right bottom" my="right top">
+                                            <p:overlayPanel id="percentCUPanel" for="percentCU" showEffect="blind" hideEffect="blind" at="right bottom" my="right top" style="left:0;">
                                                 <p:panelGrid columns="2" columnClasses="overlayLabel alignLeft, overlayValue alignLeft" styleClass="ui-noborder">
                                                     <p:outputLabel value="Year Start:" style="width:20em"/>
                                                     <p:outputLabel value="#{rptMandaysCtl.utilization.startDate}" style="width:12em">

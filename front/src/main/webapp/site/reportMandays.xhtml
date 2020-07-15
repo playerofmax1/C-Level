@@ -104,7 +104,8 @@
 
                         <p:dataTable id="md" var="mandays" value="#{rptMandaysCtl.userMandaysDTOList}" rowIndexVar="idx"
                                      sortBy="#{mandays.project.code}"
-                                     style="font-size: 12px">
+                                     style="font-size: 12px"
+                                     reflow="true">
 
                             <f:facet name="header">
                                 <p:outputPanel id="mdHeader" styleClass="transparent no-padding no-border">
@@ -276,23 +277,23 @@
                                 <h:outputText value="#{mandays.weight}" styleClass="#{mandays.styleClass}"/>
                             </p:column>
 
-                            <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" sortBy="#{mandays.workDays}" styleClass="alignRight">
+                            <p:column headerText="Workdays" footerText="#{rptMandaysCtl.totalUserMandays.workDays}" sortBy="#{mandays.workDays}" priority="4" styleClass="alignRight">
                                 <h:outputText value="#{mandays.workDays}" styleClass="#{mandays.styleClass}"/>
                             </p:column>
 
-                            <p:column headerText="First Day" sortBy="#{mandays.firstChargeDate}" styleClass="alignCenter">
+                            <p:column headerText="First Day" sortBy="#{mandays.firstChargeDate}" priority="5" styleClass="alignCenter">
                                 <h:outputText value="#{mandays.firstChargeDate}" styleClass="#{mandays.styleClass}">
                                     <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Last Day" sortBy="#{mandays.lastChargeDate}" styleClass="alignCenter">
+                            <p:column headerText="Last Day" sortBy="#{mandays.lastChargeDate}" priority="5" styleClass="alignCenter">
                                 <h:outputText value="#{mandays.lastChargeDate}" styleClass="#{mandays.styleClass}">
                                     <f:convertDateTime pattern="d MMMM yyyy" timeZone="Asia/Bangkok"/>
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="First To Last" sortBy="#{mandays.firstToLastDays}" styleClass="alignRight">
+                            <p:column headerText="First To Last" sortBy="#{mandays.firstToLastDays}" priority="6" styleClass="alignRight">
                                 <h:outputText value="#{mandays.firstToLastDays}" styleClass="#{mandays.styleClass}"/>
                             </p:column>
 

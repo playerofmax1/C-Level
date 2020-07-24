@@ -60,6 +60,7 @@ public class MandaysRequestController extends AbstractController {
 
     private String br = "<br />";
     private boolean openByAttributes;
+    private boolean inHour;
 
     @PostConstruct
     public void onCreation() {
@@ -390,6 +391,7 @@ public class MandaysRequestController extends AbstractController {
 
     public void resetMandaysRequestDialog() {
         selectedTaskCode = null;
+        inHour = false;
 
         newMandaysRequest = new MandaysRequestDTO();
         newMandaysRequest.setType(MandaysRequestType.EXTEND);
@@ -695,6 +697,14 @@ public class MandaysRequestController extends AbstractController {
 
     public void setOpenByAttributes(boolean openByAttributes) {
         this.openByAttributes = openByAttributes;
+    }
+
+    public boolean isInHour() {
+        return inHour;
+    }
+
+    public void setInHour(boolean inHour) {
+        this.inHour = inHour;
     }
 
     public ExcelOptions getExportExcelOptions() {

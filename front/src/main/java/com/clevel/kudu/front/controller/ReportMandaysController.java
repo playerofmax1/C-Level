@@ -124,6 +124,7 @@ public class ReportMandaysController extends AbstractController {
         String tmpPath = templatePath + "tmp/";
         String templateFileName = "report_mandays.xlsx";
         String outputFileName = templateFileName.substring(0, templateFileName.length() - 5) + "." + DateTimeUtil.getDateStr(new Date(), "yyyyMMdd.HHmmss") + ".xlsx";
+        String outputSheetName = "Time Sheet Summary";
         String aliasFileName = "report_mandays.xlsx";
         log.debug("onExcelTemplate.");
 
@@ -138,11 +139,11 @@ public class ReportMandaysController extends AbstractController {
             log.debug("onExcelTemplate.loadMandaysReport failed");
             return null;
         }
-        log.debug("onExcelTemplate.loadMandaysReport passed");
+        log.debug("onExcelTemplate.loadMandaysReport passed, mandaysReportResult = {}", mandaysReportResult);
 
         /*create output file*/
         String outputFullFileName = tmpPath + outputFileName;
-        createExcelReport(templatePath + templateFileName, outputFullFileName, mandaysReportResult);
+        createExcelReport(templatePath + templateFileName, outputFullFileName, outputSheetName, mandaysReportResult);
         log.debug("onExcelTemplate.createExcelReport passed");
 
         /*download output file*/
@@ -190,7 +191,7 @@ public class ReportMandaysController extends AbstractController {
     }
 
     @SuppressWarnings("unchecked")
-    private void createExcelReport(String templateFileName, String outputFileName, MandaysReportResult mandaysReportResult) {
+    private void createExcelReport(String templateFileName, String outputFileName, String outputSheetName, MandaysReportResult mandaysReportResult) {
         String errMessage;/*create output file*/
         try {
             /*Read Template as InputStream and create the output as OutputStream for JETT, JXLS v.1*/
@@ -225,7 +226,7 @@ public class ReportMandaysController extends AbstractController {
 
             /*Using JXLS v.2 - Generate excel file by template*/
             log.debug("createExcelReport.mandaysReportResult = {}", mandaysReportResult);
-            ExcelUtil.createExcel(outputFileName, templateFileName, mandaysReportResult.getReportItemList(), mandaysReportResult.getProjectList(), variables);
+            ExcelUtil.createExcel(outputFileName, outputSheetName, templateFileName, mandaysReportResult.getReportItemList(), mandaysReportResult.getProjectList(), variables);
 
             /*Create output file*/
             /*workbook.write(fileOutputStream);

@@ -534,6 +534,8 @@ hr,
 hr.ui-separator {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
+    background: #eeeeee;
+    height: 1px;
     border: 0;
 }
 

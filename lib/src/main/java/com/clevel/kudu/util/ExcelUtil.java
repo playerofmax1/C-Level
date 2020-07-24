@@ -31,7 +31,7 @@ public class ExcelUtil {
     }
 
     @SafeVarargs
-    public static void createExcel(String outputFileName, String templateFileName, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
+    public static void createExcel(String outputFileName, String outputSheetName, String templateFileName, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
         log.debug("createExcel(output:{},template{}).", outputFileName, templateFileName);
         InputStream inputStream = new BufferedInputStream(new FileInputStream(templateFileName));
 
@@ -44,7 +44,7 @@ public class ExcelUtil {
         }
 
         FileOutputStream outputStream = new FileOutputStream(file);
-        createExcel(outputStream, inputStream, itemList, columnHeaderList, variables);
+        createExcel(outputStream, outputSheetName, inputStream, itemList, columnHeaderList, variables);
         outputStream.close();
     }
 
@@ -58,7 +58,7 @@ public class ExcelUtil {
      * @throws IOException
      */
     @SafeVarargs
-    public static void createExcel(OutputStream outputStream, InputStream inputStream, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
+    public static void createExcel(OutputStream outputStream, String outputSheetName, InputStream inputStream, Iterable<?> itemList, Iterable<?> columnHeaderList, Pair<String, Object>... variables) throws IOException {
         log.debug("createExcel.");
         byte[] templateBytes = forceLoadFromInputStream(inputStream);
         InputStream is = new ByteArrayInputStream(templateBytes);
@@ -82,7 +82,7 @@ public class ExcelUtil {
         gridCommand.setProps(objectProps);*/
 
         /*mapping and then print*/
-        xlsArea.applyAt(new CellRef("Sheet1!A1"), context);
+        xlsArea.applyAt(new CellRef(outputSheetName + "!A1"), context);
         transformer.write();
     }
 

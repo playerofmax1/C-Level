@@ -473,6 +473,7 @@ public class TimeSheetManager {
         viewableUserList.add(viewerUser);
         List<UserMandays> userMandaysList = userMandaysDAO.findByUserList(viewableUserList, year);
 
+
         List<MandaysReportItem> itemList = new ArrayList<>();
         MandaysReportItem item;
         User user;
@@ -488,8 +489,8 @@ public class TimeSheetManager {
 
         /*need to sort project code before mapping to array*/
         projectCodeList.sort((o1, o2) -> {
-            String o1Code = o1.startsWith("!") ? "ZZ" + o1 : (o1.startsWith("A00") ? "Z" + o1 : o1);
-            String o2Code = o2.startsWith("!") ? "ZZ" + o2 : (o2.startsWith("A00") ? "Z" + o2 : o2);
+            String o1Code = o1.startsWith("MA") ? "ZZ" + o1 : (o1.startsWith("A00") ? "Z" + o1 : o1);
+            String o2Code = o2.startsWith("MA") ? "ZZ" + o2 : (o2.startsWith("A00") ? "Z" + o2 : o2);
             return o1Code.compareTo(o2Code);
         });
 
@@ -507,6 +508,11 @@ public class TimeSheetManager {
                     amdArray[index] = userMandaysItem.getAMD();
                     userMandaysLastItem = userMandaysItem;
                 }
+
+                userMandaysItem = userMandays.get("!" + projectCode);
+                if (userMandaysItem != null) {
+                    amdArray[index] = amdArray[index].add(userMandaysItem.getAMD());
+                }
                 index++;
             }
             item.setAmdList(Arrays.asList(amdArray));
@@ -519,11 +525,22 @@ public class TimeSheetManager {
                 log.warn("userMandaysLastItem is null (not null is expected!)");
             }
 
-            long chargeMinutes = DateTimeUtil.mandaysToMinutes(getTotalAMD(new ArrayList<>(userMandays.values())));
-            UtilizationDTO utilization = getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), chargeMinutes);
-            item.setPercentCU(utilization.getPercentCU());
 
-            /*item.setTargetPercentCU(user.get);*/
+            /*copied from TimeSheetResource.getMandays.calculatePercentAMD*/
+
+            List<UserMandaysDTO> userMandaysDTOList = getUserMandays(userId, year);
+            UserMandaysDTO totalMandaysDTO = getTotalMandays(userMandaysDTOList);
+            long AMDMinutes = DateTimeUtil.mandaysToMinutes(totalMandaysDTO.getAMD());
+            UtilizationDTO utilization = getUtilization(performanceYear.getStartDate(), performanceYear.getEndDate(), AMDMinutes);
+            utilization.setYear(year);
+            utilization.setPercentAMD(generatePercentAMD(userMandaysDTOList, totalMandaysDTO, utilization.getNetWorkingDays()));
+            log.debug("getUserMandaysReport.utilization = {}", utilization);
+
+            /*end of copied*/
+
+            item.setPercentCU(utilization.getPercentCU());
+            item.setFinalPercentAMD(utilization.getPercentAMD());
+
             itemList.add(item);
         }
 
@@ -563,13 +580,17 @@ public class TimeSheetManager {
             project = userMandays.getProject();
             if (project == null) {
                 projectCode = "A00X";
-            } else if (userMandays.isPlanFlag()) {
+            } else if (userMandays.isPlanFlag() || project.getCode().startsWith("MA")) {
                 projectCode = project.getCode();
             } else {
-                projectCode = "!" + project.getCode();
+                projectCode = project.getCode();
+                if (!projectCodeList.contains(projectCode)) {
+                    projectCodeList.add(projectCode);
+                }
+                projectCode = "!" + projectCode;
             }
 
-            if (!projectCodeList.contains(projectCode)) {
+            if (!projectCode.startsWith("!") && !projectCodeList.contains(projectCode)) {
                 projectCodeList.add(projectCode);
             }
 
@@ -692,7 +713,6 @@ public class TimeSheetManager {
         utilization.setNetWorkingDaysInMinutes(netWorkingDaysInMinutes);
         utilization.setChargedMinutes(chargeMinutes);
         utilization.setPercentCU(utilization.getPercentCUByDays());
-        log.debug("utilization = {}", utilization);
 
         return utilization;
     }

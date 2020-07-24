@@ -21,9 +21,11 @@
         <!-- Custom styles for this template -->
         <h:outputStylesheet library="css" name="#{accessCtl.cssFileName}" target="head"/>
         <style>
+            .days input,
             .hours input {
-                width: 3em;
+                width: 5em !important;
             }
+
             .ui-datatable sup {
                 color: silver;
             }
@@ -260,25 +262,35 @@
                                     update="taskDropdown"/>
                         </p:selectOneMenu>
 
-                        <p:outputPanel>
-                            <h:outputLabel value="Hours:" styleClass="require ui-inputgroup-addon"/>
-                            <p:focus for="houstInput" rendered="#{mdRequestCtl.openByAttributes}"/>
+                        <p:outputPanel styleClass="require">
+                            <p:selectBooleanButton id="hourOrDay"
+                                                   value="#{mdRequestCtl.inHour}"
+                                                   onLabel="Hour"
+                                                   offLabel="Day">
+                                <p:ajax event="change" update="mdRequestDlgForm"/>
+                            </p:selectBooleanButton>
+                            <h:outputLabel value=" :" styleClass="require"/>
                         </p:outputPanel>
-                        <p:outputPanel id="hours" styleClass="ui-inputgroup no-margin hours">
-                            <p:calendar id="houstInput" value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
-                                        converter="durationConverter"
+                        <p:outputPanel id="days" styleClass="ui-inputgroup no-margin days" rendered="#{!mdRequestCtl.inHour}">
+                            <p:inputNumber id="daysInput" value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
+                                           converter="durationManDayConverter"
+                                           emptyValue="zero">
+                                <p:ajax event="change" listener="#{mdRequestCtl.onChangeMDDuration}"/>
+                            </p:inputNumber>
+                            <h:outputLabel value="Manday"
+                                           styleClass="ui-inputgroup-addon"/>
+                        </p:outputPanel>
+                        <p:outputPanel id="hours" styleClass="ui-inputgroup no-margin hours" rendered="#{mdRequestCtl.inHour}">
+                            <p:calendar id="hoursInput" value="#{mdRequestCtl.newMandaysRequest.extendMDDuration}"
+                                        converter="durationHourConverter"
                                         showOn="focus"
-                                        pattern="HH:mm"
+                                        pattern="HH"
                                         timeOnly="true"
                                         maxHour="80"
                                         mask="true">
-                                <p:ajax event="change" listener="#{mdRequestCtl.onChangeMDDuration}" update="mandays"/>
+                                <p:ajax event="change" listener="#{mdRequestCtl.onChangeMDDuration}"/>
                             </p:calendar>
-                            <h:outputText value="HH:mm" styleClass="ui-inputgroup-addon"/>
-                            <h:outputLabel id="mandays"
-                                           value="#{mdRequestCtl.newMandaysRequest.extendMD} MD#{mdRequestCtl.newMandaysRequest.extendMD>1?'s':''}"
-                                           style="color:silver"
-                                           styleClass="ui-inputgroup-addon"/>
+                            <h:outputText value="Hour" styleClass="ui-inputgroup-addon"/>
                         </p:outputPanel>
 
                         <h:outputLabel value="Task:" styleClass="require"/>
@@ -369,6 +381,7 @@
                         <br/>Sending email please wait ...
                     </p:blockUI>
 
+                    <p:focus for="daysInput" rendered="#{mdRequestCtl.openByAttributes}"/>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </p:outputPanel>
             </h:form>

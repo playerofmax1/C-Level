@@ -130,7 +130,7 @@ public class MandaysRequestController extends AbstractController {
     public void onSearch() {
         log.debug("onSearch(selectedUserId: {}, selectedStatus: {})", selectedUserId, selectedStatus);
 
-        if (userList == null) {
+        if (userList == null || selectedUserId == 0) {
             tsStartDate = userDetail.getTsStartDate();
         } else {
             UserDTO selectedUser = LookupUtil.getObjById(userList, selectedUserId);

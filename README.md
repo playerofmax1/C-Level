@@ -203,6 +203,7 @@ The version.property is used in the front-end to show full version text on the b
 | DEV  | OS ?<br />(SSH Home Path: /home/<name>)                      | 35.247.155.31                                                | click SSH on VMWare Instance Item                           | -                                                |
 | DEV  | MariaDB ?                                                    | 35.247.155.31:3360                                           | request to Saroch if you want                               | -                                                |
 | DEV  | Wildfly 18.0.1 Web Console<br />(Open JDK 11.0.7 2020-04-14 LTS)<br />(Home Path: start : /opt/wildfly-18.0.1.Final/)<br />(Deployment Path: /opt/wildfly-18.0.1.Final/standalone/deployments/)<br />(Log Path: /opt/wildfly-18.0.1.Final/standalone/log/) | http://35.247.155.31:9997/console/index.html                 | wildflyusr                                                  | laTbhak5vsQnZ6nxkmhxGQzNtElovvapz6fza1Sxjf3tsezy |
+| DEV  | API : Test Response                                          | http://35.247.155.31:8087/api/rest/resteasy/registry         | -                                                           | -                                                |
 
 
 

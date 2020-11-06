@@ -6,6 +6,7 @@ import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.CustomerDTO;
 import com.clevel.kudu.dto.working.ProjectDTO;
 import com.clevel.kudu.dto.working.SearchRequest;
+import com.clevel.kudu.dto.working.UserDTO;
 import com.clevel.kudu.front.validation.Validator;
 import com.clevel.kudu.model.RecordStatus;
 import com.clevel.kudu.util.FacesUtil;
@@ -16,6 +17,7 @@ import javax.inject.Named;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.clevel.kudu.util.LookupUtil.getObjById;
@@ -35,6 +37,8 @@ public class ProjectController extends AbstractController {
     private long selectedCustomerId;
 
     private SearchRequest searchRequest;
+    private long userId;
+    private List<UserDTO> approverList;
 
     public ProjectController() {
     }
@@ -43,9 +47,16 @@ public class ProjectController extends AbstractController {
     public void onCreation() {
         log.debug("onCreation.");
         searchRequest = new SearchRequest();
+        approverList = new ArrayList<>();
 
         loadCustomerList();
         loadProjectList();
+        loadApproverList();
+
+        //Step 1 : find all rel_role_function (F0005)
+        // List 8 9
+        //Step 2 : use roleid to find user in wrk_user
+        //userOwnerList = Step 2
     }
 
     private void loadCustomerList() {
@@ -59,6 +70,22 @@ public class ProjectController extends AbstractController {
             });
             customerList = serviceResponse.getResult();
             log.debug("customerList: {}", customerList);
+        } else {
+            log.debug("wrong response status! (status: {})", response.getStatus());
+            FacesUtil.addError("wrong response from server!");
+        }
+    }
+    private void loadApproverList() {
+        log.debug("loadApproverList");
+
+        ServiceRequest<SimpleDTO> request = new ServiceRequest<>(new SimpleDTO());
+        request.setUserId(userDetail.getUserId());
+        Response response = apiService.getCustomerResource().getApproverList(request);
+        if (response.getStatus() == 200) {
+            ServiceResponse<List<UserDTO>> serviceResponse = response.readEntity(new GenericType<ServiceResponse<List<UserDTO>>>() {
+            });
+            approverList = serviceResponse.getResult();
+            log.debug("approverList: {}", approverList);
         } else {
             log.debug("wrong response status! (status: {})", response.getStatus());
             FacesUtil.addError("wrong response from server!");
@@ -118,6 +145,7 @@ public class ProjectController extends AbstractController {
         validator = new Validator();
     }
 
+
     public void onNewProject() {
         log.debug("onNewProject.");
 
@@ -140,6 +168,8 @@ public class ProjectController extends AbstractController {
         }
 
         //validation pass
+
+        newProject.setUserID(userId);
         log.debug("onNewProject.newProject={}", newProject);
         ServiceRequest<ProjectDTO> request = new ServiceRequest<>(newProject);
         request.setUserId(userDetail.getUserId());
@@ -356,5 +386,21 @@ public class ProjectController extends AbstractController {
 
     public void setSearchRequest(SearchRequest searchRequest) {
         this.searchRequest = searchRequest;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public List<UserDTO> getApproverList() {
+        return approverList;
+    }
+
+    public void setApproverList(List<UserDTO> approverList) {
+        this.approverList = approverList;
     }
 }

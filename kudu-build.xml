@@ -173,25 +173,25 @@
     <!-- Global Libraries -->
 
     <path id="library.kudu-common-lib.classpath">
-        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-common-lib">
+        <fileset dir="C:/Users/MAX SIRAVIT/Documents/C-Level/kudu-common-lib">
             <patternset refid="library.patterns"/>
         </fileset>
     </path>
 
     <path id="library.kudu-front-lib.classpath">
-        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-front-lib">
+        <fileset dir="C:/Users/MAX SIRAVIT/Documents/C-Level/kudu-front-lib">
             <patternset refid="library.patterns"/>
         </fileset>
     </path>
 
     <path id="library.kudu-javax-lib.classpath">
-        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-javax-lib">
+        <fileset dir="C:/Users/MAX SIRAVIT/Documents/C-Level/kudu-javax-lib">
             <patternset refid="library.patterns"/>
         </fileset>
     </path>
 
     <path id="library.kudu-jboss-lib.classpath">
-        <fileset dir="C:/Users/prazi/Documents/C-Level/kudu-jboss-lib">
+        <fileset dir="C:/Users/MAX SIRAVIT/Documents/C-Level/kudu-jboss-lib">
             <patternset refid="library.patterns"/>
         </fileset>
     </path>

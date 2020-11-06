@@ -1,7 +1,7 @@
-#/* Current: KUDU (Development) version 1.1.1 build 2/7/2020 12:01 */
+#/* Current: KUDU (Development) version 1.1.1 build 6/11/2020 14:42 */
 project.name=KUDU
 version.name=(Development) version
-build.date=2/7/2020 12:01
+build.date=6/11/2020 14:42
 
 #/* major changes */
 version.number=1

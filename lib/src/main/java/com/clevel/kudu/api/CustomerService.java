@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 @Consumes("application/json")
 @Tag(name = "Customer Resource", description = "everything for customer")
 public interface CustomerService {
+
     @POST
     @Path("/new")
     @Operation(summary = "create new customer", description = "create new customer")
@@ -46,6 +47,12 @@ public interface CustomerService {
     @ApiResponse(responseCode = "200", description = "SUCCESS")
     Response getCustomerList(@Parameter(description = "request: SimpleDTO, result: List\\<CustomerDTO\\>", required = true)
                                  ServiceRequest<SimpleDTO> request);
+    @POST
+    @Path("/list-Approver")
+    @Operation(summary = "get list all Approver", description = "get list all Approver")
+    @ApiResponse(responseCode = "200", description = "SUCCESS")
+    Response getApproverList(@Parameter(description = "request:, result: List\\<UserDTO\\>", required = true)
+                                     ServiceRequest<SimpleDTO> request);
 
     @POST
     @Path("/delete")

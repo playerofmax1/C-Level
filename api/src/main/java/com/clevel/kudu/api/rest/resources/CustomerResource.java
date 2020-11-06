@@ -9,6 +9,7 @@ import com.clevel.kudu.dto.ServiceRequest;
 import com.clevel.kudu.dto.ServiceResponse;
 import com.clevel.kudu.dto.SimpleDTO;
 import com.clevel.kudu.dto.working.CustomerDTO;
+import com.clevel.kudu.dto.working.UserDTO;
 import com.clevel.kudu.model.APIResponse;
 import org.slf4j.Logger;
 
@@ -117,6 +118,27 @@ public class CustomerResource implements CustomerService {
         try {
             customerDTOList = customerManager.getCustomerList(request.getUserId());
             response.setResult(customerDTOList);
+            response.setApiResponse(APIResponse.SUCCESS);
+        } catch (RecordNotFoundException e1) {
+            log.debug("", e1);
+            response = new ServiceResponse<>(APIResponse.FAILED, e1.getMessage());
+        } catch (Exception e) {
+            log.error("", e);
+            response = new ServiceResponse<>(APIResponse.EXCEPTION, e.getMessage());
+        }
+
+        return Response.ok().entity(response).build();
+    }
+    @Override
+    public Response getApproverList(ServiceRequest<SimpleDTO> request) {
+        log.debug("getApproverList. (request: {})", request);
+
+        List<UserDTO> userDTOList = Collections.emptyList();
+        ServiceResponse<List<UserDTO>> response = new ServiceResponse<>();
+
+        try {
+            userDTOList = customerManager.getApproverList();
+            response.setResult(userDTOList);
             response.setApiResponse(APIResponse.SUCCESS);
         } catch (RecordNotFoundException e1) {
             log.debug("", e1);

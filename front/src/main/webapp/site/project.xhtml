@@ -166,6 +166,8 @@
                         <f:selectItem itemLabel="Maintenance" itemValue="MAINTENANCE"/>
                     </p:selectOneMenu>
 
+
+
                     <h:outputLabel value="Billable MD:" styleClass="require"/>
                     <p:outputPanel styleClass="no-padding no-margin">
                         <div class="ui-inputgroup">
@@ -183,6 +185,13 @@
                 </p:panelGrid>
 
                 <br/>
+                <h:outputLabel value="Project Owners:" styleClass="require ui-outputlabel"/>
+                <p:selectOneMenu value="#{projectCtl.userId}" id="dbSelectProjectOwners">
+                    <f:selectItems value="#{projectCtl.approverList}" var="owners"
+                                   itemLabel="#{owners.name}"
+                                   itemValue="#{owners.id}"/>
+<!--                    <p:ajax event="change" update="projectTaskDlgForm" />-->
+                </p:selectOneMenu>
 
                 <div class="ui-g">
                     <h:outputLabel value="Description:" styleClass="ui-g-12"/><br/>

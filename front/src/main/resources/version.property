@@ -1,13 +1,13 @@
-#/* Current: Kudu (Alpha) Version 1.3.3 build 24/7/2020 16:48 */
-project.name=Kudu
-version.name=(Alpha) Version
-build.date=24/7/2020 16:48
+#/* Current: KUDU (Development) version 1.1.1 build 6/11/2020 14:42 */
+project.name=KUDU
+version.name=(Development) version
+build.date=6/11/2020 14:42
 
 #/* major changes */
 version.number=1
 
 #/* minor changes */
-revision.number=3
+revision.number=1
 
 #/* fix bugs */
-build.number=3
+build.number=1

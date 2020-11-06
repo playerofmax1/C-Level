@@ -254,7 +254,7 @@ public class TimeSheetController extends AbstractController {
                 TimeSheetDTO result = serviceResponse.getResult();
 
                 updateViewRecord(result);
-                loadUtilization();
+                loadUtilization(); //ลองแก้แร้วหายแต่ดีพลอยไม่ได้
                 PrimeFaces.current().executeScript("PF('timeSheetDlg').hide();");
             } else {
                 FacesUtil.addError(serviceResponse.getMessage());

@@ -78,7 +78,8 @@
                     <hr/>
 
                     <h:form id="requestForm">
-                        <p:dataTable var="mandaysRequest"
+                        <p:dataTable id="md"
+                                var="mandaysRequest"
                                      widgetVar="mandaysRequest"
                                      value="#{mdRequestCtl.mandaysRequestDTOList}"
                                      rows="10"
@@ -89,7 +90,7 @@
                                      style="font-size: 12px">
 
                             <f:facet name="header">
-                                <p:outputPanel styleClass="transparent no-padding no-border">
+                                <p:outputPanel id="mdHeader" styleClass="transparent no-padding no-border">
                                     <div class="ui-g">
                                         <div class="ui-g-3 alignLeft">
                                             <p:commandButton id="newRequest" icon="fa fa-plus" value="New Request"
@@ -122,6 +123,12 @@
                                         </div>
                                     </div>
                                 </p:outputPanel>
+
+                                <p:blockUI block="mdHeader" widgetVar="mdHeader" trigger="md:previousYear,md:nextYear" styleClass="ui-corner-all">
+                                    <p:graphicImage name="img/ajaxloadingbar.gif" style="float:top"/>
+                                    <br/>please wait ...
+                                </p:blockUI>
+
                             </f:facet>
 
                             <!-- TODO: The Mandays Request need document-number as reference later-->

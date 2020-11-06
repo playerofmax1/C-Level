@@ -339,6 +339,9 @@ public class TimeSheetResource implements TimeSheetService {
             Date monthEndDate = DateTimeUtil.getLastDateOfMonth(monthDate);
             UtilizationDTO utilization = timeSheetManager.getUtilization(monthStartDate, monthEndDate, totalChargedMinutes);
 
+            PerformanceYearDTO performanceYear = timeSheetManager.getPerformanceYear(monthDate);
+            utilization.setYear(performanceYear.getYear());
+
             UtilizationResult utilizationResult = new UtilizationResult(utilization);
             response.setResult(utilizationResult);
             response.setApiResponse(APIResponse.SUCCESS);

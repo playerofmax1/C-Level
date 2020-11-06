@@ -473,12 +473,23 @@ public class ProjectResource implements ProjectService {
         UserStatusRequest userStatusRequest = request.getRequest();
         try {
             MandaysRequestResult mandaysRequestResult = new MandaysRequestResult();
-            int year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
+
+            int year = userStatusRequest.getYear();
+            if (year == 0) {
+                year = Integer.parseInt(app.getConfig(SystemConfig.PF_YEAR));
+                log.debug("{} = {}", SystemConfig.PF_YEAR.name(), year);
+            }
             PerformanceYearDTO performanceYear = timeSheetManager.getPerformanceYear(year);
             mandaysRequestResult.setPerformanceYear(performanceYear);
 
             List<MandaysRequestDTO> mandaysRequestDTOList = projectManager.getMandaysRequestList(userStatusRequest.getUserId(), userStatusRequest.getStatus(), performanceYear.getStartDate(), performanceYear.getEndDate());
             mandaysRequestResult.setMandaysRequestList(mandaysRequestDTOList);
+
+            PerformanceYearDTO nextPerformanceYearDTO = timeSheetManager.getPerformanceYear(year + 1);
+            mandaysRequestResult.setHasNextYear(nextPerformanceYearDTO != null);
+
+            PerformanceYearDTO prePerformanceYearDTO = timeSheetManager.getPerformanceYear(year - 1);
+            mandaysRequestResult.setHasPreviousYear(prePerformanceYearDTO != null);
 
             response.setResult(mandaysRequestResult);
             response.setApiResponse(APIResponse.SUCCESS);

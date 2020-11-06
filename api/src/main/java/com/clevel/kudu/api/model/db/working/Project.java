@@ -37,6 +37,10 @@ public class Project extends AbstractAuditEntity {
     @JoinColumn(name = "customerId", nullable = false)
     private Customer customer;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
+
     @Column(name = "type")
     @Convert(converter = ProjectTypeConverter.class)
     private ProjectType type;

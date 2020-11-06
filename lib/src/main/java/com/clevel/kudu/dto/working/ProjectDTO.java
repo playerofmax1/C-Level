@@ -29,6 +29,7 @@ public class ProjectDTO implements LookupList {
     private Long remainingMDMinute;
 
     private CustomerDTO customer;
+    private Long userID;
     private ProjectType type;
 
     private RecordStatus status;
@@ -197,6 +198,14 @@ public class ProjectDTO implements LookupList {
         this.version = version;
     }
 
+    public Long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.JSON_STYLE)
@@ -215,6 +224,7 @@ public class ProjectDTO implements LookupList {
                 .append("remainingMDDuration", remainingMDDuration)
                 .append("remainingMDMinute", remainingMDMinute)
                 .append("customer", customer)
+                .append("userID", userID)
                 .append("type", type)
                 .append("status", status)
                 .append("version", version)

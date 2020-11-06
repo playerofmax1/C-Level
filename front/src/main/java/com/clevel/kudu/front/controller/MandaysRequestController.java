@@ -48,6 +48,9 @@ public class MandaysRequestController extends AbstractController {
     private int currentYear;
     private boolean previousEnable;
     private boolean nextEnable;
+    private boolean hasNextYear;
+    private boolean hasPreviousYear;
+    private Date tsStartDate;
 
     private List<MandaysRequestDTO> mandaysRequestDTOList;
 
@@ -81,6 +84,7 @@ public class MandaysRequestController extends AbstractController {
         mandaysRequestTypeList = Arrays.asList(MandaysRequestType.values());
         resetMandaysRequestDialog();
 
+        tsStartDate = userDetail.getTsStartDate();
         loadMandaysRequest();
 
         onPostCreation();
@@ -125,6 +129,16 @@ public class MandaysRequestController extends AbstractController {
 
     public void onSearch() {
         log.debug("onSearch(selectedUserId: {}, selectedStatus: {})", selectedUserId, selectedStatus);
+
+        if (userList == null || selectedUserId == 0) {
+            tsStartDate = userDetail.getTsStartDate();
+        } else {
+            UserDTO selectedUser = LookupUtil.getObjById(userList, selectedUserId);
+            log.debug("onChangeUser.selectedUser: {}", selectedUser);
+            tsStartDate = selectedUser.getTsStartDate();
+        }
+        log.debug("onChangeUser.tsStartDate: {}", tsStartDate);
+
         loadMandaysRequest();
         FacesUtil.actionSuccess();
     }
@@ -137,12 +151,26 @@ public class MandaysRequestController extends AbstractController {
 
     public void onPrevious() {
         log.debug("onPrevious.");
+        currentYear -= 1;
         loadMandaysRequest();
+
+        /*DEBUG-ONLY: delayByCPU(3000);*/
     }
 
     public void onNext() {
         log.debug("onNext.");
+        currentYear += 1;
         loadMandaysRequest();
+
+        /*DEBUG-ONLY: delayByCPU(3000);*/
+    }
+
+    private void delayByCPU(long loop) {
+        String userDetail = "";
+        for (long i = 0; i < loop; i++) {
+            userDetail += this.userDetail.toString();
+            log.debug("delayByCPU userDetail.length = {}", userDetail.length());
+        }
     }
 
     public void onChangeRequestType() {
@@ -520,6 +548,7 @@ public class MandaysRequestController extends AbstractController {
         UserStatusRequest userStatusRequest = new UserStatusRequest();
         userStatusRequest.setUserId(selectedUserId);
         userStatusRequest.setStatus(selectedStatus);
+        userStatusRequest.setYear(currentYear);
 
         ServiceRequest<UserStatusRequest> request = new ServiceRequest<>(userStatusRequest);
         request.setUserId(userDetail.getUserId());
@@ -545,6 +574,8 @@ public class MandaysRequestController extends AbstractController {
         MandaysRequestResult mandaysRequestResult = serviceResponse.getResult();
         mandaysRequestDTOList = mandaysRequestResult.getMandaysRequestList();
         currentYear = (int) mandaysRequestResult.getPerformanceYear().getYear();
+        hasNextYear = mandaysRequestResult.isHasNextYear();
+        hasPreviousYear = mandaysRequestResult.isHasPreviousYear();
 
         log.debug("onSearch.mandaysRequestDTOList={}", mandaysRequestDTOList);
 
@@ -552,19 +583,11 @@ public class MandaysRequestController extends AbstractController {
     }
 
     public void checkNavigationButtonEnable() {
-        Date lastDate = DateTimeUtil.getLastDateOfMonth(DateTimeUtil.now());
+        nextEnable = hasNextYear;
 
-        /*TODO: when time sheet has more than one year @2021++ */
-
-        // check next
-        //Date next = DateTimeUtil.getDatePlusMonths(currentMonth, 1);
-        //nextEnable = !next.after(lastDate);
-        nextEnable = false;
-
-        // check previous
-        //Date pre = DateTimeUtil.getDatePlusMonths(currentMonth, -1);
-        //previousEnable = !pre.before(tsStartDate);
-        previousEnable = false;
+        long previousYear = currentYear - 1;
+        Date firstDateOfMonth = DateTimeUtil.getLastDateOfYear((int) previousYear);
+        previousEnable = hasPreviousYear && tsStartDate.before(firstDateOfMonth);
     }
 
     public List<UserDTO> getUserList() {
@@ -705,6 +728,30 @@ public class MandaysRequestController extends AbstractController {
 
     public void setInHour(boolean inHour) {
         this.inHour = inHour;
+    }
+
+    public boolean isHasNextYear() {
+        return hasNextYear;
+    }
+
+    public void setHasNextYear(boolean hasNextYear) {
+        this.hasNextYear = hasNextYear;
+    }
+
+    public boolean isHasPreviousYear() {
+        return hasPreviousYear;
+    }
+
+    public void setHasPreviousYear(boolean hasPreviousYear) {
+        this.hasPreviousYear = hasPreviousYear;
+    }
+
+    public Date getTsStartDate() {
+        return tsStartDate;
+    }
+
+    public void setTsStartDate(Date tsStartDate) {
+        this.tsStartDate = tsStartDate;
     }
 
     public ExcelOptions getExportExcelOptions() {

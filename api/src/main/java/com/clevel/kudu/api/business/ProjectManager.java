@@ -5,10 +5,7 @@ import com.clevel.kudu.api.dao.working.*;
 import com.clevel.kudu.api.exception.EmailException;
 import com.clevel.kudu.api.exception.RecordNotFoundException;
 import com.clevel.kudu.api.exception.ValidationException;
-import com.clevel.kudu.api.external.email.template.AssignedTaskEmail;
-import com.clevel.kudu.api.external.email.template.ExtendMandaysEmail;
-import com.clevel.kudu.api.external.email.template.MDRequestEmail;
-import com.clevel.kudu.api.external.email.template.RejectedMDRequestEmail;
+import com.clevel.kudu.api.external.email.template.*;
 import com.clevel.kudu.api.model.db.relation.RelRoleFunction;
 import com.clevel.kudu.api.model.db.security.Role;
 import com.clevel.kudu.api.model.db.working.MandaysRequest;
@@ -74,16 +71,18 @@ public class ProjectManager {
     private RejectedMDRequestEmail rejectedMDRequestEmail;
     @Inject
     private MDRequestEmail mdRequestEmail;
+    @Inject
+    private NewProjectOwnerRequestEmail newProjectOwnerRequestEmail;
 
     @Inject
     public ProjectManager() {
     }
 
-    public ProjectDTO createNewProject(long userId, ProjectDTO projectDTO) throws RecordNotFoundException, ValidationException {
+    public ProjectDTO createNewProject(long userId, ProjectDTO projectDTO) throws RecordNotFoundException, ValidationException, EmailException {
         log.debug("createNewProject. (userId: {}, projectDTO: {})", userId, projectDTO);
 
         User user = userDAO.findById(userId);
-
+        User projectOnwer = userDAO.findById(projectDTO.getUserID());
         // validate pre-condition
         // validate code exist and active
         if (projectDAO.isCodeExist(projectDTO.getCode())) {
@@ -106,8 +105,12 @@ public class ProjectManager {
         newProject.setModifyDate(now);
         newProject.setModifyBy(user);
         newProject.setStatus(RecordStatus.ACTIVE);
+        newProject.setUser(projectOnwer);
 
         newProject = projectDAO.persist(newProject);
+        List<User> approverList = new ArrayList<>();
+        approverList.add(projectOnwer);
+        newProjectOwnerRequestEmail.sendMail(newProject, approverList);
 
         return projectMapper.toDTO(newProject);
     }
